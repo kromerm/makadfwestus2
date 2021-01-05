@@ -16,8 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "map",
-						"type": "DataFlowReference"
+						"referenceName": "RowCounts",
+						"type": "DataFlowReference",
+						"parameters": {
+							"logger": "false()"
+						}
 					},
 					"compute": {
 						"coreCount": 8,
