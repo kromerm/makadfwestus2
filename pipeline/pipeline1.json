@@ -19,7 +19,7 @@
 						"referenceName": "RowCounts",
 						"type": "DataFlowReference",
 						"parameters": {
-							"logger": "false()"
+							"logger": "true()"
 						}
 					},
 					"compute": {
