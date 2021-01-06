@@ -16,11 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RowCounts",
-						"type": "DataFlowReference",
-						"parameters": {
-							"logger": "true()"
-						}
+						"referenceName": "loans",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
