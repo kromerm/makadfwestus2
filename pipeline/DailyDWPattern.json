@@ -251,7 +251,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@if(\n   greater(\n      activity('Get Metadata File').output.size,400000),128,\n         if(\n            greater(\n               activity('Get Metadata File').output.size,100000),64,8))",
+						"value": "greater(activity('Get Metadata File').output.size,400000)\n   ",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
