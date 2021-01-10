@@ -14,6 +14,9 @@
 		"AzureDatabricks1_accessToken": {
 			"value": ""
 		},
+		"CosmosDb1_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://makadlsg2.dfs.core.windows.net"
 		},
@@ -22,6 +25,9 @@
 		},
 		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
 			"value": "SQLDB1"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+			"value": "SQLDW"
 		},
 		"containerUri": {
 			"value": ""
