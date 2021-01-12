@@ -1,0 +1,42 @@
+{
+	"name": "Json1Zips",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "zips.json",
+				"folderPath": "SampleData",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"_id": {
+					"type": "string"
+				},
+				"city": {
+					"type": "string"
+				},
+				"loc": {
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				"pop": {
+					"type": "integer"
+				},
+				"state": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
