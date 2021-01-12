@@ -1,0 +1,36 @@
+{
+	"name": "Json1Movies",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "movies.json",
+				"folderPath": "SampleData/json",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"year": {
+					"type": "integer"
+				},
+				"cast": {
+					"type": "array"
+				},
+				"genres": {
+					"type": "array"
+				}
+			}
+		}
+	}
+}
