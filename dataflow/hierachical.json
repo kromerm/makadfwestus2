@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Json1Zips",
+						"referenceName": "Json1Radio",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -18,7 +18,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\t{_id} as string,\n\t\tcity as string,\n\t\tloc as double[],\n\t\tpop as string,\n\t\tstate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+			"script": "source(output(\n\t\tts as string,\n\t\tuserId as string,\n\t\tsessionId as string,\n\t\tpage as string,\n\t\tauth as string,\n\t\tmethod as string,\n\t\tstatus as string,\n\t\tlevel as string,\n\t\titemInSession as string,\n\t\tlocation as string,\n\t\tlastName as string,\n\t\tfirstName as string,\n\t\tregistration as string,\n\t\tgender as string,\n\t\tartist as string,\n\t\tsong as string,\n\t\tlength as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
