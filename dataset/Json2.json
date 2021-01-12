@@ -1,0 +1,1182 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "5G8S002ZF (003).json",
+				"folderPath": "SampleData/json",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"docType": {
+					"type": "string"
+				},
+				"pageRange": {
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				},
+				"fields": {
+					"type": "object",
+					"properties": {
+						"Court Date": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Color": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Birthday": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Evidence of Financial": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Owner Street": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Height": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Area": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Perm Area": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Dec Date": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Court Location": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Time of Violation": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Make": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Owner Address": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Violation 1": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Beat": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Eyes": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Race": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Citing Officer": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Court Phone & Web": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Case Number": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Body Style": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Violation 2": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Hair": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Driver License": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Date of Violation": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Sex": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Age": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Excuted at": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Registered Owner or Lessee": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"street": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Day of week of Violation": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Type": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Model": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Max Speed": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Weight": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Speed Approx": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Patrol Vehicle No": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Citing Officer ID No": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Location of Violation": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Year": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Name": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Court Time": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"address": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						},
+						"Vehicle Lic or Vin": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								},
+								"valueString": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"boundingBox": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"confidence": {
+									"type": "number"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
