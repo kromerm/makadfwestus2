@@ -1,0 +1,42 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "moviesCSV",
+						"type": "DatasetReference"
+					},
+					"name": "part"
+				},
+				{
+					"dataset": {
+						"referenceName": "moviesCSV",
+						"type": "DatasetReference"
+					},
+					"name": "partsupp"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "folderout",
+						"type": "DatasetReference"
+					},
+					"name": "csv1"
+				},
+				{
+					"name": "csv2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "innerjoin"
+				}
+			],
+			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> part\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> partsupp\npart, partsupp join(P_PARTKEY == PS_PARTKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> innerjoin\ninnerjoin sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> csv1\ninnerjoin sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> csv2"
+		}
+	}
+}
