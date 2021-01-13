@@ -25,6 +25,16 @@
 					"dataflow": {
 						"referenceName": "PowerQuery1",
 						"type": "DataFlowReference"
+					},
+					"sinks": {
+						"queryName": {
+							"name": "folderout",
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> folderout"
+						}
 					}
 				}
 			},
