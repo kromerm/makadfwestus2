@@ -1,9 +1,9 @@
 {
-	"name": "Send email",
+	"name": "Data Quality",
 	"properties": {
 		"activities": [
 			{
-				"name": "PowerQuery1",
+				"name": "Clean Addresses",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
@@ -91,7 +91,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "PowerQuery1",
+						"activity": "Clean Addresses",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -121,7 +121,7 @@
 				}
 			},
 			{
-				"name": "Web1",
+				"name": "Send Email",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
