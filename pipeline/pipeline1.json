@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SQLLoad",
+						"referenceName": "hierachical",
 						"type": "DataFlowReference"
 					},
 					"compute": {
