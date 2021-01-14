@@ -6,12 +6,585 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "makadfwestus2"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "SQLDB1"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "SQLDW"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/names100')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "90 Records.csv",
+						"folderPath": "SampleData/HR",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Emp ID",
+						"type": "String"
+					},
+					{
+						"name": "Name Prefix",
+						"type": "String"
+					},
+					{
+						"name": "First Name",
+						"type": "String"
+					},
+					{
+						"name": "Middle Initial",
+						"type": "String"
+					},
+					{
+						"name": "Last Name",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "E Mail",
+						"type": "String"
+					},
+					{
+						"name": "Father's Name",
+						"type": "String"
+					},
+					{
+						"name": "Mother's Name",
+						"type": "String"
+					},
+					{
+						"name": "Mother's Maiden Name",
+						"type": "String"
+					},
+					{
+						"name": "Date of Birth",
+						"type": "String"
+					},
+					{
+						"name": "Time of Birth",
+						"type": "String"
+					},
+					{
+						"name": "Age in Yrs.",
+						"type": "String"
+					},
+					{
+						"name": "Weight in Kgs.",
+						"type": "String"
+					},
+					{
+						"name": "Date of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Quarter of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Half of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Year of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Month of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Month Name of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Short Month",
+						"type": "String"
+					},
+					{
+						"name": "Day of Joining",
+						"type": "String"
+					},
+					{
+						"name": "DOW of Joining",
+						"type": "String"
+					},
+					{
+						"name": "Short DOW",
+						"type": "String"
+					},
+					{
+						"name": "Age in Company (Years)",
+						"type": "String"
+					},
+					{
+						"name": "Salary",
+						"type": "String"
+					},
+					{
+						"name": "Last % Hike",
+						"type": "String"
+					},
+					{
+						"name": "SSN",
+						"type": "String"
+					},
+					{
+						"name": "Phone No. ",
+						"type": "String"
+					},
+					{
+						"name": "Place Name",
+						"type": "String"
+					},
+					{
+						"name": "County",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "Zip",
+						"type": "String"
+					},
+					{
+						"name": "Region",
+						"type": "String"
+					},
+					{
+						"name": "User Name",
+						"type": "String"
+					},
+					{
+						"name": "Password",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoans')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "member_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "loan_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "term",
+						"type": "nvarchar"
+					},
+					{
+						"name": "int_rate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "installment",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sub_grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_length",
+						"type": "nvarchar"
+					},
+					{
+						"name": "home_ownership",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "verification_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "issue_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "loan_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pymnt_plan",
+						"type": "bit"
+					},
+					{
+						"name": "url",
+						"type": "nvarchar"
+					},
+					{
+						"name": "desc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "purpose",
+						"type": "nvarchar"
+					},
+					{
+						"name": "title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "zip_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "addr_state",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "delinq_2yrs",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "earliest_cr_line",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_6mths",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_record",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "open_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "pub_rec",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_bal",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_util",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "initial_list_status",
+						"type": "bit"
+					},
+					{
+						"name": "out_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "out_prncp_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_int",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_late_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "recoveries",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "collection_recovery_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "last_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_pymnt_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "next_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_credit_pull_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "collections_12_mths_ex_med",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_major_derog",
+						"type": "nvarchar"
+					},
+					{
+						"name": "policy_code",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "application_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "verification_status_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "acc_now_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "tot_coll_amt",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tot_cur_bal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_acc_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mths_since_rcnt_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_bal_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "il_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "max_bal_bc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "all_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_rev_hi_lim",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_fi",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_cu_tl",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_12m",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "loans"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoansNews')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -29,7 +602,9 @@
 					"table": "loansnew"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
@@ -48,7 +623,9 @@
 					"table": "loans"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DimEmp')]",
@@ -115,7 +692,9 @@
 					"tableName": "[[dbo].[DimEmp]"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/PowerQuery1')]",
@@ -195,7 +774,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Json2",
+								"referenceName": "Json3",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -203,15 +782,15 @@
 					],
 					"sinks": [
 						{
+							"dataset": {
+								"referenceName": "Parquet1Folder",
+								"type": "DatasetReference"
+							},
 							"name": "sink1"
 						}
 					],
-					"transformations": [
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "source(output(\n\t\tdocType as string,\n\t\tpageRange as string[],\n\t\tfields as ({Court Date} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Color} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Birthday as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Evidence of Financial} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Owner Street} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Height as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Area as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Perm Area} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Dec Date} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Court Location} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Time of Violation} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Make} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Owner Address} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Violation 1} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Beat as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Eyes as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Race as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Citing Officer} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Court Phone & Web} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Case Number} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Body Style} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Violation 2} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Hair as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Driver License} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Date of Violation} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Sex as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Age as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Excuted at} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Registered Owner or Lessee} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), street as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Day of week of Violation} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Type} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Model} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Max Speed} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Weight as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Speed Approx} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Patrol Vehicle No} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Citing Officer ID No} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Location of Violation} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Year} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), Name as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Court Time} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), address as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double), {Vehicle Lic or Vin} as (type as string, valueString as string, text as string, page as string, boundingBox as double[], confidence as double))\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 derive(column1 = byItem( byItem( byName('customer'), 'orderItems'), 'itemName')) ~> DerivedColumn1\nDerivedColumn1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+					"transformations": [],
+					"script": "source(output(\n\t\t{@context} as string,\n\t\t{_corrupt_record} as string,\n\t\taction as string,\n\t\tactor as (id as string, type as string),\n\t\tedApp as (id as string, type as string),\n\t\teventTime as string,\n\t\textensions as (distributor as ({@context} as string, id as string, type as string)),\n\t\tfederatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)),\n\t\tid as string,\n\t\tobject as (id as string, type as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'arrayOfDocuments') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -454,33 +1033,6 @@
 							"method": "POST",
 							"headers": {},
 							"body": "'process'"
-						}
-					},
-					{
-						"name": "Notebook1",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "DWStaging",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/home"
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks1",
-							"type": "LinkedServiceReference"
 						}
 					},
 					{
@@ -922,7 +1474,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableLoansNews')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable1')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableLoans')]"
 			]
 		},
 		{

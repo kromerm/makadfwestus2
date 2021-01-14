@@ -83,12 +83,6 @@
 					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -107,6 +101,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
