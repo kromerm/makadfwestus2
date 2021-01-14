@@ -1,0 +1,23 @@
+{
+	"name": "Json3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "activities_02072019_103118_000.caliper.json.gz",
+				"folderPath": "SampleData/json",
+				"container": "mycontainer"
+			},
+			"compression": {
+				"type": "gzip"
+			}
+		},
+		"schema": {}
+	}
+}
