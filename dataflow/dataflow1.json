@@ -22,11 +22,18 @@
 			"sinks": [
 				{
 					"name": "CachedSink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "folderout",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
 				}
 			],
 			"transformations": [
 				{
-					"name": "DerivedColumn2"
+					"name": "genHash1"
 				},
 				{
 					"name": "SelectCols"
@@ -38,13 +45,13 @@
 					"name": "SelectCols1"
 				},
 				{
-					"name": "DerivedColumn3"
+					"name": "genHash"
 				},
 				{
 					"name": "CachedLookup"
 				}
 			],
-			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nSelectCols derive(myhash = sha2(256, columns())) ~> DerivedColumn2\nsource1 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols\nsource1, DerivedColumn2 join(source1@RottenTomato == SelectCols@RottenTomato\n\t&& source1@Rating == SelectCols@Rating\n\t&& source1@year == SelectCols@year,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nsource3 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols1\nSelectCols1 derive(myhash1 = sha2(256,columns())) ~> DerivedColumn3\nJoin1 derive(fingerprint = CachedSink1#lookup(source1@year,source1@Rating,source1@RottenTomato)) ~> CachedLookup\nDerivedColumn3 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['year','Rating','RottenTomato'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> CachedSink1"
+			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nSelectCols derive(myhash = sha2(256, columns())) ~> genHash1\nsource1 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols\nCachedLookup, genHash1 join(source1@RottenTomato == SelectCols@RottenTomato\n\t&& source1@Rating == SelectCols@Rating\n\t&& source1@year == SelectCols@year,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nsource3 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols1\nSelectCols1 derive(myhash1 = sha2(256,columns())) ~> genHash\nsource1 derive(myhash1 = CachedSink1#lookup(year,Rating,RottenTomato)) ~> CachedLookup\ngenHash sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['year','Rating','RottenTomato'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> CachedSink1\nJoin1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1"
 		}
 	}
 }
