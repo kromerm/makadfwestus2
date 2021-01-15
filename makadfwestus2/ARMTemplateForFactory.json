@@ -555,6 +555,51 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"source3": {},
+									"CachedSink1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoans')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1069,6 +1114,32 @@
 						"type": "String"
 					}
 				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "currencysales1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "currencysales.xlsx",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					}
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -2916,6 +2987,113 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Json4folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output/json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"@CustomerID": {
+							"type": "string"
+						},
+						"AW:CompanyName": {
+							"type": "string"
+						},
+						"AW:ContactName": {
+							"type": "string"
+						},
+						"AW:ContactTitle": {
+							"type": "string"
+						},
+						"AW:FullAddress": {
+							"type": "object",
+							"properties": {
+								"AW:Address": {
+									"type": "string"
+								},
+								"AW:City": {
+									"type": "string"
+								},
+								"AW:Country": {
+									"type": "string"
+								},
+								"AW:PostalCode": {
+									"type": "integer"
+								},
+								"AW:Region": {
+									"type": "string"
+								}
+							}
+						},
+						"AW:Phone": {
+							"type": "string"
+						},
+						"AW:CustomerID": {
+							"type": "string"
+						},
+						"AW:EmployeeID": {
+							"type": "integer"
+						},
+						"AW:OrderDate": {
+							"type": "string"
+						},
+						"AW:RequiredDate": {
+							"type": "string"
+						},
+						"AW:ShipInfo": {
+							"type": "object",
+							"properties": {
+								"@ShippedDate": {
+									"type": "string"
+								},
+								"AW:Freight": {
+									"type": "number"
+								},
+								"AW:ShipAddress": {
+									"type": "string"
+								},
+								"AW:ShipCity": {
+									"type": "string"
+								},
+								"AW:ShipCountry": {
+									"type": "string"
+								},
+								"AW:ShipName": {
+									"type": "string"
+								},
+								"AW:ShipPostalCode": {
+									"type": "integer"
+								},
+								"AW:ShipRegion": {
+									"type": "string"
+								},
+								"AW:ShipVia": {
+									"type": "integer"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3740,6 +3918,40 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CDM')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: 'CDMfolders',\n\tfileSystem: 'mycontainer') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PowerQuery1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -3758,6 +3970,31 @@
 					],
 					"sinks": [],
 					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV,\r\n  #\"Sorted rows\" = Table.Sort(Source, {{\"year\", Order.Descending}})\r\nin\r\n  #\"Sorted rows\";\r\n"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "moviesCSV",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"sinks": [],
+					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
 				}
 			},
 			"dependsOn": [
@@ -3934,7 +4171,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/parquet')]",
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3943,7 +4180,70 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Parquet1",
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						}
+					],
+					"sinks": [
+						{
+							"name": "CachedSink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "Json4folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "genHash1"
+						},
+						{
+							"name": "SelectCols"
+						},
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "SelectCols1"
+						},
+						{
+							"name": "genHash"
+						},
+						{
+							"name": "CachedLookup"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nSelectCols derive(myhash = sha2(256, columns())) ~> genHash1\nsource1 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols\nCachedLookup, genHash1 join(source1@RottenTomato == SelectCols@RottenTomato\n\t&& source1@Rating == SelectCols@Rating\n\t&& source1@year == SelectCols@year,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nsource3 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols1\nSelectCols1 derive(myhash1 = sha2(256,columns())) ~> genHash\nsource1 derive(myhash1 = CachedSink1#lookup(year,Rating,RottenTomato)) ~> CachedLookup\ngenHash sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['year','Rating','RottenTomato'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> CachedSink1\nJoin1 sink(input(\n\t\t{@CustomerID} as string,\n\t\t{AW:CompanyName} as string,\n\t\t{AW:ContactName} as string,\n\t\t{AW:ContactTitle} as string,\n\t\t{AW:FullAddress} as ({AW:Address} as string, {AW:City} as string, {AW:Country} as string, {AW:PostalCode} as string, {AW:Region} as string),\n\t\t{AW:Phone} as string,\n\t\t{AW:CustomerID} as string,\n\t\t{AW:EmployeeID} as string,\n\t\t{AW:OrderDate} as string,\n\t\t{AW:RequiredDate} as string,\n\t\t{AW:ShipInfo} as ({@ShippedDate} as string, {AW:Freight} as double, {AW:ShipAddress} as string, {AW:ShipCity} as string, {AW:ShipCountry} as string, {AW:ShipName} as string, {AW:ShipPostalCode} as string, {AW:ShipRegion} as string, {AW:ShipVia} as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]",
+				"[concat(variables('factoryId'), '/datasets/Json4folder')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/hierachical')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json3",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -3958,12 +4258,19 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [],
-					"script": "source(output(\n\t\t{@context} as string,\n\t\t{_corrupt_record} as string,\n\t\taction as string,\n\t\tactor as (id as string, type as string),\n\t\tedApp as (id as string, type as string),\n\t\teventTime as string,\n\t\textensions as (distributor as ({@context} as string, id as string, type as string)),\n\t\tfederatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)),\n\t\tid as string,\n\t\tobject as (id as string, type as string),\n\t\ttype as string,\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as string, alternate_return_url as string, b2launch as string, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as string, bookmeta_vbid as string, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as string, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as string, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as string, is_adopted as string, is_ref_only as string, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as string, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as string, publisher_urn as string, raw_roles as string, resolved_course as string, resource_link_id as string, result_message as string, result_message_key as string, result_status as string, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as string, tenant_user_access_token as string, tenant_user_id as string, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as string, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"transformations": [
+						{
+							"name": "Flatten1"
+						},
+						{
+							"name": "Select1"
+						}
+					],
+					"script": "source(output(\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as boolean, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(data),\n\tmapColumn(\n\t\t{@context} = data.{@context},\n\t\taction = data.action,\n\t\tactor = data.actor,\n\t\tedApp = data.edApp,\n\t\teventTime = data.eventTime,\n\t\textensions = data.extensions,\n\t\tfederatedSession = data.federatedSession,\n\t\tgenerated = data.generated,\n\t\tgroup = data.group,\n\t\tid = data.id,\n\t\tobject = data.object,\n\t\tsearchTerm = data.searchTerm,\n\t\tsession = data.session,\n\t\ttarget = data.target,\n\t\ttype = data.type,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 select(mapColumn(\n\t\t{@context},\n\t\taction,\n\t\tactor,\n\t\tedApp,\n\t\teventTime,\n\t\textensions,\n\t\tfederatedSession,\n\t\tgenerated,\n\t\tgroup,\n\t\tid,\n\t\tobject,\n\t\tsearchTerm,\n\t\tsession,\n\t\ttarget,\n\t\ttype,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Parquet1')]",
+				"[concat(variables('factoryId'), '/datasets/Json3')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet1Folder')]"
 			]
 		},
@@ -4073,132 +4380,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CDM')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: 'CDMfolders',\n\tfileSystem: 'mycontainer') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
-				"[concat(variables('factoryId'), '/datasets/folderout')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"sinks": [],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Json3",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "folderout",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Json3')]",
-				"[concat(variables('factoryId'), '/datasets/folderout')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/hierachical')]",
+			"name": "[concat(parameters('factoryName'), '/parquet')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -4207,7 +4389,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Json3",
+								"referenceName": "Parquet1",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -4222,19 +4404,12 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [
-						{
-							"name": "Flatten1"
-						},
-						{
-							"name": "Select1"
-						}
-					],
-					"script": "source(output(\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as boolean, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(data),\n\tmapColumn(\n\t\t{@context} = data.{@context},\n\t\taction = data.action,\n\t\tactor = data.actor,\n\t\tedApp = data.edApp,\n\t\teventTime = data.eventTime,\n\t\textensions = data.extensions,\n\t\tfederatedSession = data.federatedSession,\n\t\tgenerated = data.generated,\n\t\tgroup = data.group,\n\t\tid = data.id,\n\t\tobject = data.object,\n\t\tsearchTerm = data.searchTerm,\n\t\tsession = data.session,\n\t\ttarget = data.target,\n\t\ttype = data.type,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 select(mapColumn(\n\t\t{@context},\n\t\taction,\n\t\tactor,\n\t\tedApp,\n\t\teventTime,\n\t\textensions,\n\t\tfederatedSession,\n\t\tgenerated,\n\t\tgroup,\n\t\tid,\n\t\tobject,\n\t\tsearchTerm,\n\t\tsession,\n\t\ttarget,\n\t\ttype,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+					"transformations": [],
+					"script": "source(output(\n\t\t{@context} as string,\n\t\t{_corrupt_record} as string,\n\t\taction as string,\n\t\tactor as (id as string, type as string),\n\t\tedApp as (id as string, type as string),\n\t\teventTime as string,\n\t\textensions as (distributor as ({@context} as string, id as string, type as string)),\n\t\tfederatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)),\n\t\tid as string,\n\t\tobject as (id as string, type as string),\n\t\ttype as string,\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as string, alternate_return_url as string, b2launch as string, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as string, bookmeta_vbid as string, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as string, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as string, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as string, is_adopted as string, is_ref_only as string, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as string, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as string, publisher_urn as string, raw_roles as string, resolved_course as string, resource_link_id as string, result_message as string, result_message_key as string, result_status as string, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as string, tenant_user_access_token as string, tenant_user_id as string, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as string, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Json3')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet1')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet1Folder')]"
 			]
 		}

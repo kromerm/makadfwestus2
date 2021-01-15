@@ -1,0 +1,244 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "currencysales1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "currencysales.xlsx",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json4folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output/json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"@CustomerID": {
+							"type": "string"
+						},
+						"AW:CompanyName": {
+							"type": "string"
+						},
+						"AW:ContactName": {
+							"type": "string"
+						},
+						"AW:ContactTitle": {
+							"type": "string"
+						},
+						"AW:FullAddress": {
+							"type": "object",
+							"properties": {
+								"AW:Address": {
+									"type": "string"
+								},
+								"AW:City": {
+									"type": "string"
+								},
+								"AW:Country": {
+									"type": "string"
+								},
+								"AW:PostalCode": {
+									"type": "integer"
+								},
+								"AW:Region": {
+									"type": "string"
+								}
+							}
+						},
+						"AW:Phone": {
+							"type": "string"
+						},
+						"AW:CustomerID": {
+							"type": "string"
+						},
+						"AW:EmployeeID": {
+							"type": "integer"
+						},
+						"AW:OrderDate": {
+							"type": "string"
+						},
+						"AW:RequiredDate": {
+							"type": "string"
+						},
+						"AW:ShipInfo": {
+							"type": "object",
+							"properties": {
+								"@ShippedDate": {
+									"type": "string"
+								},
+								"AW:Freight": {
+									"type": "number"
+								},
+								"AW:ShipAddress": {
+									"type": "string"
+								},
+								"AW:ShipCity": {
+									"type": "string"
+								},
+								"AW:ShipCountry": {
+									"type": "string"
+								},
+								"AW:ShipName": {
+									"type": "string"
+								},
+								"AW:ShipPostalCode": {
+									"type": "integer"
+								},
+								"AW:ShipRegion": {
+									"type": "string"
+								},
+								"AW:ShipVia": {
+									"type": "integer"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						}
+					],
+					"sinks": [
+						{
+							"name": "CachedSink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "Json4folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "genHash1"
+						},
+						{
+							"name": "SelectCols"
+						},
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "SelectCols1"
+						},
+						{
+							"name": "genHash"
+						},
+						{
+							"name": "CachedLookup"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nSelectCols derive(myhash = sha2(256, columns())) ~> genHash1\nsource1 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols\nCachedLookup, genHash1 join(source1@RottenTomato == SelectCols@RottenTomato\n\t&& source1@Rating == SelectCols@Rating\n\t&& source1@year == SelectCols@year,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nsource3 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols1\nSelectCols1 derive(myhash1 = sha2(256,columns())) ~> genHash\nsource1 derive(myhash1 = CachedSink1#lookup(year,Rating,RottenTomato)) ~> CachedLookup\ngenHash sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['year','Rating','RottenTomato'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> CachedSink1\nJoin1 sink(input(\n\t\t{@CustomerID} as string,\n\t\t{AW:CompanyName} as string,\n\t\t{AW:ContactName} as string,\n\t\t{AW:ContactTitle} as string,\n\t\t{AW:FullAddress} as ({AW:Address} as string, {AW:City} as string, {AW:Country} as string, {AW:PostalCode} as string, {AW:Region} as string),\n\t\t{AW:Phone} as string,\n\t\t{AW:CustomerID} as string,\n\t\t{AW:EmployeeID} as string,\n\t\t{AW:OrderDate} as string,\n\t\t{AW:RequiredDate} as string,\n\t\t{AW:ShipInfo} as ({@ShippedDate} as string, {AW:Freight} as double, {AW:ShipAddress} as string, {AW:ShipCity} as string, {AW:ShipCountry} as string, {AW:ShipName} as string, {AW:ShipPostalCode} as string, {AW:ShipRegion} as string, {AW:ShipVia} as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json4folder')]"
+			]
+		}
+	]
+}

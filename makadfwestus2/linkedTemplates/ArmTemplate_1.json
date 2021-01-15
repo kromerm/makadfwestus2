@@ -21,6 +21,355 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/folderout')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output/demoout1",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/loans')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "loan.csv",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "member_id",
+						"type": "String"
+					},
+					{
+						"name": "loan_amnt",
+						"type": "String"
+					},
+					{
+						"name": "funded_amnt",
+						"type": "String"
+					},
+					{
+						"name": "funded_amnt_inv",
+						"type": "String"
+					},
+					{
+						"name": "term",
+						"type": "String"
+					},
+					{
+						"name": "int_rate",
+						"type": "String"
+					},
+					{
+						"name": "installment",
+						"type": "String"
+					},
+					{
+						"name": "grade",
+						"type": "String"
+					},
+					{
+						"name": "sub_grade",
+						"type": "String"
+					},
+					{
+						"name": "emp_title",
+						"type": "String"
+					},
+					{
+						"name": "emp_length",
+						"type": "String"
+					},
+					{
+						"name": "home_ownership",
+						"type": "String"
+					},
+					{
+						"name": "annual_inc",
+						"type": "String"
+					},
+					{
+						"name": "verification_status",
+						"type": "String"
+					},
+					{
+						"name": "issue_d",
+						"type": "String"
+					},
+					{
+						"name": "loan_status",
+						"type": "String"
+					},
+					{
+						"name": "pymnt_plan",
+						"type": "String"
+					},
+					{
+						"name": "url",
+						"type": "String"
+					},
+					{
+						"name": "desc",
+						"type": "String"
+					},
+					{
+						"name": "purpose",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "zip_code",
+						"type": "String"
+					},
+					{
+						"name": "addr_state",
+						"type": "String"
+					},
+					{
+						"name": "dti",
+						"type": "String"
+					},
+					{
+						"name": "delinq_2yrs",
+						"type": "String"
+					},
+					{
+						"name": "earliest_cr_line",
+						"type": "String"
+					},
+					{
+						"name": "inq_last_6mths",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_delinq",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_record",
+						"type": "String"
+					},
+					{
+						"name": "open_acc",
+						"type": "String"
+					},
+					{
+						"name": "pub_rec",
+						"type": "String"
+					},
+					{
+						"name": "revol_bal",
+						"type": "String"
+					},
+					{
+						"name": "revol_util",
+						"type": "String"
+					},
+					{
+						"name": "total_acc",
+						"type": "String"
+					},
+					{
+						"name": "initial_list_status",
+						"type": "String"
+					},
+					{
+						"name": "out_prncp",
+						"type": "String"
+					},
+					{
+						"name": "out_prncp_inv",
+						"type": "String"
+					},
+					{
+						"name": "total_pymnt",
+						"type": "String"
+					},
+					{
+						"name": "total_pymnt_inv",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_prncp",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_int",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_late_fee",
+						"type": "String"
+					},
+					{
+						"name": "recoveries",
+						"type": "String"
+					},
+					{
+						"name": "collection_recovery_fee",
+						"type": "String"
+					},
+					{
+						"name": "last_pymnt_d",
+						"type": "String"
+					},
+					{
+						"name": "last_pymnt_amnt",
+						"type": "String"
+					},
+					{
+						"name": "next_pymnt_d",
+						"type": "String"
+					},
+					{
+						"name": "last_credit_pull_d",
+						"type": "String"
+					},
+					{
+						"name": "collections_12_mths_ex_med",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_major_derog",
+						"type": "String"
+					},
+					{
+						"name": "policy_code",
+						"type": "String"
+					},
+					{
+						"name": "application_type",
+						"type": "String"
+					},
+					{
+						"name": "annual_inc_joint",
+						"type": "String"
+					},
+					{
+						"name": "dti_joint",
+						"type": "String"
+					},
+					{
+						"name": "verification_status_joint",
+						"type": "String"
+					},
+					{
+						"name": "acc_now_delinq",
+						"type": "String"
+					},
+					{
+						"name": "tot_coll_amt",
+						"type": "String"
+					},
+					{
+						"name": "tot_cur_bal",
+						"type": "String"
+					},
+					{
+						"name": "open_acc_6m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_6m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_12m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_24m",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_rcnt_il",
+						"type": "String"
+					},
+					{
+						"name": "total_bal_il",
+						"type": "String"
+					},
+					{
+						"name": "il_util",
+						"type": "String"
+					},
+					{
+						"name": "open_rv_12m",
+						"type": "String"
+					},
+					{
+						"name": "open_rv_24m",
+						"type": "String"
+					},
+					{
+						"name": "max_bal_bc",
+						"type": "String"
+					},
+					{
+						"name": "all_util",
+						"type": "String"
+					},
+					{
+						"name": "total_rev_hi_lim",
+						"type": "String"
+					},
+					{
+						"name": "inq_fi",
+						"type": "String"
+					},
+					{
+						"name": "total_cu_tl",
+						"type": "String"
+					},
+					{
+						"name": "inq_last_12m",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/moviesCSV')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -749,6 +1098,39 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CDM')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: 'CDMfolders',\n\tfileSystem: 'mycontainer') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PowerQuery1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -767,6 +1149,31 @@
 					],
 					"sinks": [],
 					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV,\r\n  #\"Sorted rows\" = Table.Sort(Source, {{\"year\", Order.Descending}})\r\nin\r\n  #\"Sorted rows\";\r\n"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "moviesCSV",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"sinks": [],
+					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
 				}
 			},
 			"dependsOn": [
@@ -817,11 +1224,12 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]",
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/parquet')]",
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -830,7 +1238,69 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Parquet1",
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						}
+					],
+					"sinks": [
+						{
+							"name": "CachedSink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "Json4folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "genHash1"
+						},
+						{
+							"name": "SelectCols"
+						},
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "SelectCols1"
+						},
+						{
+							"name": "genHash"
+						},
+						{
+							"name": "CachedLookup"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nSelectCols derive(myhash = sha2(256, columns())) ~> genHash1\nsource1 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols\nCachedLookup, genHash1 join(source1@RottenTomato == SelectCols@RottenTomato\n\t&& source1@Rating == SelectCols@Rating\n\t&& source1@year == SelectCols@year,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nsource3 select(mapColumn(\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCols1\nSelectCols1 derive(myhash1 = sha2(256,columns())) ~> genHash\nsource1 derive(myhash1 = CachedSink1#lookup(year,Rating,RottenTomato)) ~> CachedLookup\ngenHash sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['year','Rating','RottenTomato'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> CachedSink1\nJoin1 sink(input(\n\t\t{@CustomerID} as string,\n\t\t{AW:CompanyName} as string,\n\t\t{AW:ContactName} as string,\n\t\t{AW:ContactTitle} as string,\n\t\t{AW:FullAddress} as ({AW:Address} as string, {AW:City} as string, {AW:Country} as string, {AW:PostalCode} as string, {AW:Region} as string),\n\t\t{AW:Phone} as string,\n\t\t{AW:CustomerID} as string,\n\t\t{AW:EmployeeID} as string,\n\t\t{AW:OrderDate} as string,\n\t\t{AW:RequiredDate} as string,\n\t\t{AW:ShipInfo} as ({@ShippedDate} as string, {AW:Freight} as double, {AW:ShipAddress} as string, {AW:ShipCity} as string, {AW:ShipCountry} as string, {AW:ShipName} as string, {AW:ShipPostalCode} as string, {AW:ShipRegion} as string, {AW:ShipVia} as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/hierachical')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json3",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -845,8 +1315,15 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [],
-					"script": "source(output(\n\t\t{@context} as string,\n\t\t{_corrupt_record} as string,\n\t\taction as string,\n\t\tactor as (id as string, type as string),\n\t\tedApp as (id as string, type as string),\n\t\teventTime as string,\n\t\textensions as (distributor as ({@context} as string, id as string, type as string)),\n\t\tfederatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)),\n\t\tid as string,\n\t\tobject as (id as string, type as string),\n\t\ttype as string,\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as string, alternate_return_url as string, b2launch as string, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as string, bookmeta_vbid as string, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as string, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as string, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as string, is_adopted as string, is_ref_only as string, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as string, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as string, publisher_urn as string, raw_roles as string, resolved_course as string, resource_link_id as string, result_message as string, result_message_key as string, result_status as string, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as string, tenant_user_access_token as string, tenant_user_id as string, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as string, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"transformations": [
+						{
+							"name": "Flatten1"
+						},
+						{
+							"name": "Select1"
+						}
+					],
+					"script": "source(output(\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as boolean, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(data),\n\tmapColumn(\n\t\t{@context} = data.{@context},\n\t\taction = data.action,\n\t\tactor = data.actor,\n\t\tedApp = data.edApp,\n\t\teventTime = data.eventTime,\n\t\textensions = data.extensions,\n\t\tfederatedSession = data.federatedSession,\n\t\tgenerated = data.generated,\n\t\tgroup = data.group,\n\t\tid = data.id,\n\t\tobject = data.object,\n\t\tsearchTerm = data.searchTerm,\n\t\tsession = data.session,\n\t\ttarget = data.target,\n\t\ttype = data.type,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 select(mapColumn(\n\t\t{@context},\n\t\taction,\n\t\tactor,\n\t\tedApp,\n\t\teventTime,\n\t\textensions,\n\t\tfederatedSession,\n\t\tgenerated,\n\t\tgroup,\n\t\tid,\n\t\tobject,\n\t\tsearchTerm,\n\t\tsession,\n\t\ttarget,\n\t\ttype,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -910,7 +1387,10 @@
 					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1 derive(member_id = toInteger(null()),\n\t\temp_title = sha2(256,emp_title,'mysalt'),\n\t\tlocal1 := 'abc',\n\t\tlocal2 := '123') ~> MaskingPII\nsource2 aggregate(funded_amnt_stddev = round(stddev(funded_amnt),2),\n\t\tfunded_amnt_avg = round(avg(funded_amnt),2),\n\t\trowcounts = count(1)) ~> Aggregate1\nCachedLookups split(instr(term,'36') != 0,\n\tdisjoint: false) ~> Terms@(term36, otherTerm)\nMaskingPII derive(rowCounts = cachedSink#output().rowcounts,\n\t\tfundedAmntStddev = cachedSink#output().funded_amnt_stddev,\n\t\tfundedAmntAvg = cachedSink#outputs().funded_amnt_avg) ~> CachedLookups\nTerms@term36 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['loans1.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nTerms@otherTerm sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['loans2.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2\nAggregate1 sink(mapColumn(\n\t\tfunded_amnt_stddev,\n\t\tfunded_amnt_avg,\n\t\trowcounts\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> cachedSink"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/loans')]",
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/map')]",
@@ -949,130 +1429,12 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
+				"[concat(variables('factoryId'), '/datasets/moviesCSV')]",
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CDM')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: 'CDMfolders',\n\tfileSystem: 'mycontainer') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"sinks": [],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/moviesCSV')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Json3",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "folderout",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/hierachical')]",
+			"name": "[concat(parameters('factoryName'), '/parquet')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1081,7 +1443,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Json3",
+								"referenceName": "Parquet1",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -1096,15 +1458,8 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [
-						{
-							"name": "Flatten1"
-						},
-						{
-							"name": "Select1"
-						}
-					],
-					"script": "source(output(\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as boolean, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(data),\n\tmapColumn(\n\t\t{@context} = data.{@context},\n\t\taction = data.action,\n\t\tactor = data.actor,\n\t\tedApp = data.edApp,\n\t\teventTime = data.eventTime,\n\t\textensions = data.extensions,\n\t\tfederatedSession = data.federatedSession,\n\t\tgenerated = data.generated,\n\t\tgroup = data.group,\n\t\tid = data.id,\n\t\tobject = data.object,\n\t\tsearchTerm = data.searchTerm,\n\t\tsession = data.session,\n\t\ttarget = data.target,\n\t\ttype = data.type,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 select(mapColumn(\n\t\t{@context},\n\t\taction,\n\t\tactor,\n\t\tedApp,\n\t\teventTime,\n\t\textensions,\n\t\tfederatedSession,\n\t\tgenerated,\n\t\tgroup,\n\t\tid,\n\t\tobject,\n\t\tsearchTerm,\n\t\tsession,\n\t\ttarget,\n\t\ttype,\n\t\tdataVersion,\n\t\tsendTime,\n\t\tsensor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+					"transformations": [],
+					"script": "source(output(\n\t\t{@context} as string,\n\t\t{_corrupt_record} as string,\n\t\taction as string,\n\t\tactor as (id as string, type as string),\n\t\tedApp as (id as string, type as string),\n\t\teventTime as string,\n\t\textensions as (distributor as ({@context} as string, id as string, type as string)),\n\t\tfederatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as boolean, alternate_return_url as string, b2launch as boolean, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as integer, bookmeta_vbid as long, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as boolean, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as short, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as boolean, is_adopted as boolean, is_ref_only as boolean, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as boolean, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as short, publisher_urn as long, raw_roles as string, resolved_course as integer, resource_link_id as string, result_message as string, result_message_key as string, result_status as short, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as integer, tenant_user_access_token as string, tenant_user_id as integer, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)),\n\t\tid as string,\n\t\tobject as (id as string, type as string),\n\t\ttype as string,\n\t\tdata as ({@context} as string, action as string, actor as ({@context} as string, id as string, type as string), edApp as ({@context} as string, id as string, type as string), eventTime as string, extensions as (distributor as ({@context} as string, id as string, type as string)), federatedSession as (dateCreated as string, id as string, messageParameters as (TC_agreed as string, alternate_return_url as string, b2launch as string, base_url as string, book_kind as string, book_location as string, book_type as string, bookmeta_id as string, bookmeta_vbid as string, context_id as string, context_label as string, context_title as string, course as string, custom_action as string, custom_caliper_federated_session_id as string, custom_caliper_profile_url as string, custom_error_url as string, custom_mobile_device_launch as string, custom_parent_context_id as string, custom_position as string, custom_resource_id as string, custom_tc_profile_url as string, custom_tool_consumer_application as string, custom_tool_consumer_course_id as string, custom_tool_consumer_instance_guid as string, custom_tool_consumer_instance_name as string, custom_tool_consumer_multi_institution_type as string, custom_tool_consumer_multi_institution_value as string, custom_tool_consumer_plugin_version as string, custom_tool_consumer_time_zone as string, custom_tool_consumer_user_id as string, custom_tool_consumer_user_mobile_lauch_setting as string, custom_tool_consumer_user_pc_launch_setting as string, custom_tool_consumer_vendor as string, custom_tool_consumer_version as string, ext_launch_id as string, ext_launch_presentation_css_url as string, ext_lms as string, first_name as string, full_name as string, is_TC as string, is_adopted as string, is_ref_only as string, last_name as string, launch_class as string, launch_presentation_document_target as string, launch_presentation_locale as string, launch_presentation_return_url as string, launch_return as string, lis_person_sourcedid as string, location as string, lti_message_type as string, lti_sequence_ident as string, lti_version as string, pay_term as string, publisher_id as string, publisher_urn as string, raw_roles as string, resolved_course as string, resource_link_id as string, result_message as string, result_message_key as string, result_status as string, roles as string, service_path as string, sku as string, strategy as string, tactic as string, tenant_id as string, tenant_user_access_token as string, tenant_user_id as string, tool_consumer_instance_contact_email as string, tool_consumer_instance_description as string, tool_consumer_instance_guid as string, tool_consumer_instance_name as string, user_id as string, vbid as string), startedAtTime as string, type as string, user as (id as string, type as string)), generated as (annotated as (id as string, isPartOf as (id as string, type as string), name as string, type as string), annotator as (id as string, type as string), dateCreated as string, id as string, type as string), group as (id as string, type as string), id as string, object as string, searchTerm as string, session as ({@context} as string, id as string, type as string), target as (id as string, index as string, isPartOf as (id as string, type as string), name as string, type as string), type as string)[],\n\t\tdataVersion as string,\n\t\tsendTime as string,\n\t\tsensor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -1391,230 +1746,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/loans')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Data Quality')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Clean Addresses",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "Ingest to Lake",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "PowerQuery1",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"moviesCSV": {}
-								}
-							},
-							"staging": {},
-							"sinks": {
-								"queryName": {
-									"name": "folderout",
-									"dataset": {
-										"referenceName": "folderout",
-										"type": "DatasetReference"
-									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> folderout"
-								}
-							}
-						}
-					},
-					{
-						"name": "Ingest to Lake",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "folderout",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Dedupe",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Clean Addresses",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "RowCounts",
-								"type": "DataFlowReference",
-								"parameters": {
-									"logger": "false()"
-								},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {},
-									"LogRowCounts": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Send Email",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Dedupe",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "http://www.yahoo.com",
-							"method": "GET",
-							"headers": {}
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/PowerQuery1')]",
-				"[concat(variables('factoryId'), '/datasets/moviesCSV')]",
-				"[concat(variables('factoryId'), '/dataflows/RowCounts')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "hierachical",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "None"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/hierachical')]"
+				"[concat(variables('factoryId'), '/dataflows/loans')]",
+				"[concat(variables('factoryId'), '/datasets/loans')]"
 			]
 		}
 	]
