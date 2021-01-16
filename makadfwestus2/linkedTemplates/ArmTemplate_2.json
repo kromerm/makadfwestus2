@@ -208,14 +208,15 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow1",
+								"referenceName": "loans",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"source1": {},
-									"source3": {},
-									"CachedSink1": {},
-									"sink1": {}
+									"source2": {},
+									"sink1": {},
+									"sink2": {},
+									"cachedSink": {}
 								}
 							},
 							"staging": {},
@@ -251,12 +252,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow1",
+								"referenceName": "row fingerprints",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"source1": {},
 									"source3": {},
+									"source4": {},
 									"CachedSink1": {},
 									"sink1": {}
 								}
