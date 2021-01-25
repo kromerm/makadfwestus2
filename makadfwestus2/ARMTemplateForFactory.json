@@ -769,7 +769,11 @@
 									"Sink1": {}
 								}
 							},
-							"staging": {}
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime1",
+								"type": "IntegrationRuntimeReference"
+							}
 						}
 					},
 					{
@@ -847,28 +851,18 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "GenericSCDType2",
+								"referenceName": "SQLLoad",
 								"type": "DataFlowReference",
-								"parameters": {
-									"PrimaryKey": "'ID'",
-									"Columns": "'Player,Team,Salary'"
-								},
+								"parameters": {},
 								"datasetParameters": {
-									"GenericInput": {
-										"Folder": "mystuff"
-									},
-									"ExistingDimensionTable": {
-										"Table": "laons"
-									},
-									"DimensionTableSink": {
-										"Table": "dimloans"
-									}
+									"source1": {},
+									"sink1": {}
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime1",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -878,9 +872,10 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/LoansDataWrangling')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableLoans')]",
 				"[concat(variables('factoryId'), '/datasets/folderout')]",
-				"[concat(variables('factoryId'), '/dataflows/GenericSCDType2')]"
+				"[concat(variables('factoryId'), '/dataflows/SQLLoad')]"
 			]
 		},
 		{
