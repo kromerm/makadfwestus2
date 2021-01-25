@@ -1,0 +1,8 @@
+{
+	"name": "SapEccResource1",
+	"properties": {
+		"annotations": [],
+		"type": "SapEccResource",
+		"schema": []
+	}
+}
