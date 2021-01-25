@@ -25,6 +25,10 @@
 					"dataflow": {
 						"referenceName": "LoansDataWrangling",
 						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "integrationRuntime1",
+						"type": "IntegrationRuntimeReference"
 					}
 				}
 			},
@@ -101,27 +105,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "GenericSCDType2",
-						"type": "DataFlowReference",
-						"parameters": {
-							"PrimaryKey": "'ID'",
-							"Columns": "'Player,Team,Salary'"
-						},
-						"datasetParameters": {
-							"GenericInput": {
-								"Folder": "mystuff"
-							},
-							"ExistingDimensionTable": {
-								"Table": "laons"
-							},
-							"DimensionTableSink": {
-								"Table": "dimloans"
-							}
-						}
+						"referenceName": "SQLLoad",
+						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "integrationRuntime1",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
