@@ -92,8 +92,23 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SQLUpdate",
-						"type": "DataFlowReference"
+						"referenceName": "GenericSCDType2",
+						"type": "DataFlowReference",
+						"parameters": {
+							"PrimaryKey": "'ID'",
+							"Columns": "'Player,Team,Salary'"
+						},
+						"datasetParameters": {
+							"GenericInput": {
+								"Folder": "mystuff"
+							},
+							"ExistingDimensionTable": {
+								"Table": "laons"
+							},
+							"DimensionTableSink": {
+								"Table": "dimloans"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
