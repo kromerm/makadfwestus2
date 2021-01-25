@@ -42,9 +42,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "SapEccSource",
+						"httpRequestTimeout": "00:05:00"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -57,19 +56,11 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlTableLoans",
+						"referenceName": "SapEccResource1",
 						"type": "DatasetReference"
 					}
 				],
@@ -101,7 +92,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "loans",
+						"referenceName": "SQLUpdate",
 						"type": "DataFlowReference"
 					},
 					"compute": {
