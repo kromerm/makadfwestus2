@@ -105,8 +105,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SQLLoad",
-						"type": "DataFlowReference"
+						"referenceName": "GenericSCDType2",
+						"type": "DataFlowReference",
+						"parameters": {
+							"PrimaryKey": "'ID'",
+							"Columns": "'Player,Team,Salary'"
+						}
 					},
 					"integrationRuntime": {
 						"referenceName": "integrationRuntime1",
