@@ -829,43 +829,6 @@
 								"parameters": {}
 							}
 						]
-					},
-					{
-						"name": "Load into DW",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Loans Data Prep",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "SQLLoad",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime1",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "Fine"
-						}
 					}
 				],
 				"annotations": []
@@ -874,8 +837,7 @@
 				"[concat(variables('factoryId'), '/dataflows/LoansDataWrangling')]",
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableLoans')]",
-				"[concat(variables('factoryId'), '/datasets/folderout')]",
-				"[concat(variables('factoryId'), '/dataflows/SQLLoad')]"
+				"[concat(variables('factoryId'), '/datasets/folderout')]"
 			]
 		},
 		{
