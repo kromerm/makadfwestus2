@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "row fingerprints",
+						"referenceName": "SQLLoad",
 						"type": "DataFlowReference"
 					},
 					"compute": {
