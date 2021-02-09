@@ -1,9 +1,9 @@
 {
-	"name": "pipeline1",
+	"name": "MovieAnalytics",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Movie Analytics",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "loans",
+						"referenceName": "MovieAnalytics",
 						"type": "DataFlowReference"
 					},
 					"compute": {
