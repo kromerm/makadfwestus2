@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SQLLoad",
+						"referenceName": "DeltaLake1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
