@@ -121,11 +121,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RowCounts",
-						"type": "DataFlowReference",
-						"parameters": {
-							"logger": "false()"
-						}
+						"referenceName": "dedupe",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
