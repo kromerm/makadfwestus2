@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Clean Addresses",
+				"name": "Clean Names",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
@@ -26,8 +26,12 @@
 						"referenceName": "PowerQuery1",
 						"type": "DataFlowReference"
 					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
 					"sinks": {
-						"queryName": {
+						"UserQuery": {
 							"name": "folderout",
 							"dataset": {
 								"referenceName": "folderout",
@@ -101,7 +105,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Clean Addresses",
+						"activity": "Clean Names",
 						"dependencyConditions": [
 							"Succeeded"
 						]
