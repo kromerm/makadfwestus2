@@ -1,9 +1,9 @@
 {
-	"name": "pipeline2",
+	"name": "DeltaPipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflow1",
+				"name": "DeltaUpdates",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
