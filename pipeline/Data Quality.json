@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Clean Names",
+				"name": "Clean Names and Values",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
@@ -105,7 +105,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Clean Names",
+						"activity": "Clean Names and Values",
 						"dependencyConditions": [
 							"Succeeded"
 						]
