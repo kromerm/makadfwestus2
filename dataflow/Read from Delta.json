@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "Read from Delta",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
