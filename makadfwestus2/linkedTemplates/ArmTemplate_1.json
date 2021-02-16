@@ -592,6 +592,62 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/movieswithjson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "movieswjson.csv",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movie",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RottenTomato",
+						"type": "String"
+					},
+					{
+						"name": "data",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/names100')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -842,7 +898,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/movieswithjson')]",
+			"name": "[concat(parameters('factoryName'), '/msftstock')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -855,7 +911,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "movieswjson.csv",
+						"fileName": "EOD-MSFT.csv",
 						"folderPath": "SampleData",
 						"container": "mycontainer"
 					},
@@ -866,36 +922,101 @@
 				},
 				"schema": [
 					{
-						"name": "movie",
+						"name": "Date",
 						"type": "String"
 					},
 					{
-						"name": "title",
+						"name": "Open",
 						"type": "String"
 					},
 					{
-						"name": "genres",
+						"name": "High",
 						"type": "String"
 					},
 					{
-						"name": "year",
+						"name": "Low",
 						"type": "String"
 					},
 					{
-						"name": "Rating",
+						"name": "Close",
 						"type": "String"
 					},
 					{
-						"name": "RottenTomato",
+						"name": "Volume",
 						"type": "String"
 					},
 					{
-						"name": "data",
+						"name": "Dividend",
+						"type": "String"
+					},
+					{
+						"name": "Split",
+						"type": "String"
+					},
+					{
+						"name": "Adj_Open",
+						"type": "String"
+					},
+					{
+						"name": "Adj_High",
+						"type": "String"
+					},
+					{
+						"name": "Adj_Low",
+						"type": "String"
+					},
+					{
+						"name": "Adj_Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj_Volume",
 						"type": "String"
 					}
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductDescriptionID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "ProductDescription"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoans')]",
@@ -1688,68 +1809,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlDimension')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Table": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().Table",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CDM')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: 'CDMfolders',\n\tfileSystem: 'mycontainer') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/folderout')]"
 			]
 		}
 	]
