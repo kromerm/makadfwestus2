@@ -1,0 +1,7 @@
+{
+	"name": "Moving Average",
+	"properties": {
+		"description": "Moving average example using Microsoft stock prices from Quandl CSV data:\n\nhttps://www.quandl.com/data/EOD/MSFT-Microsoft-Corporation-MSFT-Stock-Prices-Dividends-and-Splits",
+		"annotations": []
+	}
+}
