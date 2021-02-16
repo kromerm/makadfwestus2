@@ -1,0 +1,77 @@
+{
+	"name": "msftstock",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "EOD-MSFT.csv",
+				"folderPath": "SampleData",
+				"container": "mycontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Open",
+				"type": "String"
+			},
+			{
+				"name": "High",
+				"type": "String"
+			},
+			{
+				"name": "Low",
+				"type": "String"
+			},
+			{
+				"name": "Close",
+				"type": "String"
+			},
+			{
+				"name": "Volume",
+				"type": "String"
+			},
+			{
+				"name": "Dividend",
+				"type": "String"
+			},
+			{
+				"name": "Split",
+				"type": "String"
+			},
+			{
+				"name": "Adj_Open",
+				"type": "String"
+			},
+			{
+				"name": "Adj_High",
+				"type": "String"
+			},
+			{
+				"name": "Adj_Low",
+				"type": "String"
+			},
+			{
+				"name": "Adj_Close",
+				"type": "String"
+			},
+			{
+				"name": "Adj_Volume",
+				"type": "String"
+			}
+		]
+	}
+}
