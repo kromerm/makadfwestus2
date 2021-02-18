@@ -1,0 +1,49 @@
+{
+	"name": "metadatapipeline",
+	"properties": {
+		"description": "Sample metadata checker rules",
+		"activities": [
+			{
+				"name": "metadataChecker",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "metadataChecker",
+						"type": "DataFlowReference",
+						"parameters": {
+							"filename": "'SampleData/moviesDB.csv'",
+							"columns": "'movie,title'",
+							"dbname": "'products'"
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"filename": {
+				"type": "string",
+				"defaultValue": "'SampleData/moviesDB.csv'"
+			}
+		},
+		"variables": {
+			"metacheck": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
