@@ -170,6 +170,13 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/partition data')]",
+			"type": "Microsoft.DataFactory/factories/templates",
+			"apiVersion": "2018-06-01",
+			"properties": {},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Avro1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2046,161 +2053,6 @@
 										},
 										"confidence": {
 											"type": "number"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json3')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "activities_02072019_103118_000.caliper.json.gz",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					},
-					"compression": {
-						"type": "gzip"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"sensor": {
-							"type": "string"
-						},
-						"sendTime": {
-							"type": "string"
-						},
-						"dataVersion": {
-							"type": "string"
-						},
-						"data": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"type": "string"
-									},
-									"@context": {
-										"type": "string"
-									},
-									"actor": {
-										"type": "object",
-										"properties": {
-											"id": {
-												"type": "string"
-											},
-											"type": {
-												"type": "string"
-											}
-										}
-									},
-									"action": {
-										"type": "string"
-									},
-									"extensions": {
-										"type": "object",
-										"properties": {
-											"distributor": {
-												"type": "object",
-												"properties": {
-													"@context": {
-														"type": "string"
-													},
-													"id": {
-														"type": "string"
-													},
-													"type": {
-														"type": "string"
-													}
-												}
-											}
-										}
-									},
-									"eventTime": {
-										"type": "string"
-									},
-									"id": {
-										"type": "string"
-									},
-									"object": {
-										"type": "object",
-										"properties": {
-											"id": {
-												"type": "string"
-											},
-											"type": {
-												"type": "string"
-											}
-										}
-									},
-									"edApp": {
-										"type": "object",
-										"properties": {
-											"id": {
-												"type": "string"
-											},
-											"type": {
-												"type": "string"
-											}
-										}
-									},
-									"session": {
-										"type": "object",
-										"properties": {
-											"id": {
-												"type": "string"
-											},
-											"type": {
-												"type": "string"
-											}
-										}
-									},
-									"target": {
-										"type": "object",
-										"properties": {
-											"id": {
-												"type": "string"
-											},
-											"type": {
-												"type": "string"
-											},
-											"name": {
-												"type": "string"
-											},
-											"isPartOf": {
-												"type": "object",
-												"properties": {
-													"id": {
-														"type": "string"
-													},
-													"type": {
-														"type": "string"
-													}
-												}
-											},
-											"index": {
-												"type": "integer"
-											}
 										}
 									}
 								}
