@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "PowerQuery1",
-				"type": "ExecuteWranglingDataflow",
+				"name": "loans",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -16,9 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "PowerQuery1",
+						"referenceName": "loans",
 						"type": "DataFlowReference"
-					}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine",
+					"runConcurrently": true
 				}
 			}
 		],
