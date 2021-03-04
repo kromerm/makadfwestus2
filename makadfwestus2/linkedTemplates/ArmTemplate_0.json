@@ -170,10 +170,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/partition data')]",
-			"type": "Microsoft.DataFactory/factories/templates",
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
-			"properties": {},
+			"properties": {
+				"preventDataExfiltration": false
+			},
 			"dependsOn": []
 		},
 		{
