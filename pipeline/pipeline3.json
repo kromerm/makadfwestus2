@@ -29,7 +29,8 @@
 							"filesize": {
 								"value": "@activity('Get Metadata1').output.size",
 								"type": "Expression"
-							}
+							},
+							"targetsize": "5000000"
 						}
 					},
 					"compute": {
@@ -54,7 +55,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "MoviesD2",
+						"referenceName": "loans",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
