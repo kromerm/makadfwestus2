@@ -1,0 +1,454 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"AzureBlobStorage1": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Partition Output by Size')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Sample pipeline that uses data flow to partition output based on incoming source file size",
+				"activities": [
+					{
+						"name": "parts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "partBySize",
+								"type": "DataFlowReference",
+								"parameters": {
+									"filesize": {
+										"value": "@activity('Get Metadata1').output.size",
+										"type": "Expression"
+									},
+									"targetsize": "5000000"
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"runConcurrently": true
+						}
+					},
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"fieldList": [
+								"size"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/partBySize')]",
+				"[concat(variables('factoryId'), '/datasets/loans')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/partBySize')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "parameters{\n\tfilesize as integer (10000000),\n\ttargetsize as integer (5000000)\n}\nsource(output(\n\t\tid as string,\n\t\tmember_id as string,\n\t\tloan_amnt as string,\n\t\tfunded_amnt as string,\n\t\tfunded_amnt_inv as string,\n\t\tterm as string,\n\t\tint_rate as string,\n\t\tinstallment as string,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as string,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as string,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as string,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(partitionBy('roundRobin', (toInteger(round($filesize / $targetsize,0))+1)),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/loans')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/loans')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureBlobStorage1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "loan.csv",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "member_id",
+						"type": "String"
+					},
+					{
+						"name": "loan_amnt",
+						"type": "String"
+					},
+					{
+						"name": "funded_amnt",
+						"type": "String"
+					},
+					{
+						"name": "funded_amnt_inv",
+						"type": "String"
+					},
+					{
+						"name": "term",
+						"type": "String"
+					},
+					{
+						"name": "int_rate",
+						"type": "String"
+					},
+					{
+						"name": "installment",
+						"type": "String"
+					},
+					{
+						"name": "grade",
+						"type": "String"
+					},
+					{
+						"name": "sub_grade",
+						"type": "String"
+					},
+					{
+						"name": "emp_title",
+						"type": "String"
+					},
+					{
+						"name": "emp_length",
+						"type": "String"
+					},
+					{
+						"name": "home_ownership",
+						"type": "String"
+					},
+					{
+						"name": "annual_inc",
+						"type": "String"
+					},
+					{
+						"name": "verification_status",
+						"type": "String"
+					},
+					{
+						"name": "issue_d",
+						"type": "String"
+					},
+					{
+						"name": "loan_status",
+						"type": "String"
+					},
+					{
+						"name": "pymnt_plan",
+						"type": "String"
+					},
+					{
+						"name": "url",
+						"type": "String"
+					},
+					{
+						"name": "desc",
+						"type": "String"
+					},
+					{
+						"name": "purpose",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "zip_code",
+						"type": "String"
+					},
+					{
+						"name": "addr_state",
+						"type": "String"
+					},
+					{
+						"name": "dti",
+						"type": "String"
+					},
+					{
+						"name": "delinq_2yrs",
+						"type": "String"
+					},
+					{
+						"name": "earliest_cr_line",
+						"type": "String"
+					},
+					{
+						"name": "inq_last_6mths",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_delinq",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_record",
+						"type": "String"
+					},
+					{
+						"name": "open_acc",
+						"type": "String"
+					},
+					{
+						"name": "pub_rec",
+						"type": "String"
+					},
+					{
+						"name": "revol_bal",
+						"type": "String"
+					},
+					{
+						"name": "revol_util",
+						"type": "String"
+					},
+					{
+						"name": "total_acc",
+						"type": "String"
+					},
+					{
+						"name": "initial_list_status",
+						"type": "String"
+					},
+					{
+						"name": "out_prncp",
+						"type": "String"
+					},
+					{
+						"name": "out_prncp_inv",
+						"type": "String"
+					},
+					{
+						"name": "total_pymnt",
+						"type": "String"
+					},
+					{
+						"name": "total_pymnt_inv",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_prncp",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_int",
+						"type": "String"
+					},
+					{
+						"name": "total_rec_late_fee",
+						"type": "String"
+					},
+					{
+						"name": "recoveries",
+						"type": "String"
+					},
+					{
+						"name": "collection_recovery_fee",
+						"type": "String"
+					},
+					{
+						"name": "last_pymnt_d",
+						"type": "String"
+					},
+					{
+						"name": "last_pymnt_amnt",
+						"type": "String"
+					},
+					{
+						"name": "next_pymnt_d",
+						"type": "String"
+					},
+					{
+						"name": "last_credit_pull_d",
+						"type": "String"
+					},
+					{
+						"name": "collections_12_mths_ex_med",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_last_major_derog",
+						"type": "String"
+					},
+					{
+						"name": "policy_code",
+						"type": "String"
+					},
+					{
+						"name": "application_type",
+						"type": "String"
+					},
+					{
+						"name": "annual_inc_joint",
+						"type": "String"
+					},
+					{
+						"name": "dti_joint",
+						"type": "String"
+					},
+					{
+						"name": "verification_status_joint",
+						"type": "String"
+					},
+					{
+						"name": "acc_now_delinq",
+						"type": "String"
+					},
+					{
+						"name": "tot_coll_amt",
+						"type": "String"
+					},
+					{
+						"name": "tot_cur_bal",
+						"type": "String"
+					},
+					{
+						"name": "open_acc_6m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_6m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_12m",
+						"type": "String"
+					},
+					{
+						"name": "open_il_24m",
+						"type": "String"
+					},
+					{
+						"name": "mths_since_rcnt_il",
+						"type": "String"
+					},
+					{
+						"name": "total_bal_il",
+						"type": "String"
+					},
+					{
+						"name": "il_util",
+						"type": "String"
+					},
+					{
+						"name": "open_rv_12m",
+						"type": "String"
+					},
+					{
+						"name": "open_rv_24m",
+						"type": "String"
+					},
+					{
+						"name": "max_bal_bc",
+						"type": "String"
+					},
+					{
+						"name": "all_util",
+						"type": "String"
+					},
+					{
+						"name": "total_rev_hi_lim",
+						"type": "String"
+					},
+					{
+						"name": "inq_fi",
+						"type": "String"
+					},
+					{
+						"name": "total_cu_tl",
+						"type": "String"
+					},
+					{
+						"name": "inq_last_12m",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}
