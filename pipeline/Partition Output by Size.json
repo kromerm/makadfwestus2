@@ -1,6 +1,7 @@
 {
-	"name": "pipeline3",
+	"name": "Partition Output by Size",
 	"properties": {
+		"description": "Sample pipeline that uses data flow to partition output based on incoming source file size",
 		"activities": [
 			{
 				"name": "parts",
