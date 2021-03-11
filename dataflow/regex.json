@@ -1,5 +1,5 @@
 {
-	"name": "dataflow2",
+	"name": "regex",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -19,10 +19,16 @@
 			],
 			"transformations": [
 				{
-					"name": "Parse1"
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "DerivedColumn2"
+				},
+				{
+					"name": "SurrogateKey1"
 				}
 			],
-			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 parse(format: 'json',\n\tdocumentForm: 'documentPerLine') ~> Parse1\nParse1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nDerivedColumn2 derive(Location = :local1[1]\r\n\r\n,\n\t\tAsset = iif(size(:local1)<3,toString(null()),:local1[2]),\n\t\tAttribute = iif(size(:local1)<3,:local1[2],:local1[3]),\n\t\tlocal1 := regexSplit(Resource,'\\\\s|_|\\\\.|-')) ~> DerivedColumn1\nSurrogateKey1 derive(Resource = iif(sk % 2 == 0,'Atlanta-CKT606.Battery',iif(sk==3,'Atlanta.Battery','Atlanta.Bus2_Volts'))) ~> DerivedColumn2\nsource1 keyGenerate(output(sk as long),\n\tstartAt: 1L) ~> SurrogateKey1\nDerivedColumn1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
