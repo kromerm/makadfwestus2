@@ -1,5 +1,5 @@
 {
-	"name": "Incremental",
+	"name": "Change Data",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

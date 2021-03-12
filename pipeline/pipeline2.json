@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lake Folders",
+				"name": "data flow",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
