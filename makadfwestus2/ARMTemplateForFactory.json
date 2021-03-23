@@ -8042,19 +8042,6 @@
 							"enableStaging": false,
 							"parallelCopies": 32,
 							"enableSkipIncompatibleRow": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									}
-								}
-							},
 							"dataIntegrationUnits": 32,
 							"translator": {
 								"type": "TabularTranslator",
