@@ -30,6 +30,7 @@
 						}
 					},
 					"enableStaging": false,
+					"parallelCopies": 32,
 					"enableSkipIncompatibleRow": false,
 					"logSettings": {
 						"enableCopyActivityLog": true,
@@ -44,6 +45,7 @@
 							}
 						}
 					},
+					"dataIntegrationUnits": 32,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
