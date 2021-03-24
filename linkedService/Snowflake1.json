@@ -1,0 +1,12 @@
+{
+	"name": "Snowflake1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Snowflake",
+		"typeProperties": {
+			"connectionString": "jdbc:snowflake:// https://microsoft_partner.east-us-2.azure.snowflakecomputing.com/.snowflakecomputing.com/?user=MAKROMER&db=master&warehouse=master&role=",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1BS0FERldFU1RVUzJfMTk5ZDJhM2YtODg0NC00Njg1LTgwNTktY2Y5YTc4ODMwOGZjIg0KfQ=="
+		}
+	}
+}
