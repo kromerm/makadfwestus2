@@ -11,9 +11,6 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
-		"AzureDatabricks1_accessToken": {
-			"value": ""
-		},
 		"CosmosDb1_connectionString": {
 			"value": ""
 		},
@@ -31,6 +28,9 @@
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 			"value": "SQLDW"
+		},
+		"Snowflake1_connectionString": {
+			"value": ""
 		}
 	}
 }
