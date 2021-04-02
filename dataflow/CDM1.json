@@ -1,5 +1,5 @@
 {
-	"name": "CDM",
+	"name": "CDM1",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "folderout",
+						"referenceName": "folderout2",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
