@@ -23,6 +23,9 @@
 		"SQLMovies_connectionString": {
 			"value": ""
 		},
+		"AzureBlobStorage2_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://makadlsg2.dfs.core.windows.net"
 		},

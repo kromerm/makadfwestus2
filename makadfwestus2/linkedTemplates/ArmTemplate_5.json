@@ -13,6 +13,943 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Data Cleansing')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Clean Names and Values",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Ingest to Lake",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PowerQuery1",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"moviesCSV": {},
+									"SQLMovies": {},
+									"Sink1": {},
+									"folderout": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"sinks": {
+								"UserQuery": {
+									"name": "folderout",
+									"dataset": {
+										"referenceName": "folderout",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> folderout"
+								}
+							}
+						}
+					},
+					{
+						"name": "Ingest to Lake",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "folderout",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Dedupe",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Clean Names and Values",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dedupe",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Send Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Dedupe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "http://www.yahoo.com",
+							"method": "GET",
+							"headers": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeltaPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DeltaUpdates",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DeltaLake1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieAnalytics')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Movie Analytics",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "sqlmovies",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"source2": {},
+									"source3": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"runConcurrently": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Moving Average')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Moving average example using Microsoft stock prices from Quandl CSV data:\n\nhttps://www.quandl.com/data/EOD/MSFT-Microsoft-Corporation-MSFT-Stock-Prices-Dividends-and-Splits",
+				"activities": [
+					{
+						"name": "Moving Average",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Moving Average",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"StocksSource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Partition Output by Size')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Sample pipeline that uses data flow to partition output based on incoming source file size",
+				"activities": [
+					{
+						"name": "parts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "partBySize",
+								"type": "DataFlowReference",
+								"parameters": {
+									"filesize": {
+										"value": "@activity('Get Metadata1').output.size",
+										"type": "Expression"
+									},
+									"targetsize": "5000000"
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"runConcurrently": true
+						}
+					},
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"size"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/partition data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "movieparts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "movieparts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"taxiSource": {},
+									"movieSource": {},
+									"loans": {},
+									"taxiSink": {},
+									"movieSink": {},
+									"loansSink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "partdata",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "partdata",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "updateMovieParts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateMovieParts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"movies": {},
+									"taxiSource": {},
+									"sink1": {},
+									"taxiSink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Lake Folders",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CDM",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CDM",
+								"type": "DataFlowReference",
+								"parameters": {
+									"rootfolder": {
+										"value": "'@{pipeline().parameters.rootfolder}'",
+										"type": "Expression"
+									},
+									"cdmfolder": {
+										"value": "'@{pipeline().parameters.cdmfolder}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"rootfolder": {
+						"type": "string",
+						"defaultValue": "'rootfolder'"
+					},
+					"cdmfolder": {
+						"type": "string",
+						"defaultValue": "'cdmfolder'"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline31')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CDM",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CDM1",
+								"type": "DataFlowReference",
+								"parameters": {
+									"rootfolder": {
+										"value": "'@{pipeline().parameters.rootfolder}'",
+										"type": "Expression"
+									},
+									"cdmfolder": {
+										"value": "'@{pipeline().parameters.cdmfolder}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"rootfolder": {
+						"type": "string",
+						"defaultValue": "'rootfolder'"
+					},
+					"cdmfolder": {
+						"type": "string",
+						"defaultValue": "'cdmfolder'"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wranglingpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Loans Data Prep",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Acquire Loans Data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "LoansDataWrangling",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"loans": {},
+									"Sinkfolderout": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime1",
+								"type": "IntegrationRuntimeReference"
+							},
+							"sinks": {
+								"UserQuery": {
+									"name": "Sinkfolderout",
+									"dataset": {
+										"referenceName": "folderout",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Sinkfolderout"
+								}
+							}
+						}
+					},
+					{
+						"name": "Acquire Loans Data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTableLoans",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "folderout",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataQuality1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQLProducts_new",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'ProductID',\n\tpartitionBy('external', 20)) ~> source1\nsource(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as double,\n\t\topen_acc as string,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as string,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as double,\n\t\tdti_joint as string,\n\t\tverification_status_joint as double,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as double,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as double,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource2 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['id'],\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GenericSCDType2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GenericSCD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "GenericDataset",
+								"type": "DatasetReference"
+							},
+							"name": "GenericInput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SqlDimension",
+								"type": "DatasetReference"
+							},
+							"name": "ExistingDimensionTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SqlDimension",
+								"type": "DatasetReference"
+							},
+							"name": "DimensionTableSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "NewAndUpdatedRows"
+						},
+						{
+							"name": "AddHashInput"
+						},
+						{
+							"name": "AddHashExisting"
+						},
+						{
+							"name": "GetMaxSurrogateKey"
+						},
+						{
+							"name": "AddKey"
+						},
+						{
+							"name": "JoinWithMaxSurrogateKey"
+						},
+						{
+							"name": "AddDimensionColumns"
+						},
+						{
+							"name": "FilterForUpdatedValues"
+						},
+						{
+							"name": "UpdateObsolete"
+						},
+						{
+							"name": "DropUnwantedColsInput"
+						},
+						{
+							"name": "UnionAllData"
+						},
+						{
+							"name": "MarkAsUpdate"
+						},
+						{
+							"name": "DropUnwantedColumns"
+						},
+						{
+							"name": "MarkAsInsert"
+						},
+						{
+							"name": "FilterForActive"
+						}
+					],
+					"script": "parameters{\n\tPrimaryKey as string ('ID'),\n\tColumns as string ('Player,Team,Salary')\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> GenericInput\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingDimensionTable\nAddHashInput, AddHashExisting exists(AddHashInput@id_hash == AddHashExisting@id_hash\n\t&& AddHashInput@columns_hash == AddHashExisting@columns_hash,\n\tnegate:true,\n\tbroadcast: 'auto')~> NewAndUpdatedRows\nGenericInput derive(id_hash = md5(byName($PrimaryKey)),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashInput\nFilterForActive derive(id_hash = md5(byNames(split($PrimaryKey,','))),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashExisting\nAddHashExisting aggregate(MaxSurrogateKey = max(toInteger(byName('Key')))) ~> GetMaxSurrogateKey\nNewAndUpdatedRows keyGenerate(output(Key as long),\n\tstartAt: 1L) ~> AddKey\nAddKey, GetMaxSurrogateKey join(Key == MaxSurrogateKey || true(),\n\tjoinType:'cross',\n\tbroadcast: 'right')~> JoinWithMaxSurrogateKey\nJoinWithMaxSurrogateKey derive(Key = Key + MaxSurrogateKey,\n\t\tActive = 1,\n\t\tActiveStartTime = currentUTC(),\n\t\tActiveEndTime = toTimestamp(toString(null()))) ~> AddDimensionColumns\nAddHashExisting, NewAndUpdatedRows exists(AddHashExisting@id_hash == AddHashInput@id_hash,\n\tnegate:false,\n\tbroadcast: 'auto')~> FilterForUpdatedValues\nFilterForUpdatedValues derive(Active = 0,\n\t\tActiveEndTime = currentUTC()) ~> UpdateObsolete\nAddDimensionColumns select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColsInput\nMarkAsInsert, DropUnwantedColumns union(byName: true)~> UnionAllData\nUpdateObsolete alterRow(updateIf(true())) ~> MarkAsUpdate\nMarkAsUpdate select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColumns\nDropUnwantedColsInput alterRow(insertIf(true())) ~> MarkAsInsert\nExistingDimensionTable filter(toInteger(byName('Active')) == 1) ~> FilterForActive\nUnionAllData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:[($PrimaryKey)],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimensionTableSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQLLoad')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -331,7 +1268,7 @@
 							"name": "ParseCSV"
 						}
 					],
-					"script": "source(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tjson_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source8\nFilter1 parse(levelandregistration = json_value ? (level as string,\n\t\tregistration as long),\n\tformat: 'json',\n\tdocumentForm: 'singleDocument') ~> ParseJSON\nsource8 filter(ProductDescriptionID == 3) ~> Filter1\nParseJSON parse(newdesc = Description ? (desc1 as string, desc2 as string, desc3 as string),\n\tformat: 'delimited',\n\tcolumnNamesAsHeader: false,\n\tcolumnDelimiter: '|',\n\tnullValue: '') ~> ParseCSV\nParseCSV sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
+					"script": "source(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tjson_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source8\nFilter1 parse(levelandregistration = json_value ? (level as string,\n\t\tregistration as long),\n\tformat: 'xml',\n\tnamespaces: true,\n\tdocumentForm: 'singleDocument') ~> ParseJSON\nsource8 filter(ProductDescriptionID == 3) ~> Filter1\nParseJSON parse(newdesc = Description ? (desc1 as string, desc2 as string, desc3 as string),\n\tformat: 'delimited',\n\tcolumnNamesAsHeader: false,\n\tcolumnDelimiter: '|',\n\tnullValue: '') ~> ParseCSV\nParseCSV sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -371,1757 +1308,6 @@
 					],
 					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 filter(trim(term) == '36 months') ~> Filter1\nFilter1 derive(loan_amnt = toDecimal(loan_amnt,2),\n\t\tcolumn1 = upper(home_ownership)) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline3')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "CDM",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "CDM",
-								"type": "DataFlowReference",
-								"parameters": {
-									"rootfolder": {
-										"value": "'@{pipeline().parameters.rootfolder}'",
-										"type": "Expression"
-									},
-									"cdmfolder": {
-										"value": "'@{pipeline().parameters.cdmfolder}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"rootfolder": {
-						"type": "string",
-						"defaultValue": "'rootfolder'"
-					},
-					"cdmfolder": {
-						"type": "string",
-						"defaultValue": "'cdmfolder'"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline31')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "CDM",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "CDM1",
-								"type": "DataFlowReference",
-								"parameters": {
-									"rootfolder": {
-										"value": "'@{pipeline().parameters.rootfolder}'",
-										"type": "Expression"
-									},
-									"cdmfolder": {
-										"value": "'@{pipeline().parameters.cdmfolder}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"rootfolder": {
-						"type": "string",
-						"defaultValue": "'rootfolder'"
-					},
-					"cdmfolder": {
-						"type": "string",
-						"defaultValue": "'cdmfolder'"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DailyDWPattern')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "DWStaging",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata File",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "loans",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"sink1": {},
-									"sink2": {},
-									"lookupSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": {
-									"value": "@if(\n   greater(\n      activity('Get Metadata File').output.size,400000),128,\n         if(\n            greater(\n               activity('Get Metadata File').output.size,100000),64,8))",
-									"type": "Expression"
-								},
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "LoadFromStage",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "DWStaging",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "loans",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"sink1": {},
-									"sink2": {},
-									"lookupSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 32,
-								"computeType": "MemoryOptimized"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Send email",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "LoadFromStage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "http://www.yahoo.com",
-							"method": "POST",
-							"headers": {},
-							"body": "'hello'"
-						}
-					},
-					{
-						"name": "Process Models",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "LoadFromStage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "http://www.yahoo.com",
-							"method": "POST",
-							"headers": {},
-							"body": "'process'"
-						}
-					},
-					{
-						"name": "Get Metadata File",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"fieldList": [
-								"size"
-							],
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "SQLData",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "loans",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"sink1": {},
-									"sink2": {},
-									"lookupSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": {
-									"value": "@if(\n   greater(\n      activity('Lookup1').output.firstRow.rowcount1,400000),128,\n         if(\n            greater(\n               activity('Lookup1').output.firstRow.rowcount1,100000),64,8))",
-									"type": "Expression"
-								},
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "loans",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "loans",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"sink1": {},
-									"sink2": {},
-									"lookupSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "LoansDataWrangling",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata File",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "LoansDataWrangling",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"loans": {},
-									"Sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/loans')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GenericSCDType2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Using byNames to fully parameterize a Slowly Change Dimension Type 2 patter",
-				"activities": [
-					{
-						"name": "GenericSCDType2",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "GenericSCDType2",
-								"type": "DataFlowReference",
-								"parameters": {
-									"PrimaryKey": {
-										"value": "'@{pipeline().parameters.PrimaryKey}'",
-										"type": "Expression"
-									},
-									"Columns": {
-										"value": "'@{pipeline().parameters.ColumnNames}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"GenericInput": {
-										"Folder": {
-											"value": "@pipeline().parameters.IncomingDimensionFolder",
-											"type": "Expression"
-										}
-									},
-									"ExistingDimensionTable": {
-										"Table": {
-											"value": "@pipeline().parameters.DimensionTable",
-											"type": "Expression"
-										}
-									},
-									"DimensionTableSink": {
-										"Table": {
-											"value": "@pipeline().parameters.DimensionTable",
-											"type": "Expression"
-										}
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"IncomingDimensionFolder": {
-						"type": "string"
-					},
-					"DimensionTable": {
-						"type": "string"
-					},
-					"PrimaryKey": {
-						"type": "string"
-					},
-					"ColumnNames": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "GenericSCD"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/copyDataFlow')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"parallelCopies": 32,
-							"enableSkipIncompatibleRow": false,
-							"dataIntegrationUnits": 32,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "member_id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "member_id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "loan_amnt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "loan_amnt",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "funded_amnt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "funded_amnt",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "funded_amnt_inv",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "funded_amnt_inv",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "term",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "term",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "int_rate",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "int_rate",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "installment",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "installment",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "grade",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "grade",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "sub_grade",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "sub_grade",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "emp_title",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "emp_title",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "emp_length",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "emp_length",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "home_ownership",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "home_ownership",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "annual_inc",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "annual_inc",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "verification_status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "verification_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "issue_d",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "issue_d",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "loan_status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "loan_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "pymnt_plan",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "pymnt_plan",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "url",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "url",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "desc",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "desc",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "purpose",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "purpose",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "title",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "title",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "zip_code",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "zip_code",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "addr_state",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "addr_state",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "dti",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "dti",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "delinq_2yrs",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "delinq_2yrs",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "earliest_cr_line",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "earliest_cr_line",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "inq_last_6mths",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "inq_last_6mths",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "mths_since_last_delinq",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "mths_since_last_delinq",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "mths_since_last_record",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "mths_since_last_record",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_acc",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_acc",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "pub_rec",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "pub_rec",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "revol_bal",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "revol_bal",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "revol_util",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "revol_util",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_acc",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_acc",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "initial_list_status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "initial_list_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "out_prncp",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "out_prncp",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "out_prncp_inv",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "out_prncp_inv",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_pymnt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_pymnt",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_pymnt_inv",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_pymnt_inv",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_rec_prncp",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_rec_prncp",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_rec_int",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_rec_int",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_rec_late_fee",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_rec_late_fee",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "recoveries",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "recoveries",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "collection_recovery_fee",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "collection_recovery_fee",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "last_pymnt_d",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "last_pymnt_d",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "last_pymnt_amnt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "last_pymnt_amnt",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "next_pymnt_d",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "next_pymnt_d",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "last_credit_pull_d",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "last_credit_pull_d",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "collections_12_mths_ex_med",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "collections_12_mths_ex_med",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "mths_since_last_major_derog",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "mths_since_last_major_derog",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "policy_code",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "policy_code",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "application_type",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "application_type",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "annual_inc_joint",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "annual_inc_joint",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "dti_joint",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "dti_joint",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "verification_status_joint",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "verification_status_joint",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "acc_now_delinq",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "acc_now_delinq",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "tot_coll_amt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "tot_coll_amt",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "tot_cur_bal",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "tot_cur_bal",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_acc_6m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_acc_6m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_il_6m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_il_6m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_il_12m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_il_12m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_il_24m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_il_24m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "mths_since_rcnt_il",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "mths_since_rcnt_il",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_bal_il",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_bal_il",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "il_util",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "il_util",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_rv_12m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_rv_12m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "open_rv_24m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "open_rv_24m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "max_bal_bc",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "max_bal_bc",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "all_util",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "all_util",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_rev_hi_lim",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_rev_hi_lim",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "inq_fi",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "inq_fi",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "total_cu_tl",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "total_cu_tl",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "inq_last_12m",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "inq_last_12m",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlTableLoansNews",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Parquet1Folder",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow2",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "dataflowIRwReuse",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "Coarse"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/loansPipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "loans",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "loans",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"sink1": {},
-									"sink2": {},
-									"lookupSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine",
-							"runConcurrently": true
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/loans')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/metadatapipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Sample metadata checker rules",
-				"activities": [
-					{
-						"name": "metadataChecker",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "metadataChecker",
-								"type": "DataFlowReference",
-								"parameters": {
-									"filename": "'SampleData/moviesDB.csv'",
-									"columns": "'movie,title'",
-									"dbname": "'products'"
-								},
-								"datasetParameters": {
-									"source1": {},
-									"DBSource": {},
-									"WriteResults": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"filename": {
-						"type": "string",
-						"defaultValue": "'SampleData/moviesDB.csv'"
-					}
-				},
-				"variables": {
-					"metacheck": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/metadataChecker')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/wranglingpipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Loans Data Prep",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "Acquire Loans Data",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "LoansDataWrangling",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"loans": {},
-									"Sink1": {}
-								}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime1",
-								"type": "IntegrationRuntimeReference"
-							}
-						}
-					},
-					{
-						"name": "Acquire Loans Data",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlTableLoans",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "folderout",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		}

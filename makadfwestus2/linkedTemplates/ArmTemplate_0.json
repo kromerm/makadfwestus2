@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
 		},
+		"AzureBlobStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://makadlsg2.dfs.core.windows.net"
@@ -66,6 +70,12 @@
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"parameters": {
+					"stuff": {
+						"type": "string",
+						"defaultValue": "'stuff'"
+					}
+				},
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
@@ -228,6 +238,19 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"preventDataExfiltration": false
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage2_connectionString')]"
+				}
 			},
 			"dependsOn": []
 		},
@@ -747,86 +770,6 @@
 						},
 						"genres": {
 							"type": "array"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1Radio')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "small_radio_json.json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"ts": {
-							"type": "integer"
-						},
-						"userId": {
-							"type": "string"
-						},
-						"sessionId": {
-							"type": "integer"
-						},
-						"page": {
-							"type": "string"
-						},
-						"auth": {
-							"type": "string"
-						},
-						"method": {
-							"type": "string"
-						},
-						"status": {
-							"type": "integer"
-						},
-						"level": {
-							"type": "string"
-						},
-						"itemInSession": {
-							"type": "integer"
-						},
-						"location": {
-							"type": "string"
-						},
-						"lastName": {
-							"type": "string"
-						},
-						"firstName": {
-							"type": "string"
-						},
-						"registration": {
-							"type": "integer"
-						},
-						"gender": {
-							"type": "string"
-						},
-						"artist": {
-							"type": "string"
-						},
-						"song": {
-							"type": "string"
-						},
-						"length": {
-							"type": "number"
 						}
 					}
 				}
