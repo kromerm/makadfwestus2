@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "CDM",
+				"name": "dataflow",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,18 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "CDM1",
-						"type": "DataFlowReference",
-						"parameters": {
-							"rootfolder": {
-								"value": "'@{pipeline().parameters.rootfolder}'",
-								"type": "Expression"
-							},
-							"cdmfolder": {
-								"value": "'@{pipeline().parameters.cdmfolder}'",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "externalExpression",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
