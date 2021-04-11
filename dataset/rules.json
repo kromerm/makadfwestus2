@@ -1,0 +1,29 @@
+{
+	"name": "rules",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "nulls.json",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"field": {
+					"type": "string"
+				},
+				"threshold": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
