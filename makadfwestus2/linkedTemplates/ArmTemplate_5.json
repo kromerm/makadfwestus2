@@ -587,7 +587,8 @@
 								"datasetParameters": {
 									"loansSource": {},
 									"rules1": {},
-									"sink1": {}
+									"sink1": {},
+									"sink2": {}
 								}
 							},
 							"staging": {},
@@ -721,13 +722,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline3')]",
+			"name": "[concat(parameters('factoryName'), '/DQPipe2')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "CDM",
+						"name": "DQ Rules",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -740,21 +741,14 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "CDM",
+								"referenceName": "DataQuality1",
 								"type": "DataFlowReference",
-								"parameters": {
-									"rootfolder": {
-										"value": "'@{pipeline().parameters.rootfolder}'",
-										"type": "Expression"
-									},
-									"cdmfolder": {
-										"value": "'@{pipeline().parameters.cdmfolder}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
+									"loansSource": {},
+									"rules1": {},
+									"sink1": {},
+									"sink2": {}
 								}
 							},
 							"staging": {},
