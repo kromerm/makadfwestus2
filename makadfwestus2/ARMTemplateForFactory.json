@@ -1889,9 +1889,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
 							"runConcurrently": true
@@ -1930,9 +1930,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
 							"runConcurrently": true
@@ -1946,7 +1946,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/loans')]"
+				"[concat(variables('factoryId'), '/dataflows/loans')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
 			]
 		},
 		{
