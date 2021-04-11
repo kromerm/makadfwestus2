@@ -24,7 +24,7 @@
 						"computeType": "General"
 					},
 					"traceLevel": "Fine",
-					"runConcurrently": false
+					"runConcurrently": true
 				}
 			},
 			{
@@ -56,7 +56,7 @@
 						"computeType": "General"
 					},
 					"traceLevel": "Fine",
-					"runConcurrently": false
+					"runConcurrently": true
 				}
 			}
 		],
