@@ -1,9 +1,9 @@
 {
-	"name": "pipeline3",
+	"name": "DQPipe2",
 	"properties": {
 		"activities": [
 			{
-				"name": "CDM",
+				"name": "DQ Rules",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,18 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "CDM",
-						"type": "DataFlowReference",
-						"parameters": {
-							"rootfolder": {
-								"value": "'@{pipeline().parameters.rootfolder}'",
-								"type": "Expression"
-							},
-							"cdmfolder": {
-								"value": "'@{pipeline().parameters.cdmfolder}'",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "DataQuality1",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
