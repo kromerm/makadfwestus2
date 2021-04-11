@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
 		},
+		"AzureBlobStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
+		},
 		"AzureDataLakeStorage1_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
@@ -30,10 +34,6 @@
 		"SQLMovies_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
-		},
-		"AzureBlobStorage2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
@@ -61,6 +61,19 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage2_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -242,19 +255,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStorage2_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Avro1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -273,6 +273,78 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ContainerName": {
+						"type": "string",
+						"defaultValue": "wdfoutput"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().ContainerName",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ContainerName": {
+						"type": "string",
+						"defaultValue": "wdfoutput"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().ContainerName",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -393,72 +465,68 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Excel1')]",
+			"name": "[concat(parameters('factoryName'), '/EmployeeInfoDataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "currencysales1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "currencysales.xlsx",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					}
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GenericDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Folder": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "SCD"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": {
-							"value": "@dataset().Folder",
-							"type": "Expression"
-						},
-						"container": "demo"
+						"fileName": "EmployeeInfo.csv",
+						"container": "wdf"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "EmployeeId",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "ZIP",
+						"type": "String"
+					},
+					{
+						"name": "Email",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "DateOfJoining",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"name": "[concat(parameters('factoryName'), '/EmployeeSalaryDataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -467,312 +535,28 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Json",
+				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "Candidates0.json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
+						"fileName": "EmployeeSalary.csv",
+						"container": "wdf"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
 				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"candidates": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"address": {
-										"type": "string"
-									},
-									"address2": {
-										"type": "string"
-									},
-									"application": {
-										"type": "object",
-										"properties": {
-											"consentStatus": {
-												"type": "string"
-											},
-											"coverletter": {
-												"type": "object",
-												"properties": {
-													"content": {
-														"type": "string"
-													},
-													"format": {
-														"type": "string"
-													}
-												}
-											},
-											"customField": {
-												"type": "array"
-											},
-											"eId": {
-												"type": "string"
-											},
-											"gender": {
-												"type": "string"
-											},
-											"hasArtifacts": {
-												"type": "boolean"
-											},
-											"job": {
-												"type": "object",
-												"properties": {
-													"company": {
-														"type": "string"
-													},
-													"customField": {
-														"type": "array"
-													},
-													"eId": {
-														"type": "string"
-													},
-													"hiringManagers": {
-														"type": "array",
-														"items": {
-															"type": "object",
-															"properties": {
-																"firstName": {
-																	"type": "string"
-																},
-																"lastName": {
-																	"type": "string"
-																},
-																"userId": {
-																	"type": "string"
-																},
-																"userName": {
-																	"type": "string"
-																}
-															}
-														}
-													},
-													"jobType": {
-														"type": "string"
-													},
-													"postingType": {
-														"type": "string"
-													},
-													"primaryHiringManager": {
-														"type": "object",
-														"properties": {
-															"firstName": {
-																"type": "string"
-															},
-															"lastName": {
-																"type": "string"
-															},
-															"userId": {
-																"type": "string"
-															},
-															"userName": {
-																"type": "string"
-															}
-														}
-													},
-													"primaryRecruiter": {
-														"type": "object",
-														"properties": {
-															"firstName": {
-																"type": "string"
-															},
-															"lastName": {
-																"type": "string"
-															},
-															"userId": {
-																"type": "string"
-															},
-															"userName": {
-																"type": "string"
-															}
-														}
-													},
-													"recruiters": {
-														"type": "array",
-														"items": {
-															"type": "object",
-															"properties": {
-																"firstName": {
-																	"type": "string"
-																},
-																"lastName": {
-																	"type": "string"
-																},
-																"userId": {
-																	"type": "string"
-																},
-																"userName": {
-																	"type": "string"
-																}
-															}
-														}
-													},
-													"requisitionId": {
-														"type": "string"
-													},
-													"subsidiaryId": {
-														"type": "string"
-													},
-													"title": {
-														"type": "string"
-													}
-												}
-											},
-											"jobviteChannel": {
-												"type": "string"
-											},
-											"lastUpdatedDate": {
-												"type": "integer"
-											},
-											"personalDataProcessingStatus": {
-												"type": "string"
-											},
-											"race": {
-												"type": "string"
-											},
-											"resume": {
-												"type": "object",
-												"properties": {
-													"content": {
-														"type": "string"
-													},
-													"format": {
-														"type": "string"
-													},
-													"name": {
-														"type": "string"
-													}
-												}
-											},
-											"sentDate": {
-												"type": "integer"
-											},
-											"source": {
-												"type": "string"
-											},
-											"sourceType": {
-												"type": "string"
-											},
-											"veteranStatus": {
-												"type": "string"
-											},
-											"workflowState": {
-												"type": "string"
-											},
-											"workflowStateEId": {
-												"type": "string"
-											}
-										}
-									},
-									"city": {
-										"type": "string"
-									},
-									"companyName": {
-										"type": "string"
-									},
-									"country": {
-										"type": "string"
-									},
-									"eId": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									},
-									"firstName": {
-										"type": "string"
-									},
-									"homePhone": {
-										"type": "string"
-									},
-									"lastName": {
-										"type": "string"
-									},
-									"location": {
-										"type": "string"
-									},
-									"mobile": {
-										"type": "string"
-									},
-									"postalCode": {
-										"type": "string"
-									},
-									"state": {
-										"type": "string"
-									},
-									"title": {
-										"type": "string"
-									},
-									"workPhone": {
-										"type": "string"
-									},
-									"workStatus": {
-										"type": "string"
-									}
-								}
-							}
-						},
-						"total": {
-							"type": "integer"
-						},
-						"status": {
-							"type": "object",
-							"properties": {
-								"code": {
-									"type": "integer"
-								},
-								"messages": {
-									"type": "array"
-								}
-							}
-						}
+				"schema": [
+					{
+						"name": "EmployeeId",
+						"type": "String"
+					},
+					{
+						"name": "BasePay",
+						"type": "String"
 					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1Movies')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "movies.json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"title": {
-							"type": "string"
-						},
-						"year": {
-							"type": "integer"
-						},
-						"cast": {
-							"type": "array"
-						},
-						"genres": {
-							"type": "array"
-						}
-					}
-				}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
