@@ -1,9 +1,9 @@
 {
-	"name": "pipeline2",
+	"name": "dqpipe",
 	"properties": {
 		"activities": [
 			{
-				"name": "data flow",
+				"name": "DQ Rules",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Lake Folders",
+						"referenceName": "DataQuality1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
