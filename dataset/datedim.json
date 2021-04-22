@@ -1,0 +1,134 @@
+{
+	"name": "datedim",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tpcds",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "part-00000-7e8901d3-b6e7-4dc3-b6dd-af0a9093a8d4-c000.snappy.parquet",
+				"folderPath": "tpcds100/date_dim",
+				"container": "store1"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "d_date_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "d_date_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_date",
+				"type": "DATE"
+			},
+			{
+				"name": "d_month_seq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_week_seq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_quarter_seq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_year",
+				"type": "INT32"
+			},
+			{
+				"name": "d_dow",
+				"type": "INT32"
+			},
+			{
+				"name": "d_moy",
+				"type": "INT32"
+			},
+			{
+				"name": "d_dom",
+				"type": "INT32"
+			},
+			{
+				"name": "d_qoy",
+				"type": "INT32"
+			},
+			{
+				"name": "d_fy_year",
+				"type": "INT32"
+			},
+			{
+				"name": "d_fy_quarter_seq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_fy_week_seq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_day_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_quarter_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_holiday",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_weekend",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_following_holiday",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_first_dom",
+				"type": "INT32"
+			},
+			{
+				"name": "d_last_dom",
+				"type": "INT32"
+			},
+			{
+				"name": "d_same_day_ly",
+				"type": "INT32"
+			},
+			{
+				"name": "d_same_day_lq",
+				"type": "INT32"
+			},
+			{
+				"name": "d_current_day",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_current_week",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_current_month",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_current_quarter",
+				"type": "UTF8"
+			},
+			{
+				"name": "d_current_year",
+				"type": "UTF8"
+			}
+		]
+	}
+}
