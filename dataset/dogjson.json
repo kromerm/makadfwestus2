@@ -1,0 +1,61 @@
+{
+	"name": "dogjson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Dog.json",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"success": {
+					"type": "string"
+				},
+				"timestamp": {
+					"type": "string"
+				},
+				"base": {
+					"type": "string"
+				},
+				"date": {
+					"type": "string"
+				},
+				"rates": {
+					"type": "object",
+					"properties": {
+						"AED": {
+							"type": "number"
+						},
+						"AFN": {
+							"type": "number"
+						},
+						"ALL": {
+							"type": "number"
+						},
+						"AMD": {
+							"type": "number"
+						},
+						"UAH": {
+							"type": "number"
+						},
+						"UGX": {
+							"type": "number"
+						},
+						"USD": {
+							"type": "number"
+						}
+					}
+				}
+			}
+		}
+	}
+}

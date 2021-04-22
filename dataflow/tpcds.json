@@ -1,5 +1,5 @@
 {
-	"name": "dataflow4",
+	"name": "tpcds",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
