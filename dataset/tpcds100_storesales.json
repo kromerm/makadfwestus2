@@ -10,10 +10,128 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"folderPath": "SampleData/tpcds/tpcsales",
 				"container": "mycontainer"
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "ss_sold_time_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_item_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_customer_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_cdemo_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_hdemo_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_addr_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_store_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_promo_sk",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_ticket_number",
+				"type": "INT64"
+			},
+			{
+				"name": "ss_quantity",
+				"type": "INT32"
+			},
+			{
+				"name": "ss_wholesale_cost",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_list_price",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_sales_price",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_ext_discount_amt",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_ext_sales_price",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_ext_wholesale_cost",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_ext_list_price",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_ext_tax",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_coupon_amt",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_net_paid",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_net_paid_inc_tax",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_net_profit",
+				"type": "DECIMAL",
+				"precision": 7,
+				"scale": 2
+			},
+			{
+				"name": "ss_sold_date_sk",
+				"type": "UTF8"
+			}
+		]
 	}
 }
