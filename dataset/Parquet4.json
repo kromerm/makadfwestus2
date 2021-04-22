@@ -1,5 +1,5 @@
 {
-	"name": "tpcds100_storesales",
+	"name": "Parquet4",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"folderPath": "output/tpcds",
 				"container": "mycontainer"
 			},
 			"compressionCodec": "snappy"

@@ -2,7 +2,7 @@
 	"name": "datedim",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "tpcds",
+			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -11,8 +11,8 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "part-00000-7e8901d3-b6e7-4dc3-b6dd-af0a9093a8d4-c000.snappy.parquet",
-				"folderPath": "tpcds100/date_dim",
-				"container": "store1"
+				"folderPath": "SampleData/tpcds",
+				"container": "mycontainer"
 			},
 			"compressionCodec": "snappy"
 		},

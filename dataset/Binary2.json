@@ -1,19 +1,18 @@
 {
-	"name": "tpcds100_storesales",
+	"name": "Binary2",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "Parquet",
+		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"folderPath": "SampleData/tpcds",
 				"container": "mycontainer"
-			},
-			"compressionCodec": "snappy"
-		},
-		"schema": []
+			}
+		}
 	}
 }
