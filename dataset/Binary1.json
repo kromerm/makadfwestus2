@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "tpcds100/date_dim",
+				"folderPath": "tpcds100/store_sales",
 				"container": "store1"
 			}
 		}
