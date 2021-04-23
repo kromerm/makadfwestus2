@@ -26,8 +26,11 @@
 		"SQLMovies_connectionString": {
 			"value": ""
 		},
+		"tpcds_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"value": "https://makadlsg2.dfs.core.windows.net"
+			"value": "https://makadlsg2east.dfs.core.windows.net"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://makkv001.vault.azure.net/"

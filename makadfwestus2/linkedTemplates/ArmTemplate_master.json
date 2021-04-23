@@ -35,9 +35,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
 		},
+		"tpcds_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'tpcds'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://makadlsg2.dfs.core.windows.net"
+			"defaultValue": "https://makadlsg2east.dfs.core.windows.net"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -103,6 +107,9 @@
 					"SQLMovies_connectionString": {
 						"value": "[parameters('SQLMovies_connectionString')]"
 					},
+					"tpcds_connectionString": {
+						"value": "[parameters('tpcds_connectionString')]"
+					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
@@ -149,9 +156,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -172,6 +176,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
 					},
 					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
