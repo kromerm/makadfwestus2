@@ -959,8 +959,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow2",
-						"type": "DataFlowReference"
+						"referenceName": "CDM",
+						"type": "DataFlowReference",
+						"parameters": {
+							"rootfolder": "'mycontainer'",
+							"cdmfolder": "'cdmfolder'"
+						}
 					},
 					"integrationRuntime": {
 						"referenceName": "dataflowIRwReuse",
