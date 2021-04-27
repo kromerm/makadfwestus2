@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "tpcds",
+						"referenceName": "mapType",
 						"type": "DataFlowReference"
 					},
 					"compute": {
