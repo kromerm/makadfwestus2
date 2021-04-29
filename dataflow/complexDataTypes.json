@@ -1,0 +1,24 @@
+{
+	"name": "complexDataTypes",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Avro1",
+						"type": "DatasetReference"
+					},
+					"name": "AvroSource"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "AddMapType"
+				}
+			],
+			"script": "source(output(\n\t\tmovies as (movieid as string, title as string, genres as string[], year as string, rating as string),\n\t\tcast as string[],\n\t\tgenres as string[],\n\t\ttitle as string,\n\t\tyear as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> AvroSource\nAvroSource derive(column1 = ERROR_FUNCTION('')) ~> AddMapType"
+		}
+	}
+}
