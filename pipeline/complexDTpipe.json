@@ -54,10 +54,38 @@
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "None",
+					"cacheSinks": {
+						"firstRowOnly": true
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "complexDTs",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "averageMargin",
+					"value": {
+						"value": "@activity('complexDTs').output.runstatus.output.values[0].avgMargin",
+						"type": "Expression"
+					}
 				}
 			}
 		],
+		"variables": {
+			"averageMargin": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
