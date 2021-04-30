@@ -1,9 +1,9 @@
 {
-	"name": "pipeline2",
+	"name": "complexDTpipe",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Make files",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,42 @@
 						"referenceName": "makeComplexDTs",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Coarse"
+				}
+			},
+			{
+				"name": "complexDTs",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Make files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "complexDTs",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
 				}
 			}
 		],
