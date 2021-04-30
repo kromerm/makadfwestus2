@@ -16,11 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "mapType",
-						"type": "DataFlowReference",
-						"parameters": {
-							"parameter1": "['rated'->1,'director'->2,'gross'->3]"
-						}
+						"referenceName": "makeComplexDataTypes",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,

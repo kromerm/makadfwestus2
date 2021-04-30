@@ -1,5 +1,5 @@
 {
-	"name": "complexDataTypes",
+	"name": "makeComplexDataTypes",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -12,13 +12,21 @@
 					"name": "AvroSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet1Folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "AddMapType"
 				}
 			],
-			"script": "source(output(\n\t\tmovies as (movieid as string, title as string, genres as string[], year as string, rating as string),\n\t\tcast as string[],\n\t\tgenres as string[],\n\t\ttitle as string,\n\t\tyear as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> AvroSource\nAvroSource derive(column1 = ERROR_FUNCTION('')) ~> AddMapType"
+			"script": "source(output(\n\t\tmovies as (movieid as string, title as string, genres as string[], year as string, rating as string),\n\t\tcast as string[],\n\t\tgenres as string[],\n\t\ttitle as string,\n\t\tyear as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> AvroSource\nAvroSource derive(column1 = ['tite'->title,'year'->year]) ~> AddMapType\nAddMapType sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['moviemap.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
