@@ -65,6 +65,121 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "SampleData/Soccer",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id_odsp",
+						"type": "String"
+					},
+					{
+						"name": "id_event",
+						"type": "String"
+					},
+					{
+						"name": "sort_order",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "text",
+						"type": "String"
+					},
+					{
+						"name": "event_type",
+						"type": "String"
+					},
+					{
+						"name": "event_type2",
+						"type": "String"
+					},
+					{
+						"name": "side",
+						"type": "String"
+					},
+					{
+						"name": "event_team",
+						"type": "String"
+					},
+					{
+						"name": "opponent",
+						"type": "String"
+					},
+					{
+						"name": "player",
+						"type": "String"
+					},
+					{
+						"name": "player2",
+						"type": "String"
+					},
+					{
+						"name": "player_in",
+						"type": "String"
+					},
+					{
+						"name": "player_out",
+						"type": "String"
+					},
+					{
+						"name": "shot_place",
+						"type": "String"
+					},
+					{
+						"name": "shot_outcome",
+						"type": "String"
+					},
+					{
+						"name": "is_goal",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "bodypart",
+						"type": "String"
+					},
+					{
+						"name": "assist_method",
+						"type": "String"
+					},
+					{
+						"name": "situation",
+						"type": "String"
+					},
+					{
+						"name": "fast_break",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EmployeeFiles')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2662,29 +2777,6 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "part-00000-tid-4418709005590964924-11659b96-78ee-4b22-8af0-e278fe145107-37-1-c000.snappy.parquet",
-						"folderPath": "output/parquet",
-						"container": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet1Folder')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
 						"folderPath": "output/parquet",
 						"container": "mycontainer"
 					},

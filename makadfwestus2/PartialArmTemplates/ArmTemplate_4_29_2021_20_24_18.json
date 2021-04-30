@@ -1,0 +1,347 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/complexDTpipe')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Make files",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "makeComplexDTs",
+								"type": "DataFlowReference"
+							},
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Coarse"
+						}
+					},
+					{
+						"name": "complexDTs",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Make files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "complexDTs",
+								"type": "DataFlowReference"
+							},
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "None",
+							"runConcurrently": true,
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "complexDTs",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "averageMargin",
+							"value": {
+								"value": "@activity('complexDTs').output.runStatus.output.values[0].avgMargin",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"averageMargin": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/makeComplexDTs')]",
+				"[concat(variables('factoryId'), '/dataflows/complexDTs')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "SampleData/Soccer",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id_odsp",
+						"type": "String"
+					},
+					{
+						"name": "id_event",
+						"type": "String"
+					},
+					{
+						"name": "sort_order",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "text",
+						"type": "String"
+					},
+					{
+						"name": "event_type",
+						"type": "String"
+					},
+					{
+						"name": "event_type2",
+						"type": "String"
+					},
+					{
+						"name": "side",
+						"type": "String"
+					},
+					{
+						"name": "event_team",
+						"type": "String"
+					},
+					{
+						"name": "opponent",
+						"type": "String"
+					},
+					{
+						"name": "player",
+						"type": "String"
+					},
+					{
+						"name": "player2",
+						"type": "String"
+					},
+					{
+						"name": "player_in",
+						"type": "String"
+					},
+					{
+						"name": "player_out",
+						"type": "String"
+					},
+					{
+						"name": "shot_place",
+						"type": "String"
+					},
+					{
+						"name": "shot_outcome",
+						"type": "String"
+					},
+					{
+						"name": "is_goal",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "bodypart",
+						"type": "String"
+					},
+					{
+						"name": "assist_method",
+						"type": "String"
+					},
+					{
+						"name": "situation",
+						"type": "String"
+					},
+					{
+						"name": "fast_break",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/mapParquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "moviemap.parquet",
+						"folderPath": "output/parquet",
+						"container": "mycontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/complexDTs')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "mapParquet",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						},
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ReadFromDeltaLake"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "DeltaLake"
+						}
+					],
+					"transformations": [
+						{
+							"name": "calcMargin"
+						},
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "Aggregate1"
+						},
+						{
+							"name": "formatCalc"
+						}
+					],
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tproduct as (name as string, color as string),\n\t\tmargin as [string,decimal(10,0)]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source2\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delta',\n\tcompressionType: 'snappy',\n\tcompressionLevel: 'Fastest',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'DeltaDT') ~> ReadFromDeltaLake\nsource2 derive(calcMargin = round(margin['price']-margin['cost'],2)) ~> calcMargin\ncalcMargin select(mapColumn(\n\t\tName,\n\t\tproduct,\n\t\tmargin,\n\t\tcalcMargin\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\ncalcMargin aggregate(avgMargin = round(avg(calcMargin),2)) ~> Aggregate1\nSelect1 derive(calcMargin = toString(calcMargin,'$#.##')) ~> formatCalc\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: true,\n\tsaveOrder: 1) ~> sink1\nformatCalc sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tcompressionType: 'snappy',\n\tcompressionLevel: 'Fastest',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'DeltaDT',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DeltaLake"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/mapParquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/makeComplexDTs')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQLProducts_new",
+								"type": "DatasetReference"
+							},
+							"name": "SQLProds"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet1Folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PruneCols"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'ProductID',\n\tpartitionBy('external', 4)) ~> SQLProds\nSQLProds select(mapColumn(\n\t\tProductID,\n\t\tName,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tSize,\n\t\tWeight,\n\t\tProductCategoryID,\n\t\tProductModelID,\n\t\tSellStartDate,\n\t\tSellEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PruneCols\nPruneCols derive(product = @(name=Name,\n\t\tcolor=Color),\n\t\tmargin = ['cost'->StandardCost,'price'->ListPrice]) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['moviemap.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
