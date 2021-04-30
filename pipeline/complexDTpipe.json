@@ -55,6 +55,7 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "None",
+					"runConcurrently": true,
 					"cacheSinks": {
 						"firstRowOnly": true
 					}
@@ -75,7 +76,7 @@
 				"typeProperties": {
 					"variableName": "averageMargin",
 					"value": {
-						"value": "@activity('complexDTs').output.runstatus.output.values[0].avgMargin",
+						"value": "@activity('complexDTs').output.runStatus.output.values[0].avgMargin",
 						"type": "Expression"
 					}
 				}
