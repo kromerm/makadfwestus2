@@ -60,26 +60,6 @@
 						"firstRowOnly": true
 					}
 				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "complexDTs",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "averageMargin",
-					"value": {
-						"value": "@activity('complexDTs').output.runStatus.output.values[0].avgMargin",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"variables": {
