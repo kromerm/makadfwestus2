@@ -1,4 +1,12 @@
 {
 	"name": "makadfwestus2",
+	"properties": {
+		"globalParameters": {
+			"mygp": {
+				"type": "string",
+				"value": "'test'"
+			}
+		}
+	},
 	"location": "westus2"
 }
