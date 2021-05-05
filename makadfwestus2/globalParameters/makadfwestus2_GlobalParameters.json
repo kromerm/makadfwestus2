@@ -1,1 +1,6 @@
-{}
+{
+	"mygp": {
+		"type": "string",
+		"value": "'test'"
+	}
+}
