@@ -12,13 +12,17 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Parse1"
 				}
 			],
-			"script": "source(output(\n\t\tacctnum as string,\n\t\tfullname as string,\n\t\tphone as string,\n\t\tzip as string,\n\t\txml as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 parse(customers = xml ? (Customers as (Customer as integer,\n\t\tCompanyName as string)),\n\tformat: 'xml',\n\tnamespaces: true) ~> Parse1"
+			"script": "source(output(\n\t\tacctnum as string,\n\t\tfullname as string,\n\t\tphone as string,\n\t\tzip as string,\n\t\txml as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 parse(customers = xml ? (Customers as (Customer as integer,\n\t\tCompanyName as string)),\n\tformat: 'xml',\n\tnamespaces: true) ~> Parse1\nParse1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
