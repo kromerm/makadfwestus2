@@ -93,7 +93,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
 				},
 				"variables": {
 					"averageMargin": {
@@ -188,7 +190,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
 				},
 				"annotations": []
 			},
@@ -239,7 +243,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
 				},
 				"parameters": {
 					"filename": {
@@ -365,7 +371,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
 				},
 				"annotations": []
 			},
