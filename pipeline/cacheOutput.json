@@ -73,13 +73,64 @@
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "None",
+					"cacheSinks": {
+						"firstRowOnly": true
+					}
+				}
+			},
+			{
+				"name": "Set Avg Temp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WeatherStats",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "avgTemp",
+					"value": {
+						"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Max Wind",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Avg Temp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "maxWind",
+					"value": {
+						"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].maxTemp",
+						"type": "Expression"
+					}
 				}
 			}
 		],
 		"policy": {
 			"cancelAfter": {
 				"duration": "30.00:00:00"
+			}
+		},
+		"variables": {
+			"avgTemp": {
+				"type": "String"
+			},
+			"maxWind": {
+				"type": "String"
 			}
 		},
 		"annotations": []
