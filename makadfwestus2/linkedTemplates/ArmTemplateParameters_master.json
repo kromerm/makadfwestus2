@@ -47,6 +47,9 @@
 		"Snowflake1_connectionString": {
 			"value": ""
 		},
+		"WeatherRest_properties_typeProperties_url": {
+			"value": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
 		"containerUri": {
 			"value": ""
 		},

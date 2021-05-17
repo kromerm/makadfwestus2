@@ -13,6 +13,177 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/sqlmovies')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "SQLMovies",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQLMovies",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink3"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "RowCount"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('external', 16)) ~> source1\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as integer,\n\t\tRating as integer,\n\t\tRottenTomato as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'movie',\n\tpartitionBy('external', 16)) ~> source2\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\twildcardPaths:['output/demoout1/movies2021.csv']) ~> source3\nAlterRow1 derive(year = 2021) ~> DerivedColumn1\nsource2 filter(year == 2021) ~> Filter1\nsource1 alterRow(updateIf(year==1980)) ~> AlterRow1\nsource3 aggregate(rowcount = count(1)) ~> RowCount\nDerivedColumn1 sink(input(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as integer,\n\t\tRating as integer,\n\t\tRottenTomato as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nFilter1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['movies2021.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink2\nRowCount sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['movies2021rowcount.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> sink3"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/taxiDemo')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "taxi_fare_data_input1",
+								"type": "DatasetReference"
+							},
+							"name": "taxiSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "taxi_trip_data_input1",
+								"type": "DatasetReference"
+							},
+							"name": "tripSource"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "Aggregate1"
+						},
+						{
+							"name": "Sort1"
+						},
+						{
+							"name": "Aggregate2"
+						},
+						{
+							"name": "Sort2"
+						}
+					],
+					"script": "source(output(\n\t\tmedallion as string,\n\t\t{ hack_license} as string,\n\t\t{ vendor_id} as string,\n\t\t{ pickup_datetime} as timestamp,\n\t\t{ payment_type} as string,\n\t\t{ fare_amount} as double,\n\t\t{ surcharge} as double,\n\t\t{ mta_tax} as double,\n\t\t{ tip_amount} as double,\n\t\t{ tolls_amount} as double,\n\t\t{ total_amount} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> taxiSource\nsource(output(\n\t\tmedallion as string,\n\t\thack_license as string,\n\t\tvendor_id as string,\n\t\trate_code as short,\n\t\tstore_and_fwd_flag as boolean,\n\t\tpickup_datetime as timestamp,\n\t\tdropoff_datetime as timestamp,\n\t\tpassenger_count as short,\n\t\ttrip_time_in_secs as short,\n\t\ttrip_distance as double,\n\t\tpickup_longitude as double,\n\t\tpickup_latitude as double,\n\t\tdropoff_longitude as double,\n\t\tdropoff_latitude as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> tripSource\ntaxiSource, tripSource join(taxiSource@medallion == tripSource@medallion\n\t&& { hack_license} == hack_license,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1 aggregate(groupBy(passenger_count),\n\tavgAmount = round(avg({ total_amount}),2),\n\t\tavgTip = round(avg({ tip_amount}),2)) ~> Aggregate1\nAggregate1 sort(desc(avgTip, true)) ~> Sort1\nJoin1 aggregate(groupBy(round_distance = round(trip_distance)),\n\tavgAmount2 = round(avg({ total_amount}),2),\n\t\tavgTip2 = round(avg({ tip_amount}),2)) ~> Aggregate2\nAggregate2 sort(desc(avgTip2, true)) ~> Sort2\nSort2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'deltataxi',\n\ttruncate:true,\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tpcds')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "tpcds100_storesales",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "datedim",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "Filter1"
+						}
+					],
+					"script": "source(output(\n\t\tss_sold_time_sk as integer,\n\t\tss_item_sk as integer,\n\t\tss_customer_sk as integer,\n\t\tss_cdemo_sk as integer,\n\t\tss_hdemo_sk as integer,\n\t\tss_addr_sk as integer,\n\t\tss_store_sk as integer,\n\t\tss_promo_sk as integer,\n\t\tss_ticket_number as long,\n\t\tss_quantity as integer,\n\t\tss_wholesale_cost as decimal(7,2),\n\t\tss_list_price as decimal(7,2),\n\t\tss_sales_price as decimal(7,2),\n\t\tss_ext_discount_amt as decimal(7,2),\n\t\tss_ext_sales_price as decimal(7,2),\n\t\tss_ext_wholesale_cost as decimal(7,2),\n\t\tss_ext_list_price as decimal(7,2),\n\t\tss_ext_tax as decimal(7,2),\n\t\tss_coupon_amt as decimal(7,2),\n\t\tss_net_paid as decimal(7,2),\n\t\tss_net_paid_inc_tax as decimal(7,2),\n\t\tss_net_profit as decimal(7,2),\n\t\tss_sold_date_sk as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\tpartitionRootPath: 'tpcsales',\n\tformat: 'parquet',\n\twildcardPaths:['SampleData/tpcds/tpcsales/**/*']) ~> source1\nsource(output(\n\t\td_date_sk as integer,\n\t\td_date_id as string,\n\t\td_date as date,\n\t\td_month_seq as integer,\n\t\td_week_seq as integer,\n\t\td_quarter_seq as integer,\n\t\td_year as integer,\n\t\td_dow as integer,\n\t\td_moy as integer,\n\t\td_dom as integer,\n\t\td_qoy as integer,\n\t\td_fy_year as integer,\n\t\td_fy_quarter_seq as integer,\n\t\td_fy_week_seq as integer,\n\t\td_day_name as string,\n\t\td_quarter_name as string,\n\t\td_holiday as string,\n\t\td_weekend as string,\n\t\td_following_holiday as string,\n\t\td_first_dom as integer,\n\t\td_last_dom as integer,\n\t\td_same_day_ly as integer,\n\t\td_same_day_lq as integer,\n\t\td_current_day as string,\n\t\td_current_week as string,\n\t\td_current_month as string,\n\t\td_current_quarter as string,\n\t\td_current_year as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source2\nsource1, source2 join(ss_sold_time_sk == d_date_sk,\n\tjoinType:'inner',\n\tbroadcast: 'right')~> Join1\nJoin1 filter(d_year == 2002) ~> Filter1\nFilter1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tmapColumn(\n\t\tSSDate = ss_sold_time_sk,\n\t\tDDate = d_date_sk,\n\t\t{DYear } = d_year\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/updateMovieParts')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -66,6 +237,43 @@
 						}
 					],
 					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies\nsource(output(\n\t\tmedallion as string,\n\t\thack_license as string,\n\t\tvendor_id as string,\n\t\trate_code as string,\n\t\tstore_and_fwd_flag as string,\n\t\tpickup_datetime as string,\n\t\tdropoff_datetime as string,\n\t\tpassenger_count as string,\n\t\ttrip_time_in_secs as string,\n\t\ttrip_distance as string,\n\t\tpickup_longitude as string,\n\t\tpickup_latitude as string,\n\t\tdropoff_longitude as string,\n\t\tdropoff_latitude as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> taxiSource\nFilter1 derive(movie = '999979',\n\t\ttitle = 'Mark Story') ~> DerivedColumn1\nmovies filter(title == 'Toy Story') ~> Filter1\nDerivedColumn1 select(mapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\ntaxiSource derive(month = split(pickup_datetime,'-')[2],\n\t\tyear = toInteger(split(pickup_datetime,'-')[1])+1,\n\t\tday = split(split(pickup_datetime,' ')[1],'-')[3]) ~> decompdatetime\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionBy('key',\n\t\t0,\n\t\tyear\n\t)) ~> sink1\ndecompdatetime sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionBy('key',\n\t\t0,\n\t\tyear,\n\t\tmonth,\n\t\tday\n\t)) ~> taxiSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weatherStats')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "weatherJson",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Flatten1"
+						},
+						{
+							"name": "Aggregate1"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 foldDown(unroll(properties.periods),\n\tmapColumn(\n\t\televation = properties.elevation,\n\t\tforecastGenerator = properties.forecastGenerator,\n\t\tgeneratedAt = properties.generatedAt,\n\t\tdetailedForecast = properties.periods.detailedForecast,\n\t\tendTime = properties.periods.endTime,\n\t\ticon = properties.periods.icon,\n\t\tisDaytime = properties.periods.isDaytime,\n\t\tname = properties.periods.name,\n\t\tnumber = properties.periods.number,\n\t\tshortForecast = properties.periods.shortForecast,\n\t\tstartTime = properties.periods.startTime,\n\t\ttemperature = properties.periods.temperature,\n\t\ttemperatureTrend = properties.periods.temperatureTrend,\n\t\ttemperatureUnit = properties.periods.temperatureUnit,\n\t\twindDirection = properties.periods.windDirection,\n\t\twindSpeed = properties.periods.windSpeed,\n\t\tunits = properties.units,\n\t\tupdateTime = properties.updateTime,\n\t\tupdated = properties.updated,\n\t\tvalidTimes = properties.validTimes\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nDerivedColumn1 aggregate(avgTemp = avg(temperature),\n\t\tmaxWind = max(windSpeed)) ~> Aggregate1\nFlatten1 derive(windSpeed = toInteger(trim(left(:local1,instr(:local1,' ')-1))),\n\t\tlocal1 := trim(right(windSpeed,6))) ~> DerivedColumn1\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -226,7 +434,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/sqlmovies')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Moving Average')]",
@@ -1530,6 +1740,93 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "taxiDemo",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "taxiDemo",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"taxiSource": {},
+									"tripSource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "updateTaxi",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "taxiDemo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateTaxi",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/taxiDemo')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/GenericSCDType2')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1808,257 +2105,6 @@
 						}
 					],
 					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy(mycols = sha2(256,columns())),\n\teach(match(true()), $$ = first($$))) ~> DistinctRows\nDistinctRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nDistinctRows sink(input(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDescription = mycols\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'allErrors',\n\ttransactionCommit: 'single',\n\treportSuccessOnError: false) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/loans')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTableLoansNews",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						},
-						{
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							},
-							"name": "source2"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						},
-						{
-							"name": "lookupSink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "MaskingPII"
-						},
-						{
-							"name": "Terms"
-						},
-						{
-							"name": "Lookup1"
-						},
-						{
-							"name": "Aggregate1"
-						}
-					],
-					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string,\n\t\tskid as long\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'id',\n\tpartitionBy('external', 32)) ~> source1\nsource(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1 derive(member_id = toInteger(null()),\n\t\temp_title = sha2(256,emp_title,'mysalt'),\n\t\tcolumn1 = 1,\n\t\tlocal1 := 'abc',\n\t\tlocal2 := '123') ~> MaskingPII\nLookup1 split(instr(term,'36') != 0,\n\tdisjoint: false,\n\tpartitionBy('hash', 1)) ~> Terms@(term36, otherTerm)\nMaskingPII, Aggregate1 lookup(column1 == aggkey,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nsource2 aggregate(funded_amnt_stddev = round(stddev(funded_amnt),2),\n\t\tfunded_amnt_avg = round(avg(funded_amnt),2),\n\t\trowcounts = count(1),\n\t\taggkey = max(1)) ~> Aggregate1\nTerms@term36 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['term36.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1\nTerms@otherTerm sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['terms.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> sink2\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> lookupSink"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/makeComplexDTs')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SQLProducts_new",
-								"type": "DatasetReference"
-							},
-							"name": "SQLProds"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Parquet1Folder",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "PruneCols"
-						},
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'ProductID',\n\tpartitionBy('external', 4)) ~> SQLProds\nSQLProds select(mapColumn(\n\t\tProductID,\n\t\tName,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tSize,\n\t\tWeight,\n\t\tProductCategoryID,\n\t\tProductModelID,\n\t\tSellStartDate,\n\t\tSellEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PruneCols\nPruneCols derive(product = @(name=Name,\n\t\tcolor=Color),\n\t\tmargin = ['cost'->StandardCost,'price'->ListPrice],\n\t\tdeconstructedName = split(Name,' ')) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['moviemap1.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/metadataChecker')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Sample metadata checker rules",
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "genericfolder",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQLProducts_new",
-								"type": "DatasetReference"
-							},
-							"name": "DBSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout1",
-								"type": "DatasetReference"
-							},
-							"name": "WriteResults"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ConditionalSplit1"
-						},
-						{
-							"name": "ConditionalSplit2"
-						},
-						{
-							"name": "BuildModel"
-						},
-						{
-							"name": "GroupBadSources"
-						},
-						{
-							"name": "GroupGoodSources"
-						},
-						{
-							"name": "LabelSource"
-						},
-						{
-							"name": "LabelSource2"
-						},
-						{
-							"name": "SetAsBad"
-						},
-						{
-							"name": "SetAsGood"
-						},
-						{
-							"name": "GroupAll"
-						}
-					],
-					"script": "parameters{\n\tfilename as string ('SampleData/moviesDB.csv'),\n\tcolumns as string ('movie,title'),\n\tdbname as string ('products')\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 1,\n\twildcardPaths:[($filename)]) ~> source1\nsource(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 1,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DBSource\nLabelSource2 split(isNull(byName('ProductID')),\n\tdisjoint: false) ~> ConditionalSplit1@(badSchema, goodSchema)\nLabelSource split(isNull(columnNames()[8]),\n\tdisjoint: false) ~> ConditionalSplit2@(badColCount, goodColCount)\nConditionalSplit2@goodColCount derive(MovieID = toInteger(byName('movie')),\n\t\tMovieTitle = byName('title'),\n\t\tMovieYearReleased = toInteger(byName('year')),\n\t\tMovieRating = toInteger(byName('Rating')),\n\t\tMovieGenres = split(toString(byName('genres')),'|')) ~> BuildModel\nConditionalSplit2@badColCount, ConditionalSplit1@badSchema union(byName: true)~> GroupBadSources\nBuildModel, ConditionalSplit1@goodSchema union(byName: true)~> GroupGoodSources\nsource1 derive(sourcename = $filename,\n\t\truleName = 'Column Count') ~> LabelSource\nDBSource derive(sourcename = $dbname,\n\t\truleName = 'ID Check') ~> LabelSource2\nGroupBadSources derive(results = 'bad') ~> SetAsBad\nGroupGoodSources derive(results = 'good') ~> SetAsGood\nSetAsBad, SetAsGood union(byName: true)~> GroupAll\nGroupAll sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['metachecker.csv'],\n\tmapColumn(\n\t\tsourcename,\n\t\truleName,\n\t\tresults\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> WriteResults"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/parse')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTable1",
-								"type": "DatasetReference"
-							},
-							"name": "source8"
-						},
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTable1",
-								"type": "DatasetReference"
-							},
-							"name": "source9"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ParseJSON"
-						},
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "ParseCSV"
-						}
-					],
-					"script": "source(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tjson_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source8\nsource(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source9\nFilter1 parse(levelandregistration = json_value ? (level as string,\n\t\tregistration as long),\n\tformat: 'json',\n\tdocumentForm: 'documentPerLine') ~> ParseJSON\nsource8 filter(ProductDescriptionID == 3) ~> Filter1\nParseJSON parse(newdesc = Description ? (desc1 as string, desc2 as string, desc3 as string),\n\tformat: 'delimited',\n\tcolumnNamesAsHeader: false,\n\tcolumnDelimiter: '|',\n\tnullValue: '') ~> ParseCSV\nParseCSV sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/wranglingdataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTableLoans",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 filter(trim(term) == '36 months') ~> Filter1\nFilter1 derive(loan_amnt = toDecimal(loan_amnt,2),\n\t\tcolumn1 = upper(home_ownership)) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
 				}
 			},
 			"dependsOn": []

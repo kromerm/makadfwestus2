@@ -13,14 +13,265 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
+			"name": "[concat(parameters('factoryName'), '/loans')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableLoansNews",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"name": "lookupSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MaskingPII"
+						},
+						{
+							"name": "Terms"
+						},
+						{
+							"name": "Lookup1"
+						},
+						{
+							"name": "Aggregate1"
+						}
+					],
+					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string,\n\t\tskid as long\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'id',\n\tpartitionBy('external', 32)) ~> source1\nsource(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1 derive(member_id = toInteger(null()),\n\t\temp_title = sha2(256,emp_title,'mysalt'),\n\t\tcolumn1 = 1,\n\t\tlocal1 := 'abc',\n\t\tlocal2 := '123') ~> MaskingPII\nLookup1 split(instr(term,'36') != 0,\n\tdisjoint: false,\n\tpartitionBy('hash', 1)) ~> Terms@(term36, otherTerm)\nMaskingPII, Aggregate1 lookup(column1 == aggkey,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nsource2 aggregate(funded_amnt_stddev = round(stddev(funded_amnt),2),\n\t\tfunded_amnt_avg = round(avg(funded_amnt),2),\n\t\trowcounts = count(1),\n\t\taggkey = max(1)) ~> Aggregate1\nTerms@term36 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['term36.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> sink1\nTerms@otherTerm sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['terms.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> sink2\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> lookupSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/makeComplexDTs')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQLProducts_new",
+								"type": "DatasetReference"
+							},
+							"name": "SQLProds"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet1Folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PruneCols"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionColumn: 'ProductID',\n\tpartitionBy('external', 4)) ~> SQLProds\nSQLProds select(mapColumn(\n\t\tProductID,\n\t\tName,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tSize,\n\t\tWeight,\n\t\tProductCategoryID,\n\t\tProductModelID,\n\t\tSellStartDate,\n\t\tSellEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PruneCols\nPruneCols derive(product = @(name=Name,\n\t\tcolor=Color),\n\t\tmargin = ['cost'->StandardCost,'price'->ListPrice],\n\t\tdeconstructedName = split(Name,' ')) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['moviemap1.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/metadataChecker')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Sample metadata checker rules",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "genericfolder",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "SQLProducts_new",
+								"type": "DatasetReference"
+							},
+							"name": "DBSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout1",
+								"type": "DatasetReference"
+							},
+							"name": "WriteResults"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ConditionalSplit1"
+						},
+						{
+							"name": "ConditionalSplit2"
+						},
+						{
+							"name": "BuildModel"
+						},
+						{
+							"name": "GroupBadSources"
+						},
+						{
+							"name": "GroupGoodSources"
+						},
+						{
+							"name": "LabelSource"
+						},
+						{
+							"name": "LabelSource2"
+						},
+						{
+							"name": "SetAsBad"
+						},
+						{
+							"name": "SetAsGood"
+						},
+						{
+							"name": "GroupAll"
+						}
+					],
+					"script": "parameters{\n\tfilename as string ('SampleData/moviesDB.csv'),\n\tcolumns as string ('movie,title'),\n\tdbname as string ('products')\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 1,\n\twildcardPaths:[($filename)]) ~> source1\nsource(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 1,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DBSource\nLabelSource2 split(isNull(byName('ProductID')),\n\tdisjoint: false) ~> ConditionalSplit1@(badSchema, goodSchema)\nLabelSource split(isNull(columnNames()[8]),\n\tdisjoint: false) ~> ConditionalSplit2@(badColCount, goodColCount)\nConditionalSplit2@goodColCount derive(MovieID = toInteger(byName('movie')),\n\t\tMovieTitle = byName('title'),\n\t\tMovieYearReleased = toInteger(byName('year')),\n\t\tMovieRating = toInteger(byName('Rating')),\n\t\tMovieGenres = split(toString(byName('genres')),'|')) ~> BuildModel\nConditionalSplit2@badColCount, ConditionalSplit1@badSchema union(byName: true)~> GroupBadSources\nBuildModel, ConditionalSplit1@goodSchema union(byName: true)~> GroupGoodSources\nsource1 derive(sourcename = $filename,\n\t\truleName = 'Column Count') ~> LabelSource\nDBSource derive(sourcename = $dbname,\n\t\truleName = 'ID Check') ~> LabelSource2\nGroupBadSources derive(results = 'bad') ~> SetAsBad\nGroupGoodSources derive(results = 'good') ~> SetAsGood\nSetAsBad, SetAsGood union(byName: true)~> GroupAll\nGroupAll sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['metachecker.csv'],\n\tmapColumn(\n\t\tsourcename,\n\t\truleName,\n\t\tresults\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> WriteResults"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/parse')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source8"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source9"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ParseJSON"
+						},
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "ParseCSV"
+						}
+					],
+					"script": "source(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tjson_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source8\nsource(output(\n\t\tProductDescriptionID as integer,\n\t\tDescription as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source9\nFilter1 parse(levelandregistration = json_value ? (level as string,\n\t\tregistration as long),\n\tformat: 'json',\n\tdocumentForm: 'documentPerLine') ~> ParseJSON\nsource8 filter(ProductDescriptionID == 3) ~> Filter1\nParseJSON parse(newdesc = Description ? (desc1 as string, desc2 as string, desc3 as string),\n\tformat: 'delimited',\n\tcolumnNamesAsHeader: false,\n\tcolumnDelimiter: '|',\n\tnullValue: '') ~> ParseCSV\nParseCSV sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wranglingdataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableLoans",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as string,\n\t\tdelinq_2yrs as string,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as string,\n\t\tmths_since_last_delinq as string,\n\t\tmths_since_last_record as string,\n\t\topen_acc as string,\n\t\tpub_rec as string,\n\t\trevol_bal as string,\n\t\trevol_util as string,\n\t\ttotal_acc as string,\n\t\tinitial_list_status as string,\n\t\tout_prncp as string,\n\t\tout_prncp_inv as string,\n\t\ttotal_pymnt as string,\n\t\ttotal_pymnt_inv as string,\n\t\ttotal_rec_prncp as string,\n\t\ttotal_rec_int as string,\n\t\ttotal_rec_late_fee as string,\n\t\trecoveries as string,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as string,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as string,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as string,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as string,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as double,\n\t\ttotal_bal_il as double,\n\t\til_util as string,\n\t\topen_rv_12m as double,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as double,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 filter(trim(term) == '36 months') ~> Filter1\nFilter1 derive(loan_amnt = toDecimal(loan_amnt,2),\n\t\tcolumn1 = upper(home_ownership)) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cacheOutput')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "taxiDemo",
-						"type": "ExecuteDataFlow",
+						"name": "WeatherRestAPI",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -31,30 +282,44 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "taxiDemo",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"taxiSource": {},
-									"tripSource": {},
-									"sink1": {}
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
 								}
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "weatherJson",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					},
 					{
-						"name": "updateTaxi",
+						"name": "WeatherStats",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "taxiDemo",
+								"activity": "WeatherRestAPI",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -70,7 +335,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "updateTaxi",
+								"referenceName": "weatherStats",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -83,7 +348,50 @@
 								"coreCount": 8,
 								"computeType": "General"
 							},
-							"traceLevel": "Fine"
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					},
+					{
+						"name": "Set Avg Temp",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WeatherStats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "avgTemp",
+							"value": {
+								"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Max Wind",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Avg Temp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "maxWind",
+							"value": {
+								"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].maxTemp",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -91,6 +399,14 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {
 						"duration": "30.00:00:00"
+					}
+				},
+				"variables": {
+					"avgTemp": {
+						"type": "String"
+					},
+					"maxWind": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -323,7 +639,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/loans')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Data Cleansing')]",
@@ -694,7 +1012,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/makeComplexDTs')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/loansPipeline')]",
@@ -786,7 +1106,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/loans')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/metadatapipeline')]",
@@ -850,7 +1172,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/metadataChecker')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/wranglingpipeline')]",

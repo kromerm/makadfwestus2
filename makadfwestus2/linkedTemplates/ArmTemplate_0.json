@@ -54,6 +54,10 @@
 		"Snowflake1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
+		},
+		"WeatherRest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		}
 	},
 	"variables": {
@@ -283,6 +287,21 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/WeatherRest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('WeatherRest_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Avro1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -354,42 +373,6 @@
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "wdfoutput"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": {
-							"value": "@dataset().ContainerName",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {

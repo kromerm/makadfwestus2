@@ -62,6 +62,10 @@
 		"Snowflake1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
+		},
+		"WeatherRest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		}
 	},
 	"variables": {
@@ -2457,6 +2461,94 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/folderout')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "taxiDemo",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "taxiDemo",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"taxiSource": {},
+									"tripSource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "updateTaxi",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "taxiDemo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateTaxi",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {
+						"duration": "30.00:00:00"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/taxiDemo')]",
+				"[concat(variables('factoryId'), '/dataflows/updateTaxi')]"
 			]
 		},
 		{
@@ -11019,6 +11111,43 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/updateTaxi')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tround_distance as double,\n\t\tavgAmount2 as double,\n\t\tavgTip2 as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'deltataxi') ~> source1\nsource1 alterRow(deleteIf(round_distance<10.0)) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'deltataxi',\n\tmergeSchema: true,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:false,\n\tkeys:['round_distance','avgAmount2','avgTip2'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/wranglingdataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -11069,14 +11198,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
+			"name": "[concat(parameters('factoryName'), '/cacheOutput')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "taxiDemo",
-						"type": "ExecuteDataFlow",
+						"name": "WeatherRestAPI",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -11087,30 +11216,44 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "taxiDemo",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"taxiSource": {},
-									"tripSource": {},
-									"sink1": {}
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
 								}
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "weatherJson",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					},
 					{
-						"name": "updateTaxi",
+						"name": "WeatherStats",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "taxiDemo",
+								"activity": "WeatherRestAPI",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -11126,7 +11269,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "updateTaxi",
+								"referenceName": "weatherStats",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -11139,7 +11282,50 @@
 								"coreCount": 8,
 								"computeType": "General"
 							},
-							"traceLevel": "Fine"
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					},
+					{
+						"name": "Set Avg Temp",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WeatherStats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "avgTemp",
+							"value": {
+								"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Max Wind",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Avg Temp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "maxWind",
+							"value": {
+								"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].maxTemp",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -11149,15 +11335,82 @@
 						"duration": "30.00:00:00"
 					}
 				},
+				"variables": {
+					"avgTemp": {
+						"type": "String"
+					},
+					"maxWind": {
+						"type": "String"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/taxiDemo')]",
-				"[concat(variables('factoryId'), '/dataflows/updateTaxi')]"
+				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
+				"[concat(variables('factoryId'), '/datasets/weatherJson')]",
+				"[concat(variables('factoryId'), '/dataflows/weatherStats')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/updateTaxi')]",
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "WeatherRest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/WeatherRest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weatherJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "weather.json",
+						"folderPath": "output/json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/WeatherRest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('WeatherRest_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weatherStats')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -11165,32 +11418,34 @@
 				"typeProperties": {
 					"sources": [
 						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
+							"dataset": {
+								"referenceName": "weatherJson",
+								"type": "DatasetReference"
 							},
 							"name": "source1"
 						}
 					],
 					"sinks": [
 						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
 							"name": "sink1"
 						}
 					],
 					"transformations": [
 						{
-							"name": "AlterRow1"
+							"name": "Flatten1"
+						},
+						{
+							"name": "Aggregate1"
+						},
+						{
+							"name": "DerivedColumn1"
 						}
 					],
-					"script": "source(output(\n\t\tround_distance as double,\n\t\tavgAmount2 as double,\n\t\tavgTip2 as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'deltataxi') ~> source1\nsource1 alterRow(deleteIf(round_distance < 10.0)) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'deltataxi',\n\tmergeSchema: true,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:false,\n\tkeys:['round_distance','avgAmount2','avgTip2'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 foldDown(unroll(properties.periods),\n\tmapColumn(\n\t\televation = properties.elevation,\n\t\tforecastGenerator = properties.forecastGenerator,\n\t\tgeneratedAt = properties.generatedAt,\n\t\tdetailedForecast = properties.periods.detailedForecast,\n\t\tendTime = properties.periods.endTime,\n\t\ticon = properties.periods.icon,\n\t\tisDaytime = properties.periods.isDaytime,\n\t\tname = properties.periods.name,\n\t\tnumber = properties.periods.number,\n\t\tshortForecast = properties.periods.shortForecast,\n\t\tstartTime = properties.periods.startTime,\n\t\ttemperature = properties.periods.temperature,\n\t\ttemperatureTrend = properties.periods.temperatureTrend,\n\t\ttemperatureUnit = properties.periods.temperatureUnit,\n\t\twindDirection = properties.periods.windDirection,\n\t\twindSpeed = properties.periods.windSpeed,\n\t\tunits = properties.units,\n\t\tupdateTime = properties.updateTime,\n\t\tupdated = properties.updated,\n\t\tvalidTimes = properties.validTimes\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nDerivedColumn1 aggregate(avgTemp = avg(temperature),\n\t\tmaxWind = max(windSpeed)) ~> Aggregate1\nFlatten1 derive(windSpeed = toInteger(trim(left(:local1,instr(:local1,' ')-1))),\n\t\tlocal1 := trim(right(windSpeed,6))) ~> DerivedColumn1\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('factoryId'), '/datasets/weatherJson')]"
 			]
 		}
 	]
