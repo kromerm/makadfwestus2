@@ -94,7 +94,7 @@
 				"typeProperties": {
 					"variableName": "avgTemp",
 					"value": {
-						"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp",
+						"value": "@string(activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp)",
 						"type": "Expression"
 					}
 				}
@@ -114,7 +114,7 @@
 				"typeProperties": {
 					"variableName": "maxWind",
 					"value": {
-						"value": "@activity('WeatherStats').output.runStatus.output.sink1.value[0].maxTemp",
+						"value": "@string(activity('WeatherStats').output.runStatus.output.sink1.value[0].maxWind)",
 						"type": "Expression"
 					}
 				}
