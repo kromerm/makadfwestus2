@@ -11278,9 +11278,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "None",
 							"cacheSinks": {
@@ -11348,7 +11348,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
 				"[concat(variables('factoryId'), '/datasets/weatherJson')]",
-				"[concat(variables('factoryId'), '/dataflows/weatherStats')]"
+				"[concat(variables('factoryId'), '/dataflows/weatherStats')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
 			]
 		},
 		{
