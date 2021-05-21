@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
+				"name": "Signal Complete",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
