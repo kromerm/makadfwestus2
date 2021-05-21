@@ -67,11 +67,11 @@
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
-		"customEventTrigger_properties_typeProperties_scope": {
+		"custom2_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
 		},
-		"custom2_properties_typeProperties_scope": {
+		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
 		}
@@ -2620,7 +2620,7 @@
 							},
 							"body": [
 								{
-									"id": "1809",
+									"id": "1",
 									"eventType": "pipelineCompleted",
 									"subject": "pipeline",
 									"eventTime": "2021-08-10T21:03:07+00:00",
@@ -2671,9 +2671,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -2708,9 +2708,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -2724,6 +2724,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/taxiDemo')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]",
 				"[concat(variables('factoryId'), '/dataflows/updateTaxi')]"
 			]
 		},
@@ -9108,6 +9109,36 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/custom2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "signalPipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('custom2_properties_typeProperties_scope')]",
+					"events": [
+						"test"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/signalPipeline')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/customEventTrigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -9117,7 +9148,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "complexDTpipe",
+							"referenceName": "taxipipe",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -9134,7 +9165,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/complexDTpipe')]"
+				"[concat(variables('factoryId'), '/pipelines/taxipipe')]"
 			]
 		},
 		{
@@ -11497,36 +11528,6 @@
 				"preventDataExfiltration": false
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/custom2')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "signalPipeline",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "CustomEventsTrigger",
-				"typeProperties": {
-					"subjectEndsWith": "",
-					"subjectBeginsWith": "",
-					"scope": "[parameters('custom2_properties_typeProperties_scope')]",
-					"events": [
-						"test"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/signalPipeline')]"
-			]
 		}
 	]
 }

@@ -1274,7 +1274,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "complexDTpipe",
+							"referenceName": "taxipipe",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -1290,9 +1290,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/complexDTpipe')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
