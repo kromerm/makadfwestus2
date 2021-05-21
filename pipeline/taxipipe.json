@@ -19,9 +19,9 @@
 						"referenceName": "taxiDemo",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
@@ -50,19 +50,14 @@
 						"referenceName": "updateTaxi",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
 			}
 		],
-		"policy": {
-			"cancelAfter": {
-				"duration": "30.00:00:00"
-			}
-		},
 		"annotations": []
 	}
 }
