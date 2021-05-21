@@ -1274,7 +1274,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "Moving Average",
+							"referenceName": "complexDTpipe",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -1290,7 +1290,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/complexDTpipe')]"
+			]
 		}
 	]
 }

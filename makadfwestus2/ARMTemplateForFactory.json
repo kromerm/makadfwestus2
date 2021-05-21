@@ -2595,13 +2595,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"name": "[concat(parameters('factoryName'), '/signalPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Web1",
+						"name": "Signal Complete",
 						"type": "WebActivity",
 						"dependsOn": [],
 						"policy": {
@@ -2616,17 +2616,16 @@
 							"url": "https://makpipelinecomplete.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01",
 							"method": "POST",
 							"headers": {
-								"aeg-sas-key": "dwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
+								"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
 							},
 							"body": [
 								{
-									"id": "1807",
+									"id": "1809",
 									"eventType": "pipelineCompleted",
-									"subject": "myapp/vehicles/motorcycles",
-									"eventTime": "2017-08-10T21:03:07+00:00",
+									"subject": "pipeline",
+									"eventTime": "2021-08-10T21:03:07+00:00",
 									"data": {
-										"make": "Ducati",
-										"model": "Monster"
+										"status": "complete"
 									},
 									"dataVersion": "1.0"
 								}
@@ -9118,7 +9117,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "Moving Average",
+							"referenceName": "complexDTpipe",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -9135,7 +9134,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Moving Average')]"
+				"[concat(variables('factoryId'), '/pipelines/complexDTpipe')]"
 			]
 		},
 		{
@@ -11509,7 +11508,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pipeline2",
+							"referenceName": "signalPipeline",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -11526,7 +11525,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pipeline2')]"
+				"[concat(variables('factoryId'), '/pipelines/signalPipeline')]"
 			]
 		}
 	]

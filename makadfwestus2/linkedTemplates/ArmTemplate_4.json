@@ -95,7 +95,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pipeline2",
+							"referenceName": "signalPipeline",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
