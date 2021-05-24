@@ -45,7 +45,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(string(length(activity('Get Metadata1').output.childItems)), '3')\n",
+						"value": "@greater(string(length(activity('Get Metadata1').output.childItems)), '4')\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
