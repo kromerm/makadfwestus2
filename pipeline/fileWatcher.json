@@ -47,41 +47,7 @@
 					"expression": {
 						"value": "@greater(string(length(activity('Get Metadata1').output.childItems)), '4')\n",
 						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "Signal Complete",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"url": "https://makpipelinecomplete.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01",
-								"method": "POST",
-								"headers": {
-									"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
-								},
-								"body": [
-									{
-										"id": "3",
-										"eventType": "pipelineCompleted",
-										"subject": "pipeline",
-										"eventTime": "2021-08-10T21:03:07+00:00",
-										"data": {
-											"status": "complete"
-										},
-										"dataVersion": "1.0"
-									}
-								]
-							}
-						}
-					]
+					}
 				}
 			}
 		],
