@@ -73,7 +73,14 @@
 					{
 						"name": "Signal Complete",
 						"type": "WebActivity",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -88,24 +95,34 @@
 							"headers": {
 								"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
 							},
-							"body": [
-								{
-									"id": "1",
-									"eventType": "pipelineCompleted",
-									"subject": "pipeline",
-									"eventTime": "2021-08-10T21:03:07+00:00",
-									"data": {
-										"status": "complete"
-									},
-									"dataVersion": "1.0"
-								}
-							]
+							"body": {
+								"value": "@json(variables('myid'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "myid",
+							"value": {
+								"value": "@concat('[{\"id\":\"',string(rand(1,5000000)),'\",\"eventType\":\"pipelineCompleted\",\"subject\":\"pipeline\",\"eventTime\":\"2021-08-10T21:03:07+00:00\",\"data\":{\"status\":\"complete\"},\"dataVersion\":\"1.0\"}]')",
+								"type": "Expression"
+							}
 						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
+				},
+				"variables": {
+					"myid": {
+						"type": "String"
+					}
 				},
 				"annotations": []
 			},

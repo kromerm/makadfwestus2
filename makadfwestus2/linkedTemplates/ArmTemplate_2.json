@@ -762,7 +762,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/folderout')]",
+			"name": "[concat(parameters('factoryName'), '/facts')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -775,7 +775,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "output/demoout1",
+						"folderPath": "SampleData/Facts",
 						"container": "mycontainer"
 					},
 					"columnDelimiter": ",",

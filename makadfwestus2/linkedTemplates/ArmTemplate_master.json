@@ -201,9 +201,6 @@
 					},
 					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -224,6 +221,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					},
 					"custom2_properties_typeProperties_scope": {
 						"value": "[parameters('custom2_properties_typeProperties_scope')]"
