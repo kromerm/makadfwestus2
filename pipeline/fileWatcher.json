@@ -97,6 +97,11 @@
 				}
 			}
 		],
+		"variables": {
+			"myid": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
