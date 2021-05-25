@@ -71,6 +71,10 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
 		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -136,6 +140,9 @@
 					},
 					"WeatherRest_properties_typeProperties_url": {
 						"value": "[parameters('WeatherRest_properties_typeProperties_url')]"
+					},
+					"customEventTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -194,12 +201,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -220,6 +221,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -281,8 +288,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"customEventTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					}
 				}
 			},

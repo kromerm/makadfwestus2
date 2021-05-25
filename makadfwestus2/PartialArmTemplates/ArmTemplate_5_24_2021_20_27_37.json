@@ -1,0 +1,63 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/customEventTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete",
+					"events": [
+						"pipelineCompleted"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "taxipipe",
+							"type": "PipelineReference"
+						}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete",
+					"events": [
+						"pipelineFailed"
+					]
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -58,12 +58,80 @@
 		"WeatherRest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
+		"customEventTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/signalPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Signal Complete",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://makpipelinecomplete.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01",
+							"method": "POST",
+							"headers": {
+								"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
+							},
+							"body": {
+								"value": "@json(variables('myid'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "myid",
+							"value": {
+								"value": "@concat('[{\"id\":\"',string(rand(1,5000000)),'\",\"eventType\":\"pipelineCompleted\",\"subject\":\"pipeline\",\"eventTime\":\"2021-08-10T21:03:07+00:00\",\"data\":{\"status\":\"complete\"},\"dataVersion\":\"1.0\"}]')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"myid": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -232,6 +300,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/customEventTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('customEventTrigger_properties_typeProperties_scope')]",
+					"events": [
+						"pipelineCompleted"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowIRwReuse')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -346,65 +434,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/tpcds')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Binary2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "SampleData/tpcds/tpcsales",
-						"container": "mycontainer"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "wdfoutput"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": {
-							"value": "@dataset().ContainerName",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		}
 	]

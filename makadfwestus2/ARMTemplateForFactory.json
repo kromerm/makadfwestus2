@@ -70,6 +70,10 @@
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
 		}
 	},
 	"variables": {
@@ -2719,7 +2723,7 @@
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "Data flow1",
+								"activity": "Set variable1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2757,112 +2761,6 @@
 								"type": "Expression"
 							}
 						}
-					},
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Set variable1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": false,
-									"wildcardFolderPath": "SampleData/Facts",
-									"wildcardFileName": "*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "facts",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "folderout",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Copy data1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "weatherStats",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "dataflowIRwReuse",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "Fine"
-						}
 					}
 				],
 				"policy": {
@@ -2876,12 +2774,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/facts')]",
-				"[concat(variables('factoryId'), '/datasets/folderout')]",
-				"[concat(variables('factoryId'), '/dataflows/weatherStats')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
@@ -9383,16 +9276,8 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "taxipipe",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "CustomEventsTrigger",
 				"typeProperties": {
 					"subjectEndsWith": "",
@@ -9403,9 +9288,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/taxipipe')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflowIRwReuse')]",
@@ -11767,6 +11650,36 @@
 				"preventDataExfiltration": false
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "taxipipe",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"events": [
+						"pipelineFailed"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/taxipipe')]"
+			]
 		}
 	]
 }
