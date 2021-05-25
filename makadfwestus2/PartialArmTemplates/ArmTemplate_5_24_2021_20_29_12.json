@@ -1,0 +1,76 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/signalPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Signal Complete",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://makpipelinecomplete.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01",
+							"method": "POST",
+							"headers": {
+								"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
+							},
+							"body": {
+								"value": "@json(variables('myid'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "myid",
+							"value": {
+								"value": "@concat('[{\"id\":\"',string(rand(1,5000000)),'\",\"eventType\":\"pipelineCompleted\",\"subject\":\"pipeline\",\"eventTime\":\"2021-08-10T21:03:07+00:00\",\"data\":{\"status\":\"complete\"},\"dataVersion\":\"1.0\"}]')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"myid": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
