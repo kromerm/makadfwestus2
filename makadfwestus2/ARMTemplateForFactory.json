@@ -67,10 +67,6 @@
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
-		"custom2_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
-		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
@@ -2723,7 +2719,7 @@
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "Set variable1",
+								"activity": "Data flow1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2761,6 +2757,112 @@
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"wildcardFolderPath": "SampleData/Facts",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "facts",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "folderout",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "weatherStats",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -2774,7 +2876,12 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/facts')]",
+				"[concat(variables('factoryId'), '/datasets/folderout')]",
+				"[concat(variables('factoryId'), '/dataflows/weatherStats')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/taxipipe')]",
@@ -9271,36 +9378,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/custom2')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "signalPipeline",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "CustomEventsTrigger",
-				"typeProperties": {
-					"subjectEndsWith": "",
-					"subjectBeginsWith": "",
-					"scope": "[parameters('custom2_properties_typeProperties_scope')]",
-					"events": [
-						"test"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/signalPipeline')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/customEventTrigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -11634,7 +11711,7 @@
 							"name": "DerivedColumn1"
 						}
 					],
-					"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 foldDown(unroll(properties.periods),\n\tmapColumn(\n\t\televation = properties.elevation,\n\t\tforecastGenerator = properties.forecastGenerator,\n\t\tgeneratedAt = properties.generatedAt,\n\t\tdetailedForecast = properties.periods.detailedForecast,\n\t\tendTime = properties.periods.endTime,\n\t\ticon = properties.periods.icon,\n\t\tisDaytime = properties.periods.isDaytime,\n\t\tname = properties.periods.name,\n\t\tnumber = properties.periods.number,\n\t\tshortForecast = properties.periods.shortForecast,\n\t\tstartTime = properties.periods.startTime,\n\t\ttemperature = properties.periods.temperature,\n\t\ttemperatureTrend = properties.periods.temperatureTrend,\n\t\ttemperatureUnit = properties.periods.temperatureUnit,\n\t\twindDirection = properties.periods.windDirection,\n\t\twindSpeed = properties.periods.windSpeed,\n\t\tunits = properties.units,\n\t\tupdateTime = properties.updateTime,\n\t\tupdated = properties.updated,\n\t\tvalidTimes = properties.validTimes\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nDerivedColumn1 aggregate(avgTemp = avg(temperature),\n\t\tmaxWind = max(windSpeed)) ~> Aggregate1\nFlatten1 derive(windSpeed = toInteger(trim(left(:local1,instr(:local1,' ')-1))),\n\t\tlocal1 := trim(right(windSpeed,6))) ~> DerivedColumn1\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: true,\n\tsaveOrder: 1) ~> sink1"
+					"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 foldDown(unroll(properties.periods),\n\tmapColumn(\n\t\televation = properties.elevation,\n\t\tforecastGenerator = properties.forecastGenerator,\n\t\tgeneratedAt = properties.generatedAt,\n\t\tdetailedForecast = properties.periods.detailedForecast,\n\t\tendTime = properties.periods.endTime,\n\t\ticon = properties.periods.icon,\n\t\tisDaytime = properties.periods.isDaytime,\n\t\tname = properties.periods.name,\n\t\tnumber = properties.periods.number,\n\t\tshortForecast = properties.periods.shortForecast,\n\t\tstartTime = properties.periods.startTime,\n\t\ttemperature = properties.periods.temperature,\n\t\ttemperatureTrend = properties.periods.temperatureTrend,\n\t\ttemperatureUnit = properties.periods.temperatureUnit,\n\t\twindDirection = properties.periods.windDirection,\n\t\twindSpeed = properties.periods.windSpeed,\n\t\tunits = properties.units,\n\t\tupdateTime = properties.updateTime,\n\t\tupdated = properties.updated,\n\t\tvalidTimes = properties.validTimes\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nDerivedColumn1 aggregate(avgTemp = avg(temperature),\n\t\tmaxWind = max(windSpeed)) ~> Aggregate1\nFlatten1 derive(windSpeed = toInteger(trim(left(:local1,instr(:local1,' ')-1))),\n\t\tlocal1 := trim(right(windSpeed,6))) ~> DerivedColumn1\nAggregate1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": [
