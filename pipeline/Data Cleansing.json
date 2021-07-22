@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "PowerQuery1",
+						"referenceName": "moviesWrangling",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -37,7 +37,7 @@
 								"referenceName": "folderout",
 								"type": "DatasetReference"
 							},
-							"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> folderout"
+							"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tmovie = {SQLMovies.movie},\n\t\ttitle = {SQLMovies.title},\n\t\tgenres = {SQLMovies.genres},\n\t\tyear = {SQLMovies.year},\n\t\tRating = {SQLMovies.Rating},\n\t\tRottenTomato = {SQLMovies.RottenTomato},\n\t\tid,\n\t\tmember_id,\n\t\tloan_amnt,\n\t\tfunded_amnt,\n\t\tfunded_amnt_inv,\n\t\tterm,\n\t\tint_rate,\n\t\tinstallment,\n\t\tgrade,\n\t\tsub_grade,\n\t\temp_title,\n\t\temp_length,\n\t\thome_ownership,\n\t\tannual_inc,\n\t\tverification_status,\n\t\tissue_d,\n\t\tloan_status,\n\t\tpymnt_plan,\n\t\turl,\n\t\tdesc,\n\t\tpurpose,\n\t\tzip_code,\n\t\taddr_state,\n\t\tdti,\n\t\tdelinq_2yrs,\n\t\tearliest_cr_line,\n\t\tinq_last_6mths,\n\t\tmths_since_last_delinq,\n\t\tmths_since_last_record,\n\t\topen_acc,\n\t\tpub_rec,\n\t\trevol_bal,\n\t\trevol_util,\n\t\ttotal_acc,\n\t\tinitial_list_status,\n\t\tout_prncp,\n\t\tout_prncp_inv,\n\t\ttotal_pymnt,\n\t\ttotal_pymnt_inv,\n\t\ttotal_rec_prncp,\n\t\ttotal_rec_int,\n\t\ttotal_rec_late_fee,\n\t\trecoveries,\n\t\tcollection_recovery_fee,\n\t\tlast_pymnt_d,\n\t\tlast_pymnt_amnt,\n\t\tnext_pymnt_d,\n\t\tlast_credit_pull_d,\n\t\tcollections_12_mths_ex_med,\n\t\tmths_since_last_major_derog,\n\t\tpolicy_code,\n\t\tapplication_type,\n\t\tannual_inc_joint,\n\t\tdti_joint,\n\t\tverification_status_joint,\n\t\tacc_now_delinq,\n\t\ttot_coll_amt,\n\t\ttot_cur_bal,\n\t\topen_acc_6m,\n\t\topen_il_6m,\n\t\topen_il_12m,\n\t\topen_il_24m,\n\t\tmths_since_rcnt_il,\n\t\ttotal_bal_il,\n\t\til_util,\n\t\topen_rv_12m,\n\t\topen_rv_24m,\n\t\tmax_bal_bc,\n\t\tall_util,\n\t\ttotal_rev_hi_lim,\n\t\tinq_fi,\n\t\ttotal_cu_tl,\n\t\tinq_last_12m\n\t)) ~> folderout"
 						}
 					}
 				}
