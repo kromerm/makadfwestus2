@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb2'"
 		},
+		"FileServer1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileServer1'"
+		},
 		"SQLMovies_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
@@ -58,6 +62,14 @@
 		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "SQLDW"
+		},
+		"FileServer1_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\temp\\moviesDB.csv"
+		},
+		"FileServer1_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "redmond\\makromer"
 		},
 		"Snowflake1_connectionString": {
 			"type": "secureString",
@@ -222,11 +234,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"FileServer1_password": {
+						"value": "[parameters('FileServer1_password')]"
+					},
 					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
 					},
 					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"FileServer1_properties_typeProperties_host": {
+						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
+					},
+					"FileServer1_properties_typeProperties_userId": {
+						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},

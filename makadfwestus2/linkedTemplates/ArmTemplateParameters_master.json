@@ -26,6 +26,9 @@
 		"CosmosDb2_connectionString": {
 			"value": ""
 		},
+		"FileServer1_password": {
+			"value": ""
+		},
 		"SQLMovies_connectionString": {
 			"value": ""
 		},
@@ -43,6 +46,12 @@
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 			"value": "SQLDW"
+		},
+		"FileServer1_properties_typeProperties_host": {
+			"value": "C:\\temp\\moviesDB.csv"
+		},
+		"FileServer1_properties_typeProperties_userId": {
+			"value": "redmond\\makromer"
 		},
 		"Snowflake1_connectionString": {
 			"value": ""
