@@ -1,0 +1,15 @@
+{
+	"name": "DestinationDataset_o90",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLMovies",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"table": "demo123"
+		}
+	}
+}
