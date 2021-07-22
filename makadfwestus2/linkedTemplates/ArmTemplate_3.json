@@ -13,6 +13,250 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/datedim')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "part-00000-7e8901d3-b6e7-4dc3-b6dd-af0a9093a8d4-c000.snappy.parquet",
+						"folderPath": "SampleData/tpcds",
+						"container": "mycontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "d_date_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "d_date_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_date",
+						"type": "DATE"
+					},
+					{
+						"name": "d_month_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_week_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_quarter_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_year",
+						"type": "INT32"
+					},
+					{
+						"name": "d_dow",
+						"type": "INT32"
+					},
+					{
+						"name": "d_moy",
+						"type": "INT32"
+					},
+					{
+						"name": "d_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_qoy",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_year",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_quarter_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_week_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_day_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_quarter_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_holiday",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_weekend",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_following_holiday",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_first_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_last_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_same_day_ly",
+						"type": "INT32"
+					},
+					{
+						"name": "d_same_day_lq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_current_day",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_week",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_month",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_quarter",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_year",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dogjson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Dog.json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"success": {
+							"type": "string"
+						},
+						"timestamp": {
+							"type": "string"
+						},
+						"base": {
+							"type": "string"
+						},
+						"date": {
+							"type": "string"
+						},
+						"rates": {
+							"type": "object",
+							"properties": {
+								"AED": {
+									"type": "number"
+								},
+								"AFN": {
+									"type": "number"
+								},
+								"ALL": {
+									"type": "number"
+								},
+								"AMD": {
+									"type": "number"
+								},
+								"UAH": {
+									"type": "number"
+								},
+								"UGX": {
+									"type": "number"
+								},
+								"USD": {
+									"type": "number"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dqrules')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dqrules1.csv",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Rule Name",
+						"type": "String"
+					},
+					{
+						"name": "Source",
+						"type": "String"
+					},
+					{
+						"name": "Type",
+						"type": "String"
+					},
+					{
+						"name": "PassRule",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dupefolder')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1131,265 +1375,6 @@
 					{
 						"name": "dropoff_latitude",
 						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/textWithJSON')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "Currency_ARS.txt",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": "\t",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/tpcds100_storesales')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "SampleData/tpcds/tpcsales",
-						"container": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "ss_sold_time_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_item_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_customer_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_cdemo_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_hdemo_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_addr_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_store_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_promo_sk",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_ticket_number",
-						"type": "INT64"
-					},
-					{
-						"name": "ss_quantity",
-						"type": "INT32"
-					},
-					{
-						"name": "ss_wholesale_cost",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_list_price",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_sales_price",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_ext_discount_amt",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_ext_sales_price",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_ext_wholesale_cost",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_ext_list_price",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_ext_tax",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_coupon_amt",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_net_paid",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_net_paid_inc_tax",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_net_profit",
-						"type": "DECIMAL",
-						"precision": 7,
-						"scale": 2
-					},
-					{
-						"name": "ss_sold_date_sk",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/userdata')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "userdata1.parquet",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "registration_dttm",
-						"type": "INT96"
-					},
-					{
-						"name": "id",
-						"type": "INT32"
-					},
-					{
-						"name": "first_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "last_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "email",
-						"type": "UTF8"
-					},
-					{
-						"name": "gender",
-						"type": "UTF8"
-					},
-					{
-						"name": "ip_address",
-						"type": "UTF8"
-					},
-					{
-						"name": "cc",
-						"type": "UTF8"
-					},
-					{
-						"name": "country",
-						"type": "UTF8"
-					},
-					{
-						"name": "birthdate",
-						"type": "UTF8"
-					},
-					{
-						"name": "salary",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "title",
-						"type": "UTF8"
-					},
-					{
-						"name": "comments",
-						"type": "UTF8"
 					}
 				]
 			},
