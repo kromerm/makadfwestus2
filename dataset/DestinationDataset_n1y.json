@@ -1,0 +1,15 @@
+{
+	"name": "DestinationDataset_n1y",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"table": "DTPDemo1"
+		}
+	}
+}
