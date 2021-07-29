@@ -1,0 +1,33 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage3')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"sasUri": "https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv?sv=2020-04-08&st=2021-07-29T01%3A53%3A50Z&se=2021-07-30T01%3A53%3A50Z&sr=b&sp=r&sig=pzUKfcW0Nnw3fS4qNxqSzQtpBXUtQ6bQyWEYTblYYuo%3D",
+					"sasToken": {
+						"type": "SecureString",
+						"value": "**********"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
