@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://marktest-4ac2.restdb.io/weather/",
+			"url": "https://marktest-4ac2.restdb.io/rest/weather/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
