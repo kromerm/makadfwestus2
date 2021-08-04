@@ -43,9 +43,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
 		},
+		"restdb_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'restdb'"
+		},
 		"tpcds_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
+		},
+		"AzureBlobStorage3_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'AzureBlobStorage3'"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
@@ -71,6 +79,10 @@
 			"type": "string",
 			"defaultValue": "redmond\\makromer"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
 		"Snowflake1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
@@ -78,6 +90,22 @@
 		"WeatherRest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
+		"dummyrest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://dummy.restapiexample.com/api/v1/create"
+		},
+		"rest1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/"
+		},
+		"restdb_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://marktest-4ac2.restdb.io/rest/Weather/"
+		},
+		"restdb_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "kromerm@gmail.com"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -138,8 +166,14 @@
 					"SQLMovies_connectionString": {
 						"value": "[parameters('SQLMovies_connectionString')]"
 					},
+					"restdb_password": {
+						"value": "[parameters('restdb_password')]"
+					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"
+					},
+					"AzureBlobStorage3_sasUri": {
+						"value": "[parameters('AzureBlobStorage3_sasUri')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
@@ -147,11 +181,26 @@
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
 					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
+					},
 					"Snowflake1_connectionString": {
 						"value": "[parameters('Snowflake1_connectionString')]"
 					},
 					"WeatherRest_properties_typeProperties_url": {
 						"value": "[parameters('WeatherRest_properties_typeProperties_url')]"
+					},
+					"dummyrest_properties_typeProperties_url": {
+						"value": "[parameters('dummyrest_properties_typeProperties_url')]"
+					},
+					"rest1_properties_typeProperties_url": {
+						"value": "[parameters('rest1_properties_typeProperties_url')]"
+					},
+					"restdb_properties_typeProperties_url": {
+						"value": "[parameters('restdb_properties_typeProperties_url')]"
+					},
+					"restdb_properties_typeProperties_userName": {
+						"value": "[parameters('restdb_properties_typeProperties_userName')]"
 					},
 					"customEventTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
@@ -328,6 +377,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_7')]"
+			]
+		},
+		{
+			"name": "makadfwestus2_ArmTemplate_9",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_9.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
@@ -335,7 +404,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_7')]"
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_8')]"
 			]
 		}
 	]

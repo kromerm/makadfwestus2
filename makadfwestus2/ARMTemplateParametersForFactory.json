@@ -32,7 +32,13 @@
 		"SQLMovies_connectionString": {
 			"value": ""
 		},
+		"restdb_password": {
+			"value": ""
+		},
 		"tpcds_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage3_sasUri": {
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
@@ -53,11 +59,26 @@
 		"FileServer1_properties_typeProperties_userId": {
 			"value": "redmond\\makromer"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
 		"Snowflake1_connectionString": {
 			"value": ""
 		},
 		"WeatherRest_properties_typeProperties_url": {
 			"value": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+		},
+		"dummyrest_properties_typeProperties_url": {
+			"value": "http://dummy.restapiexample.com/api/v1/create"
+		},
+		"rest1_properties_typeProperties_url": {
+			"value": "https://reqres.in/"
+		},
+		"restdb_properties_typeProperties_url": {
+			"value": "https://marktest-4ac2.restdb.io/rest/Weather/"
+		},
+		"restdb_properties_typeProperties_userName": {
+			"value": "kromerm@gmail.com"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"value": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"
