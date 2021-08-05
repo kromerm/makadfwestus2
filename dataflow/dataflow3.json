@@ -23,7 +23,7 @@
 						"referenceName": "Address",
 						"type": "DatasetReference"
 					},
-					"name": "source3"
+					"name": "Address"
 				}
 			],
 			"sinks": [
@@ -31,8 +31,24 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
-			"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustAddress\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Customer\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source3\nCustAddress sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
+			"transformations": [
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "Join2"
+				},
+				{
+					"name": "Aggregate1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Select1"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustAddress\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Customer\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Address\nCustomer, CustAddress join(Customer@CustomerID == CustAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1, Address join(CustAddress@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join2\nJoin2 aggregate(groupBy(StateProvince),\n\tnumberofms = countIf(Title == 'Ms.',1),\n\t\tnumberofmr = countIf(Title == 'Mr.',1)) ~> Aggregate1\nJoin2 derive(customerStruct = @(lastname=LastName,\n\t\tphone=Phone,\n\t\tstate=CountryRegion)) ~> DerivedColumn1\nDerivedColumn1 select(mapColumn(\n\t\tcustomerStruct = customerStruct\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nCustAddress sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
