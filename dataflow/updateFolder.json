@@ -14,7 +14,7 @@
 			],
 			"sinks": [],
 			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\trowUrlColumn: 'myfilename',\n\tpartitionRootPath: 'tpcsales',\n\tformat: 'parquet',\n\tcontainer: 'mycontainer',\n\tcompressionCodec: 'snappy',\n\twildcardPaths:['SampleData/tpcds/tpcsales/**/*.parquet']) ~> source1"
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\trowUrlColumn: 'myfilename',\n\tformat: 'parquet',\n\tcontainer: 'mycontainer',\n\tcompressionCodec: 'snappy',\n\twildcardPaths:['SampleData/tpcds/salesdata/**/*.parquet']) ~> source1"
 		}
 	}
 }
