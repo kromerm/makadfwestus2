@@ -14,7 +14,7 @@
 			],
 			"sinks": [],
 			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\trowUrlColumn: 'myfilename',\n\tformat: 'parquet',\n\tcontainer: 'mycontainer',\n\tcompressionCodec: 'snappy',\n\twildcardPaths:['SampleData/tpcds/salesdata/**/*.parquet']) ~> source1"
+			"script": "source(output(\n\t\tss_sold_time_sk as integer,\n\t\tss_item_sk as integer,\n\t\tss_customer_sk as integer,\n\t\tss_cdemo_sk as integer,\n\t\tss_hdemo_sk as integer,\n\t\tss_addr_sk as integer,\n\t\tss_store_sk as integer,\n\t\tss_promo_sk as integer,\n\t\tss_ticket_number as long,\n\t\tss_quantity as integer,\n\t\tss_wholesale_cost as decimal(7,2),\n\t\tss_list_price as decimal(7,2),\n\t\tss_sales_price as decimal(7,2),\n\t\tss_ext_discount_amt as decimal(7,2),\n\t\tss_ext_sales_price as decimal(7,2),\n\t\tss_ext_wholesale_cost as decimal(7,2),\n\t\tss_ext_list_price as decimal(7,2),\n\t\tss_ext_tax as decimal(7,2),\n\t\tss_coupon_amt as decimal(7,2),\n\t\tss_net_paid as decimal(7,2),\n\t\tss_net_paid_inc_tax as decimal(7,2),\n\t\tss_net_profit as decimal(7,2)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\trowUrlColumn: 'myfilename',\n\tformat: 'parquet',\n\tcontainer: 'mycontainer',\n\tcompressionCodec: 'snappy',\n\twildcardPaths:['SampleData/tpcds/salesdata/**/*.parquet']) ~> source1"
 		}
 	}
 }

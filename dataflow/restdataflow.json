@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"linkedService": {
-						"referenceName": "dummyrest",
+						"referenceName": "restdb",
 						"type": "LinkedServiceReference"
 					},
 					"name": "sink1"
