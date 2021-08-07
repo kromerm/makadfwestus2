@@ -1,0 +1,12 @@
+{
+	"name": "dummyRest2",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://dummy.restapiexample.com/api/v1",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
