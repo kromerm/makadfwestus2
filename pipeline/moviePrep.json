@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "sarah dataflow1",
+				"name": "dawson dataflow1",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [],
 				"policy": {
@@ -40,7 +40,7 @@
 				"type": "AzureFunctionActivity",
 				"dependsOn": [
 					{
-						"activity": "sarah dataflow1",
+						"activity": "dawson dataflow1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
