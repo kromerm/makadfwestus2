@@ -22,7 +22,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\t{id } as string,\n\t\t{ name } as string,\n\t\t{ phone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+			"script": "source(output(\n\t\t{id } as string,\n\t\t{ name } as string,\n\t\t{ phone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tpartitionBy('key',\n\t\t0,\n\t\tERROR_FUNCTION('')\n\t)) ~> sink1"
 		}
 	}
 }
