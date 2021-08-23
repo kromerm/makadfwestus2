@@ -81,22 +81,41 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlSource",
-						"sqlReaderQuery": {
-							"value": "select * from @{pipeline().parameters.Data_Source_Table_Name} where @{pipeline().parameters.Data_Source_WaterMarkColumn} > '@{activity('LookupLastWaterMark').output.firstRow.WatermarkValue}' and @{pipeline().parameters.Data_Source_WaterMarkColumn} <= '@{activity('LookupCurrentWaterMark').output.firstRow.NewWatermarkValue}'",
-							"type": "Expression"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@activity('LookupLastWaterMark').output.firstRow.WatermarkValue",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@activity('LookupCurrentWaterMark').output.firstRow.NewWatermarkValue",
+								"type": "Expression"
+							},
+							"enablePartitionDiscovery": false
 						},
-						"partitionOption": "None"
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink"
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false,
 					"dataIntegrationUnits": 0
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlDatabaseDataSource1",
+						"referenceName": "genericfolder",
 						"type": "DatasetReference"
 					}
 				],
