@@ -31,6 +31,10 @@
 			{
 				"name": "genres",
 				"type": "String"
+			},
+			{
+				"name": "year",
+				"type": "String"
 			}
 		]
 	}
