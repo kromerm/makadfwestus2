@@ -39,10 +39,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
 		},
-		"restdb_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'restdb'"
-		},
 		"tpcds_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
@@ -71,6 +67,10 @@
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
+		"dummyRest2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dummy.restapiexample.com/api/v1/create"
+		},
 		"dummyrest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "http://dummy.restapiexample.com/api/v1/create"
@@ -82,10 +82,6 @@
 		"restdb_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://marktest-4ac2.restdb.io/rest/Weather/"
-		},
-		"restdb_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "kromerm@gmail.com"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -343,6 +339,21 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/dummyRest2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('dummyRest2_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dummyrest')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -382,12 +393,7 @@
 				"typeProperties": {
 					"url": "[parameters('restdb_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('restdb_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('restdb_password')]"
-					}
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -421,27 +427,6 @@
 					"events": [
 						"pipelineCompleted"
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflowIRwReuse')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "AutoResolve",
-						"dataFlowProperties": {
-							"computeType": "MemoryOptimized",
-							"coreCount": 48,
-							"timeToLive": 240,
-							"cleanup": false,
-							"externalComputeInfo": []
-						}
-					}
 				}
 			},
 			"dependsOn": []

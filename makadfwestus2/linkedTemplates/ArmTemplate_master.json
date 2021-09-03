@@ -43,10 +43,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
 		},
-		"restdb_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'restdb'"
-		},
 		"tpcds_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
@@ -91,6 +87,10 @@
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
+		"dummyRest2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dummy.restapiexample.com/api/v1/create"
+		},
 		"dummyrest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "http://dummy.restapiexample.com/api/v1/create"
@@ -102,10 +102,6 @@
 		"restdb_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://marktest-4ac2.restdb.io/rest/Weather/"
-		},
-		"restdb_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "kromerm@gmail.com"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -166,9 +162,6 @@
 					"SQLMovies_connectionString": {
 						"value": "[parameters('SQLMovies_connectionString')]"
 					},
-					"restdb_password": {
-						"value": "[parameters('restdb_password')]"
-					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"
 					},
@@ -190,6 +183,9 @@
 					"WeatherRest_properties_typeProperties_url": {
 						"value": "[parameters('WeatherRest_properties_typeProperties_url')]"
 					},
+					"dummyRest2_properties_typeProperties_url": {
+						"value": "[parameters('dummyRest2_properties_typeProperties_url')]"
+					},
 					"dummyrest_properties_typeProperties_url": {
 						"value": "[parameters('dummyrest_properties_typeProperties_url')]"
 					},
@@ -198,9 +194,6 @@
 					},
 					"restdb_properties_typeProperties_url": {
 						"value": "[parameters('restdb_properties_typeProperties_url')]"
-					},
-					"restdb_properties_typeProperties_userName": {
-						"value": "[parameters('restdb_properties_typeProperties_userName')]"
 					},
 					"customEventTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
@@ -282,21 +275,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FileServer1_password": {
-						"value": "[parameters('FileServer1_password')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"FileServer1_properties_typeProperties_host": {
-						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
-					},
-					"FileServer1_properties_typeProperties_userId": {
-						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -317,6 +295,21 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FileServer1_password": {
+						"value": "[parameters('FileServer1_password')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"FileServer1_properties_typeProperties_host": {
+						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
+					},
+					"FileServer1_properties_typeProperties_userId": {
+						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -397,6 +390,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_8')]"
+			]
+		},
+		{
+			"name": "makadfwestus2_ArmTemplate_10",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_10.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
@@ -404,7 +417,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_8')]"
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_9')]"
 			]
 		}
 	]
