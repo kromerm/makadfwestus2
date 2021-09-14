@@ -1,0 +1,44 @@
+{
+	"name": "Json4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Guinea Pig.json",
+				"container": "mycontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"columnNames": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"analysisData": {
+					"type": "array",
+					"items": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				},
+				"resCode": {
+					"type": "integer"
+				},
+				"message": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

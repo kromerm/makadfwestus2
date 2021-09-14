@@ -1,0 +1,92 @@
+{
+	"name": "adlsgen2folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SampleData",
+				"fileSystem": "mycontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "identifier",
+				"type": "String"
+			},
+			{
+				"name": "createdOn",
+				"type": "String"
+			},
+			{
+				"name": "modifiedOn",
+				"type": "String"
+			},
+			{
+				"name": "originalTimeZoneUTCOffset",
+				"type": "String"
+			},
+			{
+				"name": "sourceAuthority",
+				"type": "String"
+			},
+			{
+				"name": "salutation",
+				"type": "String"
+			},
+			{
+				"name": "firstName",
+				"type": "String"
+			},
+			{
+				"name": "nickName",
+				"type": "String"
+			},
+			{
+				"name": "middleName",
+				"type": "String"
+			},
+			{
+				"name": "lastName",
+				"type": "String"
+			},
+			{
+				"name": "suffix",
+				"type": "String"
+			},
+			{
+				"name": "fullName",
+				"type": "String"
+			},
+			{
+				"name": "birthdayDay",
+				"type": "String"
+			},
+			{
+				"name": "birthdayMonth",
+				"type": "String"
+			},
+			{
+				"name": "birthdayYear",
+				"type": "String"
+			},
+			{
+				"name": "birthDate",
+				"type": "String"
+			},
+			{
+				"name": "genderCode",
+				"type": "String"
+			}
+		]
+	}
+}
