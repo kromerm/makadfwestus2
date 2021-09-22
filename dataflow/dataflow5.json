@@ -5,9 +5,9 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "moviesCSV",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
 					},
 					"name": "source1"
 				}
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Parquet1Folder",
+						"referenceName": "adlsgen2folder",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -26,7 +26,7 @@
 					"name": "DerivedColumn1"
 				}
 			],
-			"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 derive(each(match(instr(name,'year') > 0), $$ = toInteger($$) * 2),\n\t\teach(match(type == 'string'), $$ = trim($$))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tyear\n\t)) ~> sink1"
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\trowUrlColumn: 'myfilename',\n\tformat: 'delimited',\n\tcontainer: 'mycontainer',\n\tcolumnDelimiter: ',',\n\tescapeChar: '\\\\',\n\tquoteChar: '\\\"',\n\tcolumnNamesAsHeader: true,\n\twildcardPaths:['County*.csv']) ~> source1\nsource1 derive(each(match(instr(name,'year')>0), $$ = toInteger($$) * 2),\n\t\teach(match(type=='string'), $$ = trim($$))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tidentifier as string,\n\t\tcreatedOn as string,\n\t\tmodifiedOn as string,\n\t\toriginalTimeZoneUTCOffset as string,\n\t\tsourceAuthority as string,\n\t\tsalutation as string,\n\t\tfirstName as string,\n\t\tnickName as string,\n\t\tmiddleName as string,\n\t\tlastName as string,\n\t\tsuffix as string,\n\t\tfullName as string,\n\t\tbirthdayDay as string,\n\t\tbirthdayMonth as string,\n\t\tbirthdayYear as string,\n\t\tbirthDate as string,\n\t\tgenderCode as string\n\t),\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: ['mkdir /processed','mv /County*.csv /processed'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tyear\n\t)) ~> sink1"
 		}
 	}
 }
