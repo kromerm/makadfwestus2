@@ -56,8 +56,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow5",
-						"type": "DataFlowReference"
+						"referenceName": "AWDataFlow",
+						"type": "DataFlowReference",
+						"parameters": {
+							"CustomerID": "29485"
+						}
 					},
 					"compute": {
 						"coreCount": 8,
