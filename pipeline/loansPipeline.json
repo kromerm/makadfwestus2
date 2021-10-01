@@ -23,11 +23,8 @@
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "None",
-					"runConcurrently": true,
-					"cacheSinks": {
-						"firstRowOnly": true
-					}
+					"traceLevel": "Fine",
+					"runConcurrently": true
 				}
 			},
 			{
@@ -58,11 +55,8 @@
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "None",
-					"runConcurrently": true,
-					"cacheSinks": {
-						"firstRowOnly": true
-					}
+					"traceLevel": "Fine",
+					"runConcurrently": true
 				}
 			}
 		],
