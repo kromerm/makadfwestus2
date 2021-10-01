@@ -23,7 +23,7 @@
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Coarse"
+					"traceLevel": "Fine"
 				}
 			},
 			{
