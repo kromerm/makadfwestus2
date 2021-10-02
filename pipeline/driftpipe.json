@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "driftflow",
+						"referenceName": "driftflow-1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
