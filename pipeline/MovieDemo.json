@@ -1,0 +1,51 @@
+{
+	"name": "MovieDemo",
+	"properties": {
+		"description": "Calculating average movie rating by genre and year using Power Query",
+		"activities": [
+			{
+				"name": "AverageMovieRating",
+				"description": "Calculating average movie rating by genre and year",
+				"type": "ExecuteWranglingDataflow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "MovieDemo",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "MovieSink",
+									"dataset": {
+										"referenceName": "MovieSink",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> MovieSink"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "MovieDemo"
+		},
+		"annotations": []
+	}
+}
