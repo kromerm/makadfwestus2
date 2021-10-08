@@ -1,12 +1,12 @@
 {
-	"name": "powerquery6",
+	"name": "TaxiWrangle",
 	"properties": {
 		"type": "WranglingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"name": "taxi_fare_data_input1",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  taxi_fare_data_input1",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> taxi_fare_data_input1",
 					"dataset": {
 						"referenceName": "taxi_fare_data_input1",
 						"type": "DatasetReference"
