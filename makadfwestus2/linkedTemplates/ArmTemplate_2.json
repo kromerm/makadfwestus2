@@ -2721,13 +2721,16 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MoviesD2')]",
+			"name": "[concat(parameters('factoryName'), '/MovieData')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MovieDemo"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -2744,10 +2747,6 @@
 					"quoteChar": "\""
 				},
 				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
 					{
 						"name": "title",
 						"type": "String"
