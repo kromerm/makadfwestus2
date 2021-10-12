@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "powerquery6",
+						"referenceName": "TaxiWrangle",
 						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {
