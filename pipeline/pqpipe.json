@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "powerquery6",
+				"name": "TaxiPQ",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "TaxiWrangle",
+						"referenceName": "mytaxidemo",
 						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {
