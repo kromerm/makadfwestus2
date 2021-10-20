@@ -1,0 +1,36 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "makadfwestus2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataExplorer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataExplorer",
+				"typeProperties": {
+					"endpoint": "https://makwestadx001.westus.kusto.windows.net",
+					"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+					"servicePrincipalId": "db5dd0cc-41df-48b2-9308-c1d95176ee82",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"database": "makadxdb001"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
