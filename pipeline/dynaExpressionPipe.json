@@ -19,7 +19,7 @@
 						"referenceName": "dynaExpression",
 						"type": "DataFlowReference",
 						"parameters": {
-							"dqrule1": "\"Color == 'Red'\""
+							"dqrule1": "\"Color == 'Black'\""
 						}
 					},
 					"integrationRuntime": {
