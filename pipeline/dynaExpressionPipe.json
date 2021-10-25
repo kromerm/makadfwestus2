@@ -16,8 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "ADXDataFlow",
-						"type": "DataFlowReference"
+						"referenceName": "dynaExpression",
+						"type": "DataFlowReference",
+						"parameters": {
+							"dqrule1": "\"Color == 'Red'\""
+						}
 					},
 					"integrationRuntime": {
 						"referenceName": "dataflowIRwReuse",
