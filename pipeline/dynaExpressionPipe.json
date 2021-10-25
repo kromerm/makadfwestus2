@@ -1,9 +1,9 @@
 {
-	"name": "pipeline3",
+	"name": "dynaExpressionPipe",
 	"properties": {
 		"activities": [
 			{
-				"name": "ADX Data Flow",
+				"name": "dynaExpression",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
