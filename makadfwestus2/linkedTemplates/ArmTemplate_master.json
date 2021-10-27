@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
 		},
+		"AzureDataExplorer1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'AzureDataExplorer1'"
+		},
 		"AzureDataLakeStorage1_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
@@ -50,6 +54,22 @@
 		"AzureBlobStorage3_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'AzureBlobStorage3'"
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://makwestadx001.westus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "db5dd0cc-41df-48b2-9308-c1d95176ee82"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "makadxdb001"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
@@ -144,6 +164,9 @@
 					"AzureBlobStorage2_connectionString": {
 						"value": "[parameters('AzureBlobStorage2_connectionString')]"
 					},
+					"AzureDataExplorer1_servicePrincipalKey": {
+						"value": "[parameters('AzureDataExplorer1_servicePrincipalKey')]"
+					},
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
@@ -167,6 +190,18 @@
 					},
 					"AzureBlobStorage3_sasUri": {
 						"value": "[parameters('AzureBlobStorage3_sasUri')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_endpoint": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_endpoint')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_tenant": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_tenant')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_database": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
@@ -194,9 +229,6 @@
 					},
 					"restdb_properties_typeProperties_url": {
 						"value": "[parameters('restdb_properties_typeProperties_url')]"
-					},
-					"customEventTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -215,6 +247,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"customEventTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -430,6 +465,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_10')]"
+			]
+		},
+		{
+			"name": "makadfwestus2_ArmTemplate_12",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_12.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
@@ -437,7 +492,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_10')]"
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_11')]"
 			]
 		}
 	]

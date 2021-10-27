@@ -11,6 +11,9 @@
 		"AzureBlobStorage2_connectionString": {
 			"value": ""
 		},
+		"AzureDataExplorer1_servicePrincipalKey": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
@@ -37,6 +40,18 @@
 		},
 		"AzureBlobStorage3_sasUri": {
 			"value": ""
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"value": "https://makwestadx001.westus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+			"value": "db5dd0cc-41df-48b2-9308-c1d95176ee82"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"value": "makadxdb001"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://makadlsg2east.dfs.core.windows.net"
