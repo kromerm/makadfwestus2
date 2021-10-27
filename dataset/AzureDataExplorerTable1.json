@@ -1,0 +1,72 @@
+{
+	"name": "AzureDataExplorerTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataExplorer1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureDataExplorerTable",
+		"schema": [
+			{
+				"name": "medallion",
+				"type": "guid"
+			},
+			{
+				"name": "hack_license",
+				"type": "guid"
+			},
+			{
+				"name": "vendor_id",
+				"type": "string"
+			},
+			{
+				"name": "rate_code",
+				"type": "long"
+			},
+			{
+				"name": "store_and_fwd_flag",
+				"type": "string"
+			},
+			{
+				"name": "pickup_datetime",
+				"type": "datetime"
+			},
+			{
+				"name": "dropoff_datetime",
+				"type": "datetime"
+			},
+			{
+				"name": "passenger_count",
+				"type": "long"
+			},
+			{
+				"name": "trip_time_in_secs",
+				"type": "long"
+			},
+			{
+				"name": "trip_distance",
+				"type": "real"
+			},
+			{
+				"name": "pickup_longitude",
+				"type": "real"
+			},
+			{
+				"name": "pickup_latitude",
+				"type": "real"
+			},
+			{
+				"name": "dropoff_longitude",
+				"type": "real"
+			},
+			{
+				"name": "dropoff_latitude",
+				"type": "real"
+			}
+		],
+		"typeProperties": {
+			"table": "marktable"
+		}
+	}
+}
