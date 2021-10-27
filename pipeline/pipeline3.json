@@ -58,14 +58,14 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"dqrule1": {
-								"value": "'@{activity('Lookup1').output.value[2].PassRule}'",
+								"value": "'@{string(activity('Lookup1').output.value[2].PassRule)}'",
 								"type": "Expression"
 							}
 						}
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
