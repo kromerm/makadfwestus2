@@ -3,98 +3,30 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Retrieve names of 1000s files",
-				"type": "GetMetadata",
+				"name": "sinkIfMoreThanNRows",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "7.00:00:00",
+					"timeout": "1.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
-			},
-			{
-				"name": "Train-test split",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Retrieve names of 1000s files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
 				"userProperties": [],
 				"typeProperties": {
-					"activities": [
-						{
-							"name": "Mapping Data Cleansing",
-							"type": "ExecuteDataFlow",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "1.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"compute": {
-									"coreCount": 8,
-									"computeType": "General"
-								},
-								"traceLevel": "Fine"
-							}
-						},
-						{
-							"name": "TrainOrTest",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Mapping Data Cleansing",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"ifFalseActivities": [
-									{
-										"name": "Send email",
-										"type": "WebActivity",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "7.00:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": []
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "Train model",
-										"type": "DatabricksNotebook",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "7.00:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": []
-									}
-								]
-							}
+					"dataflow": {
+						"referenceName": "sinkIfMoreThanNRows",
+						"type": "DataFlowReference",
+						"parameters": {
+							"parameter1": "0"
 						}
-					]
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
 				}
 			}
 		],
