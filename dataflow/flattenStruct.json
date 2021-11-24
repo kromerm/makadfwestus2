@@ -15,13 +15,13 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "DerivedColumn1"
+					"name": "FlattenStructure"
 				},
 				{
-					"name": "Flatten1"
+					"name": "FlattenArray"
 				}
 			],
-			"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 derive(each(geometry, match(true()), $$ = $$)) ~> DerivedColumn1\nDerivedColumn1 foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates = coordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1"
+			"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 derive(each(geometry, match(true()), $$ = $$)) ~> FlattenStructure\nFlattenStructure foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenArray"
 		}
 	}
 }
