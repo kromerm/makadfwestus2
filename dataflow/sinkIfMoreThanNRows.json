@@ -33,16 +33,16 @@
 			],
 			"transformations": [
 				{
-					"name": "Filter1"
-				},
-				{
 					"name": "Aggregate1"
 				},
 				{
 					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "Filter1"
 				}
 			],
-			"script": "parameters{\n\tparameter1 as integer (0)\n}\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesSource\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> rowcountSource\nmoviesSource filter(year == 1980) ~> Filter1\nrowcountSource aggregate(rowcount = count(1)) ~> Aggregate1\nFilter1 split(sink1#output().rowcount > $parameter1,\n\tdisjoint: false) ~> ConditionalSplit1@(greaterThan, lessThan)\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nConditionalSplit1@greaterThan sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+			"script": "parameters{\n\tparameter1 as integer (0)\n}\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesSource\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> rowcountSource\nFilter1 aggregate(rowcount = count(1)) ~> Aggregate1\nmoviesSource split(sink1#output().rowcount > $parameter1,\n\tdisjoint: false) ~> ConditionalSplit1@(greaterThan, lessThan)\nrowcountSource filter(year == 1880) ~> Filter1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nConditionalSplit1@greaterThan sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
 		}
 	}
 }
