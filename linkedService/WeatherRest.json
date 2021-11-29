@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://api.weather.gov/alerts/active",
+			"url": "https://api.weather.gov/gridpoints/SEW/124,67/forecast",
 			"enableServerCertificateValidation": false,
 			"authenticationType": "Anonymous"
 		}
