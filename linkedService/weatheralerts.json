@@ -4,8 +4,8 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://api.weather.gov/",
-			"enableServerCertificateValidation": true,
+			"url": "https://api.weather.gov/alerts/active",
+			"enableServerCertificateValidation": false,
 			"authenticationType": "Anonymous"
 		}
 	}
