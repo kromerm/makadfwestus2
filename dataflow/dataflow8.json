@@ -13,7 +13,18 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "ExternalCall1",
+					"linkedService": {
+						"referenceName": "RestService2",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"name": "DerivedColumn1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          AddressID as integer,",
@@ -29,7 +40,20 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1"
+				"     format: 'table') ~> source1",
+				"DerivedColumn1 call(output(",
+				"          headers as [string,string],",
+				"          body as (zip_codes as string)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     store: 'restservice',",
+				"     format: 'rest',",
+				"     timeout: 30,",
+				"     httpMethod: 'GET',",
+				"     rowRelativeUrl: 'url',",
+				"     requestFormat: ['type' -> 'json'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> ExternalCall1",
+				"source1 derive(url = \"/${City}/${StateProvince}\") ~> DerivedColumn1"
 			]
 		}
 	}
