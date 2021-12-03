@@ -12,7 +12,11 @@
 					"name": "jsonSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "FlattenStructure"
@@ -27,7 +31,7 @@
 					"name": "Flatten2"
 				}
 			],
-			"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> jsonSource\njsonSource derive(each(geometry, match(true()), $$ = $$)) ~> FlattenStructure\nFlattenStructure foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenArray\nFlattenArray foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten2"
+			"script": "source(output(\n\t\t{@context} as string[],\n\t\tgeometry as (coordinates as double[][][], type as string),\n\t\tproperties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string),\n\t\ttype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> jsonSource\njsonSource derive(each(geometry, match(true()), $$ = $$)) ~> FlattenStructure\nFlattenStructure foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenArray\nFlattenArray foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 foldDown(unroll(coordinates),\n\tmapColumn(\n\t\tcoordinates,\n\t\ttype\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten2\nFlatten2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
