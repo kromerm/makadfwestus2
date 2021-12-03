@@ -19,7 +19,7 @@
 						"value": "@Concat(pipeline().parameters.SynapseEndpoint,'/pipelines/',pipeline().parameters.PLName,'/createRun?api-version=2020-12-01')",
 						"type": "Expression"
 					},
-					"method": "POST",
+					"method": "GET",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://dev.azuresynapse.net/"
