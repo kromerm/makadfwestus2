@@ -74,6 +74,9 @@
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
+		"RestService2_properties_typeProperties_url": {
+			"value": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
+		},
 		"Snowflake1_connectionString": {
 			"value": ""
 		},
@@ -91,6 +94,9 @@
 		},
 		"restdb_properties_typeProperties_url": {
 			"value": "https://marktest-4ac2.restdb.io/rest/Weather/"
+		},
+		"weatheralerts_properties_typeProperties_url": {
+			"value": "https://api.weather.gov/alerts/active"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"value": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makadfwestus2/providers/Microsoft.EventGrid/topics/makpipelinecomplete"

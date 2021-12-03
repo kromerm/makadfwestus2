@@ -99,6 +99,10 @@
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
 		},
+		"RestService2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
+		},
 		"Snowflake1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
@@ -122,6 +126,10 @@
 		"restdb_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://marktest-4ac2.restdb.io/rest/Weather/"
+		},
+		"weatheralerts_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.weather.gov/alerts/active"
 		},
 		"customEventTrigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -185,9 +193,6 @@
 					"SQLMovies_connectionString": {
 						"value": "[parameters('SQLMovies_connectionString')]"
 					},
-					"tpcds_connectionString": {
-						"value": "[parameters('tpcds_connectionString')]"
-					},
 					"AzureBlobStorage3_sasUri": {
 						"value": "[parameters('AzureBlobStorage3_sasUri')]"
 					},
@@ -212,6 +217,9 @@
 					"RestService1_properties_typeProperties_url": {
 						"value": "[parameters('RestService1_properties_typeProperties_url')]"
 					},
+					"RestService2_properties_typeProperties_url": {
+						"value": "[parameters('RestService2_properties_typeProperties_url')]"
+					},
 					"Snowflake1_connectionString": {
 						"value": "[parameters('Snowflake1_connectionString')]"
 					},
@@ -226,9 +234,6 @@
 					},
 					"rest1_properties_typeProperties_url": {
 						"value": "[parameters('rest1_properties_typeProperties_url')]"
-					},
-					"restdb_properties_typeProperties_url": {
-						"value": "[parameters('restdb_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -247,6 +252,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"tpcds_connectionString": {
+						"value": "[parameters('tpcds_connectionString')]"
+					},
+					"restdb_properties_typeProperties_url": {
+						"value": "[parameters('restdb_properties_typeProperties_url')]"
+					},
+					"weatheralerts_properties_typeProperties_url": {
+						"value": "[parameters('weatheralerts_properties_typeProperties_url')]"
 					},
 					"customEventTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('customEventTrigger_properties_typeProperties_scope')]"
