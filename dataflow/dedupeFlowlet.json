@@ -1,5 +1,5 @@
 {
-	"name": "dedupeProb21",
+	"name": "dedupeFlowlet",
 	"properties": {
 		"type": "Flowlet",
 		"typeProperties": {
