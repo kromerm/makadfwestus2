@@ -1,0 +1,22 @@
+{
+	"name": "dataflow6",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "compose1",
+					"flowlet": {
+						"referenceName": "MyDeltaSource",
+						"type": "DataFlowReference"
+					}
+				}
+			],
+			"scriptLines": [
+				"compose(composition: 'MyDeltaSource') ~> compose1@(output1)"
+			]
+		}
+	}
+}

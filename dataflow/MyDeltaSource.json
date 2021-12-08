@@ -13,7 +13,14 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "Filter1"
+				},
+				{
+					"name": "output1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          round_distance as double,",
@@ -25,7 +32,9 @@
 				"     ignoreNoFilesFound: true,",
 				"     format: 'delta',",
 				"     fileSystem: 'mycontainer',",
-				"     folderPath: 'deltataxi') ~> source1"
+				"     folderPath: 'deltataxi') ~> source1",
+				"source1 filter(round_distance > 12.0) ~> Filter1",
+				"Filter1 output() ~> output1"
 			]
 		}
 	}
