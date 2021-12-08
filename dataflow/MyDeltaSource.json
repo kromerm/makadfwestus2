@@ -1,0 +1,32 @@
+{
+	"name": "MyDeltaSource",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          round_distance as double,",
+				"          avgAmount2 as double,",
+				"          avgTip2 as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: true,",
+				"     format: 'delta',",
+				"     fileSystem: 'mycontainer',",
+				"     folderPath: 'deltataxi') ~> source1"
+			]
+		}
+	}
+}
