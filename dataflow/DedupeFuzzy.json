@@ -1,5 +1,5 @@
 {
-	"name": "dedupeProb2",
+	"name": "DedupeFuzzy",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
