@@ -37,14 +37,13 @@
 				"     ),",
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
+				"     ignoreNoFilesFound: true,",
 				"     enableCdc: true,",
-				"     mode: 'read',",
-				"     wildcardPaths:['cdc/movies.csv']) ~> source1",
-				"source1 derive(currenttime = 'cdc/movies'+toString(currentTimestamp())+'.csv') ~> DerivedColumn1",
+				"     mode: 'read') ~> source1",
+				"source1 derive(currenttime = 'movies'+replace(toString(currentTimestamp()),':','')+'.csv') ~> DerivedColumn1",
 				"DerivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     rowUrlColumn:'currenttime',",
+				"     rowFolderUrlColumn:'currenttime',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
