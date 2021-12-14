@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "folderout",
+						"referenceName": "folderout_cdc",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -43,7 +43,9 @@
 				"source1 derive(currenttime = 'movies'+replace(toString(currentTimestamp()),':','')+'.csv') ~> DerivedColumn1",
 				"DerivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     rowFolderUrlColumn:'currenttime',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
