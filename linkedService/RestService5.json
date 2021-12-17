@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://reqres.in/api/users",
+			"url": "https://reqres.in",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
