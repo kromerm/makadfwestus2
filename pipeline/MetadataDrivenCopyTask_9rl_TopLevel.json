@@ -4,7 +4,7 @@
 		"description": "This pipeline will count the total number of objects (tables etc.) required to be copied in this run, come up with the number of sequential batches based on the max allowed concurrent copy task, and then execute another pipeline to copy different batches sequentially.",
 		"activities": [
 			{
-				"name": "GetSumOfObjectsToCopy",
+				"name": "Files to Copy",
 				"description": "Count the total number of objects (tables etc.) required to be copied in this run.",
 				"type": "Lookup",
 				"dependsOn": [],
@@ -32,12 +32,12 @@
 				}
 			},
 			{
-				"name": "CopyBatchesOfObjectsSequentially",
+				"name": "Iterate over files",
 				"description": "Come up with the number of sequential batches based on the max allowed concurrent copy tasks, and then execute another pipeline to copy different batches sequentially.",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "GetSumOfObjectsToCopy",
+						"activity": "Files to Copy",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -97,6 +97,81 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "SCD Type2",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Iterate over files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "GenericSCDType2",
+						"type": "DataFlowReference",
+						"parameters": {
+							"PrimaryKey": "'ID'",
+							"Columns": "'Player,Team,Salary'"
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "SCD Type2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			},
+			{
+				"name": "Web1_copy1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "SCD Type2",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
