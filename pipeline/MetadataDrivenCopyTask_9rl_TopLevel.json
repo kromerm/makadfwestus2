@@ -4,40 +4,12 @@
 		"description": "This pipeline will count the total number of objects (tables etc.) required to be copied in this run, come up with the number of sequential batches based on the max allowed concurrent copy task, and then execute another pipeline to copy different batches sequentially.",
 		"activities": [
 			{
-				"name": "Files to Copy",
-				"description": "Count the total number of objects (tables etc.) required to be copied in this run.",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "SELECT count(*) as count FROM @{pipeline().parameters.MainControlTableName} where TopLevelPipelineName='@{pipeline().Pipeline}' and CopyEnabled = 1",
-							"type": "Expression"
-						},
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "MetadataDrivenCopyTask_9rl_ControlDS",
-						"type": "DatasetReference"
-					}
-				}
-			},
-			{
 				"name": "Iterate over files",
 				"description": "Come up with the number of sequential batches based on the max allowed concurrent copy tasks, and then execute another pipeline to copy different batches sequentially.",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Files to Copy",
+						"activity": "Get files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -46,53 +18,39 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@range(0, add(div(activity('GetSumOfObjectsToCopy').output.firstRow.count,\n                    pipeline().parameters.MaxNumberOfConcurrentTasks),\n                    if(equals(mod(activity('GetSumOfObjectsToCopy').output.firstRow.count,\n                    pipeline().parameters.MaxNumberOfConcurrentTasks), 0), 0, 1)))",
+						"value": "@activity('Get files').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "CopyObjectsInOneBtach",
-							"description": "Execute another pipeline to copy one batch of objects. The objects belonging to this batch will be copied parallelly.",
-							"type": "ExecutePipeline",
+							"name": "Clean and Prep",
+							"type": "ExecuteDataFlow",
 							"dependsOn": [],
+							"policy": {
+								"timeout": "1.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "MetadataDrivenCopyTask_9rl_MiddleLevel",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"MaxNumberOfObjectsReturnedFromLookupActivity": {
-										"value": "@pipeline().parameters.MaxNumberOfObjectsReturnedFromLookupActivity",
-										"type": "Expression"
-									},
-									"TopLevelPipelineName": {
-										"value": "@{pipeline().Pipeline}",
-										"type": "Expression"
-									},
-									"TriggerName": {
-										"value": "@{pipeline().TriggerName}",
-										"type": "Expression"
-									},
-									"CurrentSequentialNumberOfBatch": {
-										"value": "@item()",
-										"type": "Expression"
-									},
-									"SumOfObjectsToCopy": {
-										"value": "@activity('GetSumOfObjectsToCopy').output.firstRow.count",
-										"type": "Expression"
-									},
-									"SumOfObjectsToCopyForCurrentBatch": {
-										"value": "@min(pipeline().parameters.MaxNumberOfConcurrentTasks, activity('GetSumOfObjectsToCopy').output.firstRow.count)",
-										"type": "Expression"
-									},
-									"MainControlTableName": {
-										"value": "@pipeline().parameters.MainControlTableName",
-										"type": "Expression"
+								"dataflow": {
+									"referenceName": "dataflow2",
+									"type": "DataFlowReference",
+									"parameters": {
+										"parameter1": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
 									}
-								}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
 							}
 						}
 					]
@@ -119,12 +77,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "GenericSCDType2",
-						"type": "DataFlowReference",
-						"parameters": {
-							"PrimaryKey": "'ID'",
-							"Columns": "'Player,Team,Salary'"
-						}
+						"referenceName": "Moving Average",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
@@ -151,7 +105,11 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://www.yahoo.com",
+					"method": "GET"
+				}
 			},
 			{
 				"name": "Web1_copy1",
@@ -171,7 +129,40 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://www.yahoo.com",
+					"method": "GET"
+				}
+			},
+			{
+				"name": "Get files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "genericfolder",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
 			}
 		],
 		"parameters": {
