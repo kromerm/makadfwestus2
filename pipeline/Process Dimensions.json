@@ -1,5 +1,5 @@
 {
-	"name": "MetadataDrivenCopyTask_9rl_TopLevel",
+	"name": "Process Dimensions",
 	"properties": {
 		"description": "This pipeline will count the total number of objects (tables etc.) required to be copied in this run, come up with the number of sequential batches based on the max allowed concurrent copy task, and then execute another pipeline to copy different batches sequentially.",
 		"activities": [
