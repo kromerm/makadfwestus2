@@ -88,7 +88,7 @@
 				}
 			},
 			{
-				"name": "Web1",
+				"name": "Send email",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
@@ -112,7 +112,7 @@
 				}
 			},
 			{
-				"name": "Web1_copy1",
+				"name": "Send to Teams",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
