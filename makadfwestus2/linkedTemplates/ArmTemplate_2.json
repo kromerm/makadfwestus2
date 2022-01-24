@@ -13,6 +13,177 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Binary2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "SampleData/tpcds/tpcsales",
+						"container": "mycontainer"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ContainerName": {
+						"type": "string",
+						"defaultValue": "wdfoutput"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().ContainerName",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ContainerName": {
+						"type": "string",
+						"defaultValue": "wdfoutput"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().ContainerName",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataDestination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your destination data store.",
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Data_Destination_Container": {
+						"type": "String"
+					},
+					"Data_Destination_Directory": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@{dataset().Data_Destination_Directory}",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@{dataset().Data_Destination_Container}",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataDestination1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your destination data store.",
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Data_Destination_Container": {
+						"type": "String"
+					},
+					"Data_Destination_Directory": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@{dataset().Data_Destination_Directory}",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@{dataset().Data_Destination_Container}",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataDestination2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -927,1402 +1098,6 @@
 								},
 								"messages": {
 									"type": "array"
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1Movies')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "movies.json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"title": {
-							"type": "string"
-						},
-						"year": {
-							"type": "integer"
-						},
-						"cast": {
-							"type": "array"
-						},
-						"genres": {
-							"type": "array"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1Radio')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "small_radio_json.json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"ts": {
-							"type": "integer"
-						},
-						"userId": {
-							"type": "string"
-						},
-						"sessionId": {
-							"type": "integer"
-						},
-						"page": {
-							"type": "string"
-						},
-						"auth": {
-							"type": "string"
-						},
-						"method": {
-							"type": "string"
-						},
-						"status": {
-							"type": "integer"
-						},
-						"level": {
-							"type": "string"
-						},
-						"itemInSession": {
-							"type": "integer"
-						},
-						"location": {
-							"type": "string"
-						},
-						"lastName": {
-							"type": "string"
-						},
-						"firstName": {
-							"type": "string"
-						},
-						"registration": {
-							"type": "integer"
-						},
-						"gender": {
-							"type": "string"
-						},
-						"artist": {
-							"type": "string"
-						},
-						"song": {
-							"type": "string"
-						},
-						"length": {
-							"type": "number"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1Zips')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "zips.json",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"_id": {
-							"type": "string"
-						},
-						"city": {
-							"type": "string"
-						},
-						"loc": {
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						"pop": {
-							"type": "integer"
-						},
-						"state": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1cat')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "Cat.json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"Animal": {
-							"type": "string"
-						},
-						"Colour": {
-							"type": "string"
-						},
-						"Age": {
-							"type": "string"
-						},
-						"Visits": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"Reason": {
-										"type": "string"
-									},
-									"Date": {
-										"type": "string"
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "5G8S002ZF (003).json",
-						"folderPath": "SampleData/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"docType": {
-							"type": "string"
-						},
-						"pageRange": {
-							"type": "array",
-							"items": {
-								"type": "integer"
-							}
-						},
-						"fields": {
-							"type": "object",
-							"properties": {
-								"Court Date": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Color": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Birthday": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Evidence of Financial": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Owner Street": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Height": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Area": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Perm Area": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Dec Date": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Court Location": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Time of Violation": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Make": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Owner Address": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Violation 1": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Beat": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Eyes": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Race": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Citing Officer": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Court Phone & Web": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Case Number": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Body Style": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Violation 2": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Hair": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Driver License": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Date of Violation": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Sex": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Age": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Excuted at": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Registered Owner or Lessee": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"street": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Day of week of Violation": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Type": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Model": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Max Speed": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Weight": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Speed Approx": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Patrol Vehicle No": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Citing Officer ID No": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Location of Violation": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Year": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Name": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Court Time": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"address": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
-								},
-								"Vehicle Lic or Vin": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										},
-										"valueString": {
-											"type": "string"
-										},
-										"text": {
-											"type": "string"
-										},
-										"page": {
-											"type": "integer"
-										},
-										"boundingBox": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
-										},
-										"confidence": {
-											"type": "number"
-										}
-									}
 								}
 							}
 						}

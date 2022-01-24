@@ -6,6 +6,26 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "makadfwestus2"
+		},
+		"FileServer1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileServer1'"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "SQLDB1"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "SQLDW"
+		},
+		"FileServer1_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\temp\\moviesDB.csv"
+		},
+		"FileServer1_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "redmond\\makromer"
 		}
 	},
 	"variables": {
@@ -13,7 +33,442 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/restdataflow')]",
+			"name": "[concat(parameters('factoryName'), '/textWithJSON')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Currency_ARS.txt",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": "\t",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tpcds100_storesales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "SampleData/tpcds/tpcsales",
+						"container": "mycontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ss_sold_time_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_item_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_customer_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_cdemo_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_hdemo_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_addr_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_store_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_promo_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_ticket_number",
+						"type": "INT64"
+					},
+					{
+						"name": "ss_quantity",
+						"type": "INT32"
+					},
+					{
+						"name": "ss_wholesale_cost",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_list_price",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_sales_price",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_ext_discount_amt",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_ext_sales_price",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_ext_wholesale_cost",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_ext_list_price",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_ext_tax",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_coupon_amt",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_net_paid",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_net_paid_inc_tax",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_net_profit",
+						"type": "DECIMAL",
+						"precision": 7,
+						"scale": 2
+					},
+					{
+						"name": "ss_sold_date_sk",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/userdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "userdata1.parquet",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "registration_dttm",
+						"type": "INT96"
+					},
+					{
+						"name": "id",
+						"type": "INT32"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "email",
+						"type": "UTF8"
+					},
+					{
+						"name": "gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "ip_address",
+						"type": "UTF8"
+					},
+					{
+						"name": "cc",
+						"type": "UTF8"
+					},
+					{
+						"name": "country",
+						"type": "UTF8"
+					},
+					{
+						"name": "birthdate",
+						"type": "UTF8"
+					},
+					{
+						"name": "salary",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "title",
+						"type": "UTF8"
+					},
+					{
+						"name": "comments",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weatherJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "weather.json",
+						"folderPath": "output/json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FileServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('FileServer1_properties_typeProperties_host')]",
+					"userId": "[parameters('FileServer1_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FileServer1_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "shir1",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeltaMovies2000Flowlet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'mycontainer',",
+						"     folderPath: 'Delta1') ~> source1",
+						"source1 filter(year == 2000) ~> Filter1",
+						"Filter1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MyDeltaSource')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          round_distance as double,",
+						"          avgAmount2 as double,",
+						"          avgTip2 as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'mycontainer',",
+						"     folderPath: 'deltataxi') ~> source1",
+						"source1 filter(round_distance > 12.0) ~> Filter1",
+						"Filter1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Read from Delta')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -22,7 +477,7 @@
 					"sources": [
 						{
 							"linkedService": {
-								"referenceName": "WeatherRest",
+								"referenceName": "AzureDataLakeStorage1",
 								"type": "LinkedServiceReference"
 							},
 							"name": "source1"
@@ -30,19 +485,18 @@
 					],
 					"sinks": [
 						{
-							"linkedService": {
-								"referenceName": "dummyRest2",
-								"type": "LinkedServiceReference"
-							},
 							"name": "sink1"
 						}
 					],
 					"transformations": [
 						{
-							"name": "AlterRow1"
+							"name": "Filter1"
+						},
+						{
+							"name": "Aggregate1"
 						}
 					],
-					"script": "source(output(\n\t\tbody as ({@context} as string[], geometry as (coordinates as double[][][], type as string), properties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string), type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'rest',\n\ttimeout: 30,\n\trequestInterval: 0,\n\thttpMethod: 'GET',\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1\nsource1 alterRow(insertIf(true())) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:true,\n\tinsertHttpMethod: 'POST',\n\tdeleteHttpMethod: 'DELETE',\n\tupsertHttpMethod: 'PUT',\n\tupdateHttpMethod: 'PATCH',\n\trequestFormat: ['type' -> 'json'],\n\tformat: 'rest',\n\ttimeout: 30,\n\trequestInterval: 0,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta') ~> source1\nsource1 filter(year != 2021) ~> Filter1\nFilter1 aggregate(rowcount = count(1)) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -595,156 +1049,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/cacheOutput')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "WeatherRestAPI",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RestSource",
-								"httpRequestTimeout": "00:01:40",
-								"requestInterval": "00.00:00:00.010",
-								"requestMethod": "GET"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "RestResource1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "weatherJson",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "WeatherStats",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "WeatherRestAPI",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "restdataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "dataflowIRwReuse",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "None",
-							"cacheSinks": {
-								"firstRowOnly": true
-							}
-						}
-					},
-					{
-						"name": "Set Avg Temp",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "WeatherStats",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "avgTemp",
-							"value": {
-								"value": "@string(activity('WeatherStats').output.runStatus.output.sink1.value[0].avgTemp)",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set Max Wind",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set Avg Temp",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "maxWind",
-							"value": {
-								"value": "@string(activity('WeatherStats').output.runStatus.output.sink1.value[0].maxWind)",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"avgTemp": {
-						"type": "String"
-					},
-					"maxWind": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/restdataflow')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/fileWatcher')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -992,53 +1296,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/restpipe')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "restdataflow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "restdataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/restdataflow')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AWCustAddress')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1080,7 +1337,9 @@
 					"table": "CustomerAddress"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AWCustomers')]",
@@ -1163,7 +1422,9 @@
 					"table": "Customer"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Address')]",
@@ -1222,7 +1483,9 @@
 					"table": "Address"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseDataSource1')]",
@@ -1242,805 +1505,9 @@
 					"table": "DataSourceTable"
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseDataSource2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to your source data store.",
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "DataSourceTable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "External control table to store high water mark value.",
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "watermarktable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "External control table to store high water mark value.",
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "watermarktable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "External control table to store high water mark value.",
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "watermarktable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "SalesLT",
-					"table": "ProductDescription"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoans')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "member_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "loan_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "funded_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "funded_amnt_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "term",
-						"type": "nvarchar"
-					},
-					{
-						"name": "int_rate",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "installment",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sub_grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_length",
-						"type": "nvarchar"
-					},
-					{
-						"name": "home_ownership",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "verification_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "issue_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "loan_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pymnt_plan",
-						"type": "bit"
-					},
-					{
-						"name": "url",
-						"type": "nvarchar"
-					},
-					{
-						"name": "desc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "purpose",
-						"type": "nvarchar"
-					},
-					{
-						"name": "title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "zip_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "addr_state",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "delinq_2yrs",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "earliest_cr_line",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_6mths",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_record",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "open_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "pub_rec",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_bal",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_util",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "initial_list_status",
-						"type": "bit"
-					},
-					{
-						"name": "out_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "out_prncp_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_int",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_late_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "recoveries",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "collection_recovery_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "last_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_pymnt_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "next_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_credit_pull_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "collections_12_mths_ex_med",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_major_derog",
-						"type": "nvarchar"
-					},
-					{
-						"name": "policy_code",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "application_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "verification_status_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "acc_now_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "tot_coll_amt",
-						"type": "nvarchar"
-					},
-					{
-						"name": "tot_cur_bal",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_acc_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "mths_since_rcnt_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_bal_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "il_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "max_bal_bc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "all_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_rev_hi_lim",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_fi",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_cu_tl",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_12m",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "loans"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoansNews')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "member_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "loan_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "funded_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "funded_amnt_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "term",
-						"type": "nvarchar"
-					},
-					{
-						"name": "int_rate",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "installment",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sub_grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_length",
-						"type": "nvarchar"
-					},
-					{
-						"name": "home_ownership",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "verification_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "issue_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "loan_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pymnt_plan",
-						"type": "bit"
-					},
-					{
-						"name": "url",
-						"type": "nvarchar"
-					},
-					{
-						"name": "desc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "purpose",
-						"type": "nvarchar"
-					},
-					{
-						"name": "title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "zip_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "addr_state",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "delinq_2yrs",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "earliest_cr_line",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_6mths",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_record",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "open_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "pub_rec",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_bal",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_util",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "initial_list_status",
-						"type": "bit"
-					},
-					{
-						"name": "out_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "out_prncp_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_int",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_late_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "recoveries",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "collection_recovery_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "last_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_pymnt_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "next_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_credit_pull_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "collections_12_mths_ex_med",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_major_derog",
-						"type": "nvarchar"
-					},
-					{
-						"name": "policy_code",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "application_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "verification_status_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "acc_now_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "tot_coll_amt",
-						"type": "nvarchar"
-					},
-					{
-						"name": "tot_cur_bal",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_acc_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "mths_since_rcnt_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_bal_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "il_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "max_bal_bc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "all_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_rev_hi_lim",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_fi",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_cu_tl",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "skid",
-						"type": "bigint",
-						"precision": 19
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "loansnew"
-				}
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		}
 	]
 }

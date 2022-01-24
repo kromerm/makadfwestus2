@@ -77,6 +77,15 @@
 		"RestService2_properties_typeProperties_url": {
 			"value": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
 		},
+		"RestService3_properties_typeProperties_url": {
+			"value": "https://api.cognitive.microsofttranslator.com/"
+		},
+		"RestService4_properties_typeProperties_url": {
+			"value": "https://api.cognitive.microsofttranslator.com/"
+		},
+		"RestService5_properties_typeProperties_url": {
+			"value": "https://reqres.in"
+		},
 		"Snowflake1_connectionString": {
 			"value": ""
 		},

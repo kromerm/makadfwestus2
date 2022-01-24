@@ -103,6 +103,18 @@
 			"type": "string",
 			"defaultValue": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
 		},
+		"RestService3_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
+		},
+		"RestService4_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
+		},
+		"RestService5_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in"
+		},
 		"Snowflake1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
@@ -220,20 +232,20 @@
 					"RestService2_properties_typeProperties_url": {
 						"value": "[parameters('RestService2_properties_typeProperties_url')]"
 					},
+					"RestService3_properties_typeProperties_url": {
+						"value": "[parameters('RestService3_properties_typeProperties_url')]"
+					},
+					"RestService4_properties_typeProperties_url": {
+						"value": "[parameters('RestService4_properties_typeProperties_url')]"
+					},
+					"RestService5_properties_typeProperties_url": {
+						"value": "[parameters('RestService5_properties_typeProperties_url')]"
+					},
 					"Snowflake1_connectionString": {
 						"value": "[parameters('Snowflake1_connectionString')]"
 					},
 					"WeatherRest_properties_typeProperties_url": {
 						"value": "[parameters('WeatherRest_properties_typeProperties_url')]"
-					},
-					"dummyRest2_properties_typeProperties_url": {
-						"value": "[parameters('dummyRest2_properties_typeProperties_url')]"
-					},
-					"dummyrest_properties_typeProperties_url": {
-						"value": "[parameters('dummyrest_properties_typeProperties_url')]"
-					},
-					"rest1_properties_typeProperties_url": {
-						"value": "[parameters('rest1_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -255,6 +267,15 @@
 					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"
+					},
+					"dummyRest2_properties_typeProperties_url": {
+						"value": "[parameters('dummyRest2_properties_typeProperties_url')]"
+					},
+					"dummyrest_properties_typeProperties_url": {
+						"value": "[parameters('dummyrest_properties_typeProperties_url')]"
+					},
+					"rest1_properties_typeProperties_url": {
+						"value": "[parameters('rest1_properties_typeProperties_url')]"
 					},
 					"restdb_properties_typeProperties_url": {
 						"value": "[parameters('restdb_properties_typeProperties_url')]"
@@ -344,21 +365,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FileServer1_password": {
-						"value": "[parameters('FileServer1_password')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"FileServer1_properties_typeProperties_host": {
-						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
-					},
-					"FileServer1_properties_typeProperties_userId": {
-						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -379,6 +385,21 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FileServer1_password": {
+						"value": "[parameters('FileServer1_password')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"FileServer1_properties_typeProperties_host": {
+						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
+					},
+					"FileServer1_properties_typeProperties_userId": {
+						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -499,6 +520,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_11')]"
+			]
+		},
+		{
+			"name": "makadfwestus2_ArmTemplate_13",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_13.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
@@ -506,7 +547,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_11')]"
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_12')]"
 			]
 		}
 	]

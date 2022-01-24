@@ -13,6 +13,804 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseDataSource2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your source data store.",
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DataSourceTable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "External control table to store high water mark value.",
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "External control table to store high water mark value.",
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "External control table to store high water mark value.",
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "ProductDescription"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoans')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "member_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "loan_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "term",
+						"type": "nvarchar"
+					},
+					{
+						"name": "int_rate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "installment",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sub_grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_length",
+						"type": "nvarchar"
+					},
+					{
+						"name": "home_ownership",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "verification_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "issue_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "loan_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pymnt_plan",
+						"type": "bit"
+					},
+					{
+						"name": "url",
+						"type": "nvarchar"
+					},
+					{
+						"name": "desc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "purpose",
+						"type": "nvarchar"
+					},
+					{
+						"name": "title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "zip_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "addr_state",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "delinq_2yrs",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "earliest_cr_line",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_6mths",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_record",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "open_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "pub_rec",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_bal",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_util",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "initial_list_status",
+						"type": "bit"
+					},
+					{
+						"name": "out_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "out_prncp_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_int",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_late_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "recoveries",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "collection_recovery_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "last_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_pymnt_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "next_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_credit_pull_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "collections_12_mths_ex_med",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_major_derog",
+						"type": "nvarchar"
+					},
+					{
+						"name": "policy_code",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "application_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "verification_status_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "acc_now_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "tot_coll_amt",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tot_cur_bal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_acc_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mths_since_rcnt_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_bal_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "il_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "max_bal_bc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "all_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_rev_hi_lim",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_fi",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_cu_tl",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_12m",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "loans"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableLoansNews')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "member_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "loan_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "funded_amnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "term",
+						"type": "nvarchar"
+					},
+					{
+						"name": "int_rate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "installment",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sub_grade",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "emp_length",
+						"type": "nvarchar"
+					},
+					{
+						"name": "home_ownership",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "verification_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "issue_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "loan_status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pymnt_plan",
+						"type": "bit"
+					},
+					{
+						"name": "url",
+						"type": "nvarchar"
+					},
+					{
+						"name": "desc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "purpose",
+						"type": "nvarchar"
+					},
+					{
+						"name": "title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "zip_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "addr_state",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "delinq_2yrs",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "earliest_cr_line",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_6mths",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_record",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "open_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "pub_rec",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_bal",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revol_util",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_acc",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "initial_list_status",
+						"type": "bit"
+					},
+					{
+						"name": "out_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "out_prncp_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_pymnt_inv",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_prncp",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_int",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "total_rec_late_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "recoveries",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "collection_recovery_fee",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "last_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_pymnt_amnt",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "next_pymnt_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_credit_pull_d",
+						"type": "nvarchar"
+					},
+					{
+						"name": "collections_12_mths_ex_med",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mths_since_last_major_derog",
+						"type": "nvarchar"
+					},
+					{
+						"name": "policy_code",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "application_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "annual_inc_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dti_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "verification_status_joint",
+						"type": "nvarchar"
+					},
+					{
+						"name": "acc_now_delinq",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "tot_coll_amt",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tot_cur_bal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_acc_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_6m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_il_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mths_since_rcnt_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_bal_il",
+						"type": "nvarchar"
+					},
+					{
+						"name": "il_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "open_rv_24m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "max_bal_bc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "all_util",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_rev_hi_lim",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_fi",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_cu_tl",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inq_last_12m",
+						"type": "nvarchar"
+					},
+					{
+						"name": "skid",
+						"type": "bigint",
+						"precision": 19
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "loansnew"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -428,6 +1226,64 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CDC ADLS Gen2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "cdcMovies",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout_cdc",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as string,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as string,",
+						"          Rating as string,",
+						"          RottenTomato as string",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     enableCdc: true,",
+						"     mode: 'read',",
+						"     skipInitialLoad: false) ~> source1",
+						"source1 derive(currenttime = 'movies'+replace(toString(currentTimestamp()),':','')+'.csv') ~> DerivedColumn1",
+						"DerivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CDM')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -485,349 +1341,6 @@
 					],
 					"transformations": [],
 					"script": "parameters{\n\trootfolder as string ('mycontainer'),\n\tcdmfolder as string ('cdmfolder')\n}\nsource(output(\n\t\tTransactionId as string,\n\t\tSalesChannelId as string,\n\t\tPurchasingChannelId as string,\n\t\tTransactionInitiatedTimestamp as string,\n\t\tTransactionCompletedTimestamp as string,\n\t\tTransactionAmount as string,\n\t\tTotalRetailPriceAmount as string,\n\t\tTotalAdjustmentAmount as string,\n\t\tCustomerId as string,\n\t\tCustomerAccountId as string,\n\t\tTransactionTypeId as string,\n\t\tMerchantId as string,\n\t\tIsoCurrencyCode as string,\n\t\tLoyaltyProgramId as string,\n\t\tLoyaltyAccountId as string,\n\t\tStoreId as string,\n\t\tPaymentCardId as string,\n\t\tPointOfSaleId as string,\n\t\tTransactionClassificationId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tentity: 'Transaction',\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'Transaction.cdm.json',\n\tentityPath: 'Transaction',\n\tlocal: true,\n\tfolderPath: ($cdmfolder),\n\tfileSystem: ($rootfolder)) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmanifestType: 'manifest') ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Change Data')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "newFile"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQLMovies",
-								"type": "DatasetReference"
-							},
-							"name": "existingTable"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQLMovies",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "rowSignature"
-						},
-						{
-							"name": "rowSignature1"
-						},
-						{
-							"name": "Exists1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as integer,\n\t\tRating as integer,\n\t\tRottenTomato as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> newFile\nsource(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as integer,\n\t\tRating as integer,\n\t\tRottenTomato as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> existingTable\nnewFile derive(fingerprint = sha2(256,columns())) ~> rowSignature\nexistingTable derive(fingerprint1 = sha2(256,columns())) ~> rowSignature1\nrowSignature, rowSignature1 exists(fingerprint == fingerprint1,\n\tnegate:true,\n\tbroadcast: 'auto')~> Exists1\nExists1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as integer,\n\t\tRating as integer,\n\t\tRottenTomato as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato\n\t)) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataQuality1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							},
-							"name": "loansSource"
-						},
-						{
-							"dataset": {
-								"referenceName": "rules",
-								"type": "DatasetReference"
-							},
-							"name": "rules1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Cast"
-						},
-						{
-							"name": "Aggregate1"
-						},
-						{
-							"name": "ruleNullChecker"
-						}
-					],
-					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loansSource\nsource(output(\n\t\tfield as string,\n\t\tthreshold as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'arrayOfDocuments') ~> rules1\nrules1 derive(threshold = toFloat(threshold)) ~> Cast\nloansSource aggregate(mths_since_last_delinq_nulls = countIf(isNull(mths_since_last_delinq),1),\n\t\tnext_pymnt_d = countIf(isNull(next_pymnt_d),1),\n\t\trowcount = count(1)) ~> Aggregate1\nAggregate1 split(toFloat(mths_since_last_delinq_nulls / rowcount) > sink1#lookup('mths_since_last_delinq').threshold,\n\ttoFloat(next_pymnt_d / rowcount) > sink1#lookup('next_pymnt_d').threshold,\n\tdisjoint: false) ~> ruleNullChecker@(mthssincelastdelinqfail, nextpymntdfail)\nCast sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['field'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nruleNullChecker@mthssincelastdelinqfail sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DeltaLake1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "AlterRow1"
-						},
-						{
-							"name": "Filter1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nFilter1 derive(Rating = iif(year==1988,1,toInteger(Rating)),\n\t\tyear = iif(year==1960,2021,toInteger(year))) ~> DerivedColumn1\nDerivedColumn1 alterRow(updateIf(year==1988),\n\tinsertIf(year==2021),\n\tdeleteIf(year==1950)) ~> AlterRow1\nsource1 filter(year == 1988 || year == 1960 || year == 1950) ~> Filter1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie','year'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DynaCols')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "movies1"
-						},
-						{
-							"linkedService": {
-								"referenceName": "AzureBlobStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "columnmappings"
-						},
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "movies2"
-						}
-					],
-					"sinks": [
-						{
-							"name": "cachedSink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ParamReplace"
-						},
-						{
-							"name": "lookupReplace"
-						}
-					],
-					"script": "parameters{\n\tparameter1 as string[] (['a','b','c'])\n}\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies1\nsource(output(\n\t\tnewcolumn as string,\n\t\tprevcolumn as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'json',\n\tcontainer: 'mycontainer',\n\tfileName: 'nulls.json',\n\tdocumentForm: 'arrayOfDocuments') ~> columnmappings\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies2\nmovies1 select(mapColumn(\n\t\teach(match(position==1),\n\t\t\t$parameter1[1] = $$),\n\t\teach(match(position==2),\n\t\t\t$parameter1[2] = $$),\n\t\teach(match(position==3),\n\t\t\t$parameter1[3] = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ParamReplace\nmovies2 select(mapColumn(\n\t\teach(match(!isNull(cachedSink#lookup(name).prevcolumn)),\n\t\t\tcachedSink#lookup($$).newcolumn = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> lookupReplace\ncolumnmappings sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['prevcolumn'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Lake Folders')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "DerivedColumn2"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 50,\n\tignoreNoFilesFound: false) ~> source1\nDerivedColumn1 filter(year == 1980) ~> Filter1\nsource1 derive(currentTime = '_'+regexReplace(toString(currentTimestamp()),'\\\\s| |\\\\.|-|:','')) ~> DerivedColumn1\nsource1 derive(releasedate = iif(year == 1980,'_'+toString(:local1)+right('0'+toString(toInteger((random(1)*12)+1)),2)+right('0'+toString(toInteger((random(2)*12)+1)),2),'_20200311'),\n\t\tlocal1 := year) ~> DerivedColumn2\nFilter1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'currentTime',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nDerivedColumn2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'releasedate',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LoansDataWrangling')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "loans",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loans",
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared loans = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/loan.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = loans,\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each [term] = \" 36 months\"),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Filtered rows\", {{\"grade\", each Text.Lower(_), type text}}),\r\n  #\"Trimmed text\" = Table.TransformColumns(#\"Lowercased text\", {{\"verification_status\", each Text.Trim(_), type text}})\r\nin\r\n  #\"Trimmed text\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovieAnalytics')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							},
-							"name": "MoviesCSVSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1AvgRatingByYear"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2MinMaxRating"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink3Favorites"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AvgComedyRatingByYear"
-						},
-						{
-							"name": "minMaxRatingByYear"
-						},
-						{
-							"name": "Favorite"
-						},
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "Sort1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesCSVSource\nMoviesCSVSource aggregate(groupBy(year),\n\tavgRatingForComedies = round(avgIf(instr(lower(genres),'comedy')>0,Rating),2)) ~> AvgComedyRatingByYear\nMoviesCSVSource aggregate(groupBy(year),\n\tminRating = min(Rating),\n\t\tmaxRating = max(Rating)) ~> minMaxRatingByYear\nFilter1 derive(Favorite = true()) ~> Favorite\nMoviesCSVSource filter(year == 1980) ~> Filter1\nAvgComedyRatingByYear sort(desc(avgRatingForComedies, true)) ~> Sort1\nSort1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1AvgRatingByYear\nminMaxRatingByYear sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2MinMaxRating\nFavorite sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato,\n\t\tFavorite\n\t)) ~> sink3Favorites"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovieDemo')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "MovieData",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MovieData",
-							"dataset": {
-								"referenceName": "MovieData",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared MovieData = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\n",
-					"documentLocale": "en-us"
 				}
 			},
 			"dependsOn": []
