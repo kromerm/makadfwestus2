@@ -19,7 +19,11 @@
 					"name": "CustAddress"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Assert1"
@@ -59,7 +63,15 @@
 				"     expectUnique(AddressLine1, false, 'addressIdUnique', null, toString(AddressID) + ' is not unique.'),",
 				"     expectExists(Address@AddressID == CustAddress@AddressID, false, 'assertExists', null, toString(Address@AddressID) + ' is not present in both tables.')) ~> Assert1",
 				"Assert1 derive(column1 = isError(),",
-				"          column2 = hasError('assertUsOnly')) ~> DerivedColumn1"
+				"          column2 = hasError('assertUsOnly')) ~> DerivedColumn1",
+				"DerivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
 			]
 		}
 	}
