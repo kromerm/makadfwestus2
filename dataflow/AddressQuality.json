@@ -1,5 +1,5 @@
 {
-	"name": "customerQuality",
+	"name": "AddressQuality",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,14 +9,14 @@
 						"referenceName": "Address",
 						"type": "DatasetReference"
 					},
-					"name": "Address"
+					"name": "Address1"
 				},
 				{
 					"dataset": {
-						"referenceName": "AWCustAddress",
+						"referenceName": "Address",
 						"type": "DatasetReference"
 					},
-					"name": "CustAddress"
+					"name": "Address2"
 				}
 			],
 			"sinks": [
@@ -47,21 +47,25 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> Address",
+				"     format: 'table') ~> Address1",
 				"source(output(",
-				"          CustomerID as integer,",
 				"          AddressID as integer,",
-				"          AddressType as string,",
+				"          AddressLine1 as string,",
+				"          AddressLine2 as string,",
+				"          City as string,",
+				"          StateProvince as string,",
+				"          CountryRegion as string,",
+				"          PostalCode as string,",
 				"          rowguid as string,",
 				"          ModifiedDate as timestamp",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> CustAddress",
-				"Address, CustAddress assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
-				"     expectUnique(AddressLine1, false, 'addressIdUnique', null, toString(AddressID) + ' is not unique.'),",
-				"     expectExists(Address@AddressID == CustAddress@AddressID, false, 'assertExists', null, toString(Address@AddressID) + ' is not present in both tables.')) ~> Assert1",
+				"     format: 'table') ~> Address2",
+				"Address1, Address2 assert(expectTrue(Address1@CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
+				"     expectUnique(Address1@AddressLine1, false, 'addressIdUnique', null, toString(AddressID) + ' is not unique.'),",
+				"     expectExists(Address1@AddressID == Address2@AddressID, false, 'assertExists', null, toString(Address@AddressID) + ' is not present in both tables.')) ~> Assert1",
 				"Assert1 derive(column1 = isError(),",
 				"          column2 = hasError('assertUsOnly')) ~> DerivedColumn1",
 				"DerivedColumn1 sink(allowSchemaDrift: true,",
