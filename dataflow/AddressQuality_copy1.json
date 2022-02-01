@@ -16,6 +16,12 @@
 			"transformations": [
 				{
 					"name": "DataQualityRules"
+				},
+				{
+					"name": "MetadataChecker"
+				},
+				{
+					"name": "FailedMetadata"
 				}
 			],
 			"scriptLines": [
@@ -34,7 +40,17 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Address1",
-				"Address1 assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid')) ~> DataQualityRules"
+				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid')) ~> DataQualityRules",
+				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+				"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
+				"        iif(!in(columnNames(),'City'),false(),\r",
+				"            iif(!in(columnNames(),'StateProvince'),false(),\r",
+				"                iif(!in(columnNames(),'CountryRegion'),false(),\r",
+				"                    iif(!in(columnNames(),'PostalCode'),false(),true()))))))\r",
+				",",
+				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
+				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
+				"     abort: true) ~> FailedMetadata"
 			]
 		}
 	}
