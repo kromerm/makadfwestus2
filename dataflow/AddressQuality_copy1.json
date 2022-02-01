@@ -22,6 +22,12 @@
 				},
 				{
 					"name": "FailedMetadata"
+				},
+				{
+					"name": "FilterOutNULLCountry"
+				},
+				{
+					"name": "MakeFullAddress"
 				}
 			],
 			"scriptLines": [
@@ -47,11 +53,12 @@
 				"        iif(!in(columnNames(),'City'),false(),\r",
 				"            iif(!in(columnNames(),'StateProvince'),false(),\r",
 				"                iif(!in(columnNames(),'CountryRegion'),false(),\r",
-				"                    iif(!in(columnNames(),'PostalCode'),false(),true()))))))\r",
-				",",
+				"                    iif(!in(columnNames(),'PostalCode'),false(),true())))))),",
 				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
-				"     abort: true) ~> FailedMetadata"
+				"     abort: true) ~> FailedMetadata",
+				"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
+				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress"
 			]
 		}
 	}
