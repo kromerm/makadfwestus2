@@ -12,7 +12,15 @@
 					"name": "Address1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "adlsgen2folder",
+						"type": "DatasetReference"
+					},
+					"name": "OutputToADLS"
+				}
+			],
 			"transformations": [
 				{
 					"name": "DataQualityRules"
@@ -58,7 +66,33 @@
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
 				"     abort: true) ~> FailedMetadata",
 				"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
-				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress"
+				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress",
+				"MakeFullAddress sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          identifier as string,",
+				"          createdOn as string,",
+				"          modifiedOn as string,",
+				"          originalTimeZoneUTCOffset as string,",
+				"          sourceAuthority as string,",
+				"          salutation as string,",
+				"          firstName as string,",
+				"          nickName as string,",
+				"          middleName as string,",
+				"          lastName as string,",
+				"          suffix as string,",
+				"          fullName as string,",
+				"          birthdayDay as string,",
+				"          birthdayMonth as string,",
+				"          birthdayYear as string,",
+				"          birthDate as string,",
+				"          genderCode as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> OutputToADLS"
 			]
 		}
 	}
