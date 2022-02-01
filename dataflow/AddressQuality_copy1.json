@@ -12,7 +12,11 @@
 					"name": "Address1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "FailedSink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "DataQualityRules"
@@ -50,7 +54,15 @@
 				",",
 				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
-				"     abort: true) ~> FailedMetadata"
+				"     abort: true) ~> FailedMetadata",
+				"FailedMetadata sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> FailedSink"
 			]
 		}
 	}
