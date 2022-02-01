@@ -22,9 +22,6 @@
 				},
 				{
 					"name": "FailedMetadata"
-				},
-				{
-					"name": "Select1"
 				}
 			],
 			"scriptLines": [
@@ -43,8 +40,9 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Address1",
-				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid')) ~> DataQualityRules",
-				"Select1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
+				"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
+				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
 				"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
 				"        iif(!in(columnNames(),'City'),false(),\r",
 				"            iif(!in(columnNames(),'StateProvince'),false(),\r",
@@ -53,19 +51,7 @@
 				",",
 				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
-				"     abort: true) ~> FailedMetadata",
-				"Address1 select(mapColumn(",
-				"          AddressLine1,",
-				"          AddressLine2,",
-				"          City,",
-				"          StateProvince,",
-				"          CountryRegion,",
-				"          PostalCode,",
-				"          rowguid,",
-				"          ModifiedDate",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Select1"
+				"     abort: true) ~> FailedMetadata"
 			]
 		}
 	}
