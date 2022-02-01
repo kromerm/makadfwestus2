@@ -1,9 +1,9 @@
 {
-	"name": "pipeline3",
+	"name": "Data Quality Pipeline 1",
 	"properties": {
 		"activities": [
 			{
-				"name": "assert1",
+				"name": "Data Quality DF",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "assert1",
+						"referenceName": "Address Quality 1",
 						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {
