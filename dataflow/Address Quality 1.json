@@ -10,6 +10,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "Address1"
+				},
+				{
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -36,6 +39,15 @@
 				},
 				{
 					"name": "MakeFullAddress"
+				},
+				{
+					"name": "Unpivot1"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "Exists1"
 				}
 			],
 			"scriptLines": [
@@ -54,6 +66,8 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Address1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
 				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
 				"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
 				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
@@ -67,6 +81,17 @@
 				"     abort: true) ~> FailedMetadata",
 				"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
 				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress",
+				"source1 unpivot(output(",
+				"          ",
+				"     ),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> Unpivot1",
+				"MakeFullAddress join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'inner',",
+				"     broadcast: 'auto')~> Join1",
+				"Join1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     negate:false,",
+				"     broadcast: 'auto')~> Exists1",
 				"MakeFullAddress sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
