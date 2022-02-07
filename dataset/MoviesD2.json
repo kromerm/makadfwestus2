@@ -17,7 +17,6 @@
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"nullValue": "ABC",
 			"quoteChar": "\""
 		},
 		"schema": [
