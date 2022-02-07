@@ -5,9 +5,9 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "msftstock",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
 					},
 					"name": "StocksSource"
 				}
@@ -35,7 +35,7 @@
 					"name": "Filter1"
 				}
 			],
-			"script": "source(output(\n\t\tDate as date,\n\t\tOpen as double,\n\t\tHigh as double,\n\t\tLow as double,\n\t\tClose as double,\n\t\tVolume as double,\n\t\tDividend as double,\n\t\tSplit as double,\n\t\tAdj_Open as double,\n\t\tAdj_High as double,\n\t\tAdj_Low as double,\n\t\tAdj_Close as double,\n\t\tAdj_Volume as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRowOffset: -7L,\n\tendRowOffset: 7L,\n\tFifteenDayMovingAvg = round(avg(Close),2)) ~> MovingAvgWindow\nMovingAvgWindow select(mapColumn(\n\t\tDate,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delimited',\n\tcolumnDelimiter: ',',\n\tescapeChar: '\\\\',\n\tquoteChar: '\\\"',\n\tnullValue: 'ABC',\n\tcolumnNamesAsHeader: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRowOffset: -7L,\n\tendRowOffset: 7L,\n\tFifteenDayMovingAvg = round(avg(Close),2)) ~> MovingAvgWindow\nMovingAvgWindow select(mapColumn(\n\t\tDate,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
