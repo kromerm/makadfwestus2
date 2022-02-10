@@ -1,5 +1,5 @@
 {
-	"name": "Address Quality 1",
+	"name": "Address Quality",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
