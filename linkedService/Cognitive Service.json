@@ -1,0 +1,19 @@
+{
+	"name": "Cognitive Service",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://markcog1.cognitiveservices.azure.com/text/analytics/v3.1/entities/recognition/pii",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"Ocp-Apim-Subscription-Key": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}
