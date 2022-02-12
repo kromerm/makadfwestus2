@@ -36,9 +36,6 @@
 				},
 				{
 					"name": "MakeFullAddress"
-				},
-				{
-					"name": "DerivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -59,7 +56,7 @@
 				"     format: 'table') ~> Address1",
 				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
 				"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
-				"DerivedColumn1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
 				"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
 				"        iif(!in(columnNames(),'City'),false(),\r",
 				"            iif(!in(columnNames(),'StateProvince'),false(),\r",
@@ -70,7 +67,6 @@
 				"     abort: true) ~> FailedMetadata",
 				"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
 				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress",
-				"Address1 derive() ~> DerivedColumn1",
 				"MakeFullAddress sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
