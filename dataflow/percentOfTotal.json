@@ -191,7 +191,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> loans2",
-				"loans1 aggregate(total_amount = sum(loan_amnt)) ~> TotalAmount",
+				"loans1 aggregate(total_amount = sum(toInteger(loan_amnt))) ~> TotalAmount",
 				"loans2 derive(percent_of_total = loan_amnt / sink1#output().total_amount) ~> percentTotal",
 				"TotalAmount sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
