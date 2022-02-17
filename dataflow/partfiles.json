@@ -29,7 +29,7 @@
 				"     rowUrlColumn: 'myfilename',",
 				"     partitionRootPath: 'myfolder/partdata',",
 				"     format: 'parquet',",
-				"     wildcardPaths:['myfolder/partdata/year=2010/**/*.parquet']) ~> source1",
+				"     wildcardPaths:['myfolder/partdata/**/**/*.parquet']) ~> source1",
 				"source1 aggregate(groupBy(myfilename),",
 				"     total = sum(1)) ~> Aggregate1",
 				"Aggregate1 sink(allowSchemaDrift: true,",
