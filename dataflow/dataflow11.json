@@ -12,7 +12,11 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Aggregate1"
@@ -23,11 +27,19 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'myfilename',",
-				"     partitionRootPath: 'myfolder/partdata/year=2010',",
+				"     partitionRootPath: 'myfolder/partdata',",
 				"     format: 'parquet',",
-				"     wildcardPaths:['myfolder/partdata/**/**/*.parquet']) ~> source1",
+				"     wildcardPaths:['myfolder/partdata/year=2010/**/*.parquet']) ~> source1",
 				"source1 aggregate(groupBy(myfilename),",
-				"     total = sum(1)) ~> Aggregate1"
+				"     total = sum(1)) ~> Aggregate1",
+				"Aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
 			]
 		}
 	}
