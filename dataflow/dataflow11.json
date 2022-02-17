@@ -1,0 +1,34 @@
+{
+	"name": "dataflow11",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "partsource",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "Aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     rowUrlColumn: 'myfilename',",
+				"     partitionRootPath: 'myfolder/partdata/year=2010',",
+				"     format: 'parquet',",
+				"     wildcardPaths:['myfolder/partdata/**/**/*.parquet']) ~> source1",
+				"source1 aggregate(groupBy(myfilename),",
+				"     total = sum(1)) ~> Aggregate1"
+			]
+		}
+	}
+}
