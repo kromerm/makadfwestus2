@@ -1,5 +1,5 @@
 {
-	"name": "dataflow11",
+	"name": "createParts",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
