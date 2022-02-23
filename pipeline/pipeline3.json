@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "createParts",
+						"referenceName": "MovieAnalytics",
 						"type": "DataFlowReference"
 					},
 					"compute": {
