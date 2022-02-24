@@ -1,5 +1,5 @@
 {
-	"name": "dataflow11",
+	"name": "SQLIncremental",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
