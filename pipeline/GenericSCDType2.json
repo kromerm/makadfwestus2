@@ -30,18 +30,6 @@
 							}
 						},
 						"datasetParameters": {
-							"GenericInput": {
-								"Folder": {
-									"value": "@pipeline().parameters.IncomingDimensionFolder",
-									"type": "Expression"
-								}
-							},
-							"ExistingDimensionTable": {
-								"Table": {
-									"value": "@pipeline().parameters.DimensionTable",
-									"type": "Expression"
-								}
-							},
 							"DimensionTableSink": {
 								"Table": {
 									"value": "@pipeline().parameters.DimensionTable",
