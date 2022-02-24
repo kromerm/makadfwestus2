@@ -1,0 +1,52 @@
+{
+	"name": "dataflow11",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SQLProducts_new",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "folderout",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as decimal(19,4),",
+				"          ListPrice as decimal(19,4),",
+				"          {_Inserted} as timestamp,",
+				"          {_LastUpdated} as timestamp,",
+				"          DWhash as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     enableCdc: true,",
+				"     mode: 'read',",
+				"     skipInitialLoad: false,",
+				"     waterMarkColumn: '_LastUpdated',",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
