@@ -17,26 +17,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "GenericSCDType2",
-						"type": "DataFlowReference",
-						"parameters": {
-							"PrimaryKey": {
-								"value": "'@{pipeline().parameters.PrimaryKey}'",
-								"type": "Expression"
-							},
-							"Columns": {
-								"value": "'@{pipeline().parameters.ColumnNames}'",
-								"type": "Expression"
-							}
-						},
-						"datasetParameters": {
-							"DimensionTableSink": {
-								"Table": {
-									"value": "@pipeline().parameters.DimensionTable",
-									"type": "Expression"
-								}
-							}
-						}
+						"referenceName": "SCD Type 2",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
