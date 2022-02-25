@@ -1,6 +1,7 @@
 {
 	"name": "SCD Pipeline",
 	"properties": {
+		"description": "Example of a slowly changing dimension type 2 where we will create a new row for a changed product dimension, using both and active flag and an effective date fields.",
 		"activities": [
 			{
 				"name": "SCD Type 2",
