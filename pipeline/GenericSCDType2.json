@@ -4,7 +4,7 @@
 		"description": "Using byNames to fully parameterize a Slowly Change Dimension Type 2 patter",
 		"activities": [
 			{
-				"name": "GenericSCDType2",
+				"name": "SCD Type 2",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
