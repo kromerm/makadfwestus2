@@ -28,20 +28,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"IncomingDimensionFolder": {
-				"type": "string"
-			},
-			"DimensionTable": {
-				"type": "string"
-			},
-			"PrimaryKey": {
-				"type": "string"
-			},
-			"ColumnNames": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "GenericSCD"
 		},
