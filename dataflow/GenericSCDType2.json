@@ -20,26 +20,30 @@
 						"type": "DatasetReference"
 					},
 					"name": "ExistingProducts"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimProductsTable",
+						"type": "DatasetReference"
+					},
+					"name": "LookupMaxKey"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SqlDimension",
+						"referenceName": "DimProductsTable",
 						"type": "DatasetReference"
 					},
 					"name": "DimensionTableSink"
 				},
 				{
-					"name": "cacheMaxKey"
+					"name": "sink1"
 				}
 			],
 			"transformations": [
 				{
 					"name": "NewAndUpdatedRows"
-				},
-				{
-					"name": "GetMaxSurrogateKey"
 				},
 				{
 					"name": "AddKey"
@@ -54,16 +58,10 @@
 					"name": "UpdateObsolete"
 				},
 				{
-					"name": "DropUnwantedColsInput"
-				},
-				{
 					"name": "UnionAllData"
 				},
 				{
 					"name": "MarkAsUpdate"
-				},
-				{
-					"name": "DropUnwantedColumns"
 				},
 				{
 					"name": "MarkAsInsert"
@@ -72,7 +70,7 @@
 					"name": "FilterForActive"
 				}
 			],
-			"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(10,0),\n\t\tListPrice as decimal(10,0)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> NewProducts\nsource(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tEffectiveDate as timestamp,\n\t\tActive as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingProducts\nNewProducts, FilterForActive exists(ERROR_FUNCTION(''),\n\tnegate:true,\n\tbroadcast: 'auto')~> NewAndUpdatedRows\nFilterForActive aggregate(MaxSurrogateKey = max(ProductID)) ~> GetMaxSurrogateKey\nNewAndUpdatedRows keyGenerate(output(Key as long),\n\tstartAt: 1L) ~> AddKey\nAddKey derive(Key = Key + MaxSurrogateKey,\n\t\tActive = 1,\n\t\tActiveStartTime = currentUTC(),\n\t\tActiveEndTime = toTimestamp(toString(null()))) ~> AddDimensionColumns\nFilterForActive, NewAndUpdatedRows exists(AddHashExisting@id_hash == AddHashInput@id_hash,\n\tnegate:false,\n\tbroadcast: 'auto')~> FilterForUpdatedValues\nFilterForUpdatedValues derive(Active = 0,\n\t\tActiveEndTime = currentUTC()) ~> UpdateObsolete\nAddDimensionColumns select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColsInput\nMarkAsInsert, DropUnwantedColumns union(byName: true)~> UnionAllData\nUpdateObsolete alterRow(updateIf(true())) ~> MarkAsUpdate\nMarkAsUpdate select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColumns\nDropUnwantedColsInput alterRow(insertIf(true())) ~> MarkAsInsert\nExistingProducts filter(Active == 1) ~> FilterForActive\nUnionAllData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:[($PrimaryKey)],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimensionTableSink\nGetMaxSurrogateKey sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['MaxSurrogateKey'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cacheMaxKey"
+			"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(10,0),\n\t\tListPrice as decimal(10,0)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> NewProducts\nsource(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tEffectiveDate as timestamp,\n\t\tActive as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingProducts\nsource(output(\n\t\tmaxkey as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select max (ProductID) as maxkey from dbo.DimProductsTable',\n\tformat: 'query') ~> LookupMaxKey\nNewProducts, FilterForActive exists(NewProducts@ProductID == ExistingProducts@ProductID,\n\tnegate:true,\n\tbroadcast: 'auto')~> NewAndUpdatedRows\nNewAndUpdatedRows keyGenerate(output(Key as long),\n\tstartAt: 1L) ~> AddKey\nAddKey derive(Key = Key+toInteger(sink1#output().maxkey),\n\t\tActive = 1,\n\t\tActiveStartTime = currentUTC(),\n\t\tActiveEndTime = toTimestamp(toString(null()))) ~> AddDimensionColumns\nFilterForActive, NewAndUpdatedRows exists(ExistingProducts@ProductID == NewProducts@ProductID,\n\tnegate:false,\n\tbroadcast: 'auto')~> FilterForUpdatedValues\nFilterForUpdatedValues derive(Active = 0) ~> UpdateObsolete\nMarkAsInsert, MarkAsUpdate union(byName: true)~> UnionAllData\nUpdateObsolete alterRow(updateIf(true())) ~> MarkAsUpdate\nAddDimensionColumns alterRow(insertIf(true())) ~> MarkAsInsert\nExistingProducts filter(Active == 1) ~> FilterForActive\nUnionAllData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tEffectiveDate as timestamp,\n\t\tActive as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['ProductID'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimensionTableSink\nLookupMaxKey sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 		}
 	}
 }
