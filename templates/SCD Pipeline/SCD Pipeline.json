@@ -1,0 +1,261 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"AzureDataLakeStorage1": {
+			"type": "string"
+		},
+		"AzureSqlDatabase1": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SCD Pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Example of a slowly changing dimension type 2 where we will create a new row for a changed product dimension, using both an active flag and an effective date fields.",
+				"activities": [
+					{
+						"name": "SCD Type 2",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SCD Type 2",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"folder": {
+					"name": "GenericSCD"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SCD Type 2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SCD Type 2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GenericSCD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NewProducts",
+								"type": "DatasetReference"
+							},
+							"name": "NewProducts"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimProductsTable",
+								"type": "DatasetReference"
+							},
+							"name": "ExistingProducts"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimProductsTable",
+								"type": "DatasetReference"
+							},
+							"name": "LookupMaxKey"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DimProductsTable",
+								"type": "DatasetReference"
+							},
+							"name": "DimensionTableSink"
+						},
+						{
+							"name": "cacheKey"
+						}
+					],
+					"transformations": [
+						{
+							"name": "CheckForNewProducts"
+						},
+						{
+							"name": "GenProductID"
+						},
+						{
+							"name": "AddDimensionColumns"
+						},
+						{
+							"name": "FilterForExistingProducts"
+						},
+						{
+							"name": "ObsoleteRow"
+						},
+						{
+							"name": "UnionAllData"
+						},
+						{
+							"name": "MarkAsUpdate"
+						},
+						{
+							"name": "MarkAsInsert"
+						},
+						{
+							"name": "FilterForActive"
+						},
+						{
+							"name": "CreateRowHash1"
+						},
+						{
+							"name": "CreateRowHash2"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"script": "source(output(\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(10,0),\n\t\tListPrice as decimal(10,0)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> NewProducts\nsource(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tEffectiveDate as timestamp,\n\t\tActive as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingProducts\nsource(output(\n\t\tmaxkey as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select max (ProductID) as maxkey from dbo.DimProductsTable',\n\tformat: 'query') ~> LookupMaxKey\nCreateRowHash1, CreateRowHash2 exists(NewProducts@ProductNumber == ExistingProducts@ProductNumber && RowHash1 == RowHash2\n\n/* Ignore rows that are identical */,\n\tnegate:true,\n\tbroadcast: 'auto')~> CheckForNewProducts\nCheckForNewProducts keyGenerate(output(ProductID as long),\n\tstartAt: 1L) ~> GenProductID\nGenProductID derive(ProductID = ProductID+toInteger(cacheKey#output().maxkey),\n\t\tActive = 1,\n\t\tEffectiveDate = currentUTC()) ~> AddDimensionColumns\nCreateRowHash2, CreateRowHash1 exists(ExistingProducts@ProductNumber == NewProducts@ProductNumber && RowHash1 != RowHash2,\n\tnegate:false,\n\tbroadcast: 'left')~> FilterForExistingProducts\nFilterForExistingProducts derive(Active = 0) ~> ObsoleteRow\nMarkAsInsert, MarkAsUpdate union(byName: true)~> UnionAllData\nObsoleteRow alterRow(updateIf(true())) ~> MarkAsUpdate\nAddDimensionColumns alterRow(insertIf(true())) ~> MarkAsInsert\nExistingProducts filter(Active == 1) ~> FilterForActive\nNewProducts derive(RowHash1 = md5(Name,Color,StandardCost,ListPrice)) ~> CreateRowHash1\nFilterForActive derive(RowHash2 = md5(Name,Color,StandardCost,ListPrice)) ~> CreateRowHash2\nUnionAllData select(mapColumn(\n\t\tProductID,\n\t\tName,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tActive,\n\t\tEffectiveDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> select1\nselect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tEffectiveDate as timestamp,\n\t\tActive as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['ProductID'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tProductID,\n\t\tName,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tEffectiveDate,\n\t\tActive\n\t)) ~> DimensionTableSink\nLookupMaxKey sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cacheKey"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NewProducts')]",
+				"[concat(variables('factoryId'), '/datasets/DimProductsTable')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NewProducts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureDataLakeStorage1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Products.csv",
+						"folderPath": "SampleData",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Name",
+						"type": "String"
+					},
+					{
+						"name": "ProductNumber",
+						"type": "String"
+					},
+					{
+						"name": "Color",
+						"type": "String"
+					},
+					{
+						"name": "StandardCost",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimProductsTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureSqlDatabase1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Color",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StandardCost",
+						"type": "decimal",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "ListPrice",
+						"type": "decimal",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "EffectiveDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Active",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimProductsTable"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
