@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"name": "MoviesD2",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  MoviesD2",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesD2",
 					"dataset": {
 						"referenceName": "MoviesD2",
 						"type": "DatasetReference"

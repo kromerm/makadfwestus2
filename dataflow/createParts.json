@@ -30,15 +30,10 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          movie as string,",
-				"          title as string,",
-				"          genres as string,",
-				"          year as string,",
-				"          Rating as string,",
-				"          RottenTomato as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"parameters{",
+				"     parameter1 as string",
+				"}",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 keyGenerate(output(sk as long),",
@@ -64,8 +59,7 @@
 				"     ),",
 				"     partitionBy('key',",
 				"          0,",
-				"          year,",
-				"          month",
+				"          ERROR_FUNCTION('')",
 				"     )) ~> sink1"
 			]
 		}
