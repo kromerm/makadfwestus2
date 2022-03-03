@@ -25,6 +25,54 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Send failure notification",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "expectNoSchemaDrift",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://www.yahoo.com",
+					"method": "POST"
+				}
+			},
+			{
+				"name": "Send success notification",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "expectNoSchemaDrift",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://www.yahoo.com",
+					"method": "POST"
+				}
 			}
 		],
 		"annotations": []
