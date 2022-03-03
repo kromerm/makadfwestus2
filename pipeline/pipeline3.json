@@ -73,6 +73,38 @@
 					"url": "https://www.yahoo.com",
 					"method": "PUT"
 				}
+			},
+			{
+				"name": "Log Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Send failure notification",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": "INSERT INTO dbo.ErrorLog VALUES (NEXT VALUE FOR dbo.logsequence,CURRENT_TIMESTAMP,'ADF',123)"
+						}
+					]
+				}
 			}
 		],
 		"annotations": []
