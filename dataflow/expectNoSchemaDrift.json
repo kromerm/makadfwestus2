@@ -6,26 +6,30 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "MoviesD2",
+						"referenceName": "NewProducts",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "assert1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          movie as string,",
-				"          title as string,",
-				"          genres as string,",
-				"          year as string,",
-				"          Rating as string,",
-				"          RottenTomato as string",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as string,",
+				"          ListPrice as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1"
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 assert(expectTrue(ERROR_FUNCTION(''), false, 'assert1')) ~> assert1"
 			]
 		}
 	}
