@@ -9,13 +9,17 @@
 						"referenceName": "NewProducts",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "source"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
-					"name": "assert1"
+					"name": "assertNoSchemaDrift"
 				}
 			],
 			"scriptLines": [
@@ -28,8 +32,17 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 assert(expectTrue(ERROR_FUNCTION(''), false, 'assert1')) ~> assert1"
+				"     ignoreNoFilesFound: false) ~> source",
+				"source assert(expectTrue(iif(size(columnNames('',true()))>0,false(),true()), false, 'assertNoDrift', null, \"Drifted column: ${columnNames('',true())}\"),",
+				"     abort: true) ~> assertNoSchemaDrift",
+				"assertNoSchemaDrift sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
 			]
 		}
 	}
