@@ -77,7 +77,7 @@
 					"scripts": [
 						{
 							"type": "NonQuery",
-							"text": "INSERT INTO dbo.ErrorLog VALUES (NEXT VALUE FOR dbo.logsequence,CURRENT_TIMESTAMP,'Failed due to schema drift',123)"
+							"text": "INSERT INTO [dbo].[ErrorLog]\n     VALUES\n           (CURRENT_TIMESTAMP\n           ,'ADF'\n           ,1\n           ,1\n           ,1\n           ,'assert'\n           ,1\n           ,'schema drift')"
 						}
 					]
 				}
