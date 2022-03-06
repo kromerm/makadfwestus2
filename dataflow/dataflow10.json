@@ -12,7 +12,11 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "ExternalCall1",
@@ -75,7 +79,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"DerivedColumn2 call(mapColumn(",
-				"          documents = documents",
+				"          documents",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
@@ -87,6 +91,7 @@
 				"     format: 'rest',",
 				"     store: 'restservice',",
 				"     timeout: 30,",
+				"     requestInterval: 0,",
 				"     httpMethod: 'POST',",
 				"     requestFormat: ['type' -> 'json'],",
 				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'singleDocument']) ~> ExternalCall1",
@@ -96,7 +101,15 @@
 				"     startAt: 1L) ~> SurrogateKey1",
 				"DerivedColumn1 derive(documents = array(@(id=id,\r",
 				"          language=language,\r",
-				"          text=text))) ~> DerivedColumn2"
+				"          text=text))) ~> DerivedColumn2",
+				"ExternalCall1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
 			]
 		}
 	}
