@@ -1,0 +1,19 @@
+{
+	"name": "Xml2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "customers.xml",
+				"folderPath": "SampleData",
+				"container": "mycontainer"
+			}
+		}
+	}
+}
