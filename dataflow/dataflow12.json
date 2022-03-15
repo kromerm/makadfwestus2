@@ -9,20 +9,64 @@
 						"referenceName": "Xml2",
 						"type": "DatasetReference"
 					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "MoviesD2",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "stringify1"
+				},
+				{
+					"name": "parse2"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          {_corrupt_record} as string",
+				"          Customers as (Customer as ({@id} as short, CompanyName as ({@Address} as short, {@Name} as string)))",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     validationMode: 'none',",
-				"     namespaces: true) ~> source1"
+				"     namespaces: false) ~> source",
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          RottenTomato as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(column1 = '<Customers><Customer id=12222><CompanyName Name=Great Address=123 /></Customer></Customers>') ~> derivedColumn2",
+				"derivedColumn2 parse(newcol = column1 ? (Customers as (Customer as ({@id} as short,",
+				"          CompanyName as ({@Address} as short,",
+				"          {@Name} as string)))),",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parse1",
+				"source stringify(column1 = Customers ? string,",
+				"     format: 'json') ~> stringify1",
+				"stringify1 parse(column1 = column1 ? (Customer as ({@id} as integer,",
+				"     CompanyName as ({@Address} as integer,",
+				"     {@Name} as string)))[],",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parse2"
 			]
 		}
 	}
