@@ -19,7 +19,11 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "derivedColumn2"
@@ -66,7 +70,15 @@
 				"     CompanyName as ({@Address} as integer,",
 				"     {@Name} as string)))[],",
 				"     format: 'json',",
-				"     documentForm: 'documentPerLine') ~> parse2"
+				"     documentForm: 'documentPerLine') ~> parse2",
+				"parse2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
 			]
 		}
 	}
