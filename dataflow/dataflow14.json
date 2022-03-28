@@ -1,0 +1,48 @@
+{
+	"name": "dataflow14",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MoviesD2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"udfLibraries": [
+				{
+					"referenceName": "MarksFuncs",
+					"type": "DataFlowReference"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          RottenTomato as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(date1 = isProfitable(25,20),",
+				"          date2 = toTimestamp('2022-03-27 00:00:00.000', 'yyyy-MM-dd HH:mm:ss.SSS')) ~> derivedColumn1",
+				"derivedColumn1 derive(column1 = (date2-date1)/1000L) ~> derivedColumn2"
+			]
+		}
+	}
+}
