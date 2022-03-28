@@ -1,0 +1,15 @@
+{
+	"name": "MarksFuncs",
+	"properties": {
+		"description": "These are my custom functions",
+		"type": "UDFLibrary",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"isProfitable(integer, integer) as boolean = ((i1 - i2) / i1) > .50"
+			]
+		}
+	}
+}
