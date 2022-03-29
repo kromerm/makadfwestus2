@@ -18,6 +18,12 @@
 					"name": "derivedColumn1"
 				}
 			],
+			"udfLibraries": [
+				{
+					"referenceName": "MarksFuncs",
+					"type": "DataFlowReference"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          movie as string,",
@@ -30,7 +36,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 derive(column1 = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"source1 derive(column1 = toEpoch( toTimestamp('1970-01-02 00:00:00.000', 'yyyy-MM-dd HH:mm:ss.SSS') )) ~> derivedColumn1"
 			]
 		}
 	}

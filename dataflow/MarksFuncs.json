@@ -8,7 +8,8 @@
 			"sinks": [],
 			"transformations": [],
 			"scriptLines": [
-				"isProfitable(integer, integer) as boolean = ((i1 - i2) / i1) > .50"
+				"isProfitable(integer, integer) as boolean = ((i1 - i2) / i1) > .50,",
+				"toEpoch(timestamp) as long = toLong( i1-toTimestamp('1970-01-01 00:00:00.000', 'yyyy-MM-dd HH:mm:ss.SSS')) /1000l"
 			]
 		}
 	}
