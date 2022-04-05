@@ -1,5 +1,5 @@
 {
-	"name": "dataflow17",
+	"name": "Avro",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
