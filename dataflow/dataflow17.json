@@ -1,0 +1,78 @@
+{
+	"name": "dataflow17",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SequenceNumber as long,",
+				"          Offset as string,",
+				"          EnqueuedTimeUtc as string,",
+				"          SystemProperties as [string,(member0 as long, member1 as double, member2 as string, member3 as binary)],",
+				"          Properties as [string,(member0 as long, member1 as double, member2 as string, member3 as binary)],",
+				"          Body as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'avro',",
+				"     container: 'mycontainer',",
+				"     folderPath: 'SampleData',",
+				"     fileName: '42.avro') ~> source1",
+				"source1 parse(newcol = Body ? (DeviceId as string,",
+				"          MeasureTime as string,",
+				"          GeneratedPower as integer,",
+				"          WindSpeed as integer,",
+				"          TurbineSpeed as integer) [],",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parse1",
+				"flatten1 aggregate(maxWindSpeed = max(WindSpeed),",
+				"          minWindSpeed = min(WindSpeed),",
+				"          avgWindSpeed = avg(WindSpeed)) ~> aggregate1",
+				"parse1 foldDown(unroll(newcol),",
+				"     mapColumn(",
+				"          DeviceId = newcol.DeviceId,",
+				"          MeasureTime = newcol.MeasureTime,",
+				"          GeneratedPower = newcol.GeneratedPower,",
+				"          WindSpeed = newcol.WindSpeed,",
+				"          TurbineSpeed = newcol.TurbineSpeed",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sink1"
+			]
+		}
+	}
+}
