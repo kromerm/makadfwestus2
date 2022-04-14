@@ -1,0 +1,24 @@
+{
+	"name": "trigger4",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Address Quality Pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2022-04-14T21:48:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
