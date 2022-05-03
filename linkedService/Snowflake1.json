@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "Snowflake",
 		"typeProperties": {
-			"connectionString": "jdbc:snowflake://https://app.snowflake.com/west-us-2.azure.snowflakecomputing.com/?user=kromerm&db=master&warehouse=master",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDNBNEJCNjNFLTg5NzctNDYxQy1CQkYxLTlCM0Y2RUIzMjA3N19iZWQwNzhmOS01ZTFlLTQ2OWEtOWYwZi0wZjc1YjNlNGI1NjQiDQp9"
+			"connectionString": "jdbc:snowflake://https://cmgqpnw-gc67786.snowflakecomputing.com.snowflakecomputing.com/?user=kromerm&db=master&warehouse=master",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDNBNEJCNjNFLTg5NzctNDYxQy1CQkYxLTlCM0Y2RUIzMjA3N18yZmViYTZhYy1jM2M2LTRkMDAtODUxYS1kNzBjNWU5YWI1NmYiDQp9"
 		}
 	}
 }
