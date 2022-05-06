@@ -1,5 +1,5 @@
 {
-	"name": "dedupe",
+	"name": "DistinctRows",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -29,7 +29,7 @@
 					"name": "MakeRowHash"
 				}
 			],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nMakeRowHash aggregate(groupBy(rowhash),\n\teach(match(name != 'rowhash'), $$ = first($$))) ~> DistinctRows\nsource1 derive(rowhash = sha2(256,columns())) ~> MakeRowHash\nDistinctRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(name != 'rowhash'))\n\t)) ~> sink1"
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nMakeRowHash aggregate(groupBy(rowhash),\n\teach(match(name!='rowhash'), $$ = first($$))) ~> DistinctRows\nsource1 derive(rowhash = sha2(256,columns())) ~> MakeRowHash\nDistinctRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(name!='rowhash'))\n\t)) ~> sink1"
 		}
 	}
 }

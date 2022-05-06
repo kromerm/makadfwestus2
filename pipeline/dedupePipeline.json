@@ -4,7 +4,7 @@
 		"description": "This pipeline contains 2 data flows that help with data deduplication. The first data flow will return only distinct rows while the second data flow will product 2 output files based on matched rows and unique rows.",
 		"activities": [
 			{
-				"name": "dataDedupe",
+				"name": "Deduplication Matching",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -18,6 +18,30 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataDedupe",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DistinctRows",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DistinctRows",
 						"type": "DataFlowReference"
 					},
 					"compute": {
