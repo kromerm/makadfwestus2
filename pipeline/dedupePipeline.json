@@ -1,6 +1,7 @@
 {
 	"name": "dedupePipeline",
 	"properties": {
+		"description": "This pipeline contains 2 data flows that help with data deduplication. The first data flow will return only distinct rows while the second data flow will product 2 output files based on matched rows and unique rows.",
 		"activities": [
 			{
 				"name": "dataDedupe",
