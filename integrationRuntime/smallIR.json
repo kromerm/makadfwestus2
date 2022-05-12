@@ -4,11 +4,12 @@
 		"type": "Managed",
 		"typeProperties": {
 			"computeProperties": {
-				"location": "AutoResolve",
+				"location": "West US",
 				"dataFlowProperties": {
 					"computeType": "General",
 					"coreCount": 16,
 					"timeToLive": 0,
+					"cleanup": true,
 					"externalComputeInfo": []
 				}
 			}
