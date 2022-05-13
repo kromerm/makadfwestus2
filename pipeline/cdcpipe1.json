@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "SQL Incremental",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,14 @@
 						"referenceName": "SQLIncremental",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "smallIR",
+						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"continuationSettings": {
+						"customizedCheckpointKey": "8435551e-1dae-41df-bdbc-16647861cbaf"
+					}
 				}
 			}
 		],

@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "CDC ADLS Gen2",
+				"name": "CDC ADLS Gen2 Test",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -23,7 +23,10 @@
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"continuationSettings": {
+						"customizedCheckpointKey": "83b74f57-3df1-4439-8686-5379c1101614"
+					}
 				}
 			}
 		],
