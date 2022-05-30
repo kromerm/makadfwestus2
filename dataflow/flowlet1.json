@@ -1,0 +1,29 @@
+{
+	"name": "flowlet1",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "input1"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          abc as integer",
+				"     ),",
+				"     order: 0) ~> input1",
+				"input1 derive(abc = abc * 2) ~> derivedColumn1",
+				"derivedColumn1 output() ~> output1"
+			]
+		}
+	}
+}
