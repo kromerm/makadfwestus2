@@ -9,7 +9,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://api.weather.gov/gridpoints/SEW/124,67/forecast",
+			"url": "@{linkedService().myparam}",
 			"enableServerCertificateValidation": false,
 			"authenticationType": "Anonymous"
 		}
