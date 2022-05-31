@@ -1,10 +1,16 @@
 {
 	"name": "WeatherRest",
 	"properties": {
+		"parameters": {
+			"myparam": {
+				"type": "string",
+				"defaultValue": "'test'"
+			}
+		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://api.weather.gov/gridpoints/SEW/124,67/forecast",
+			"url": "@{'https://api.weather.gov/gridpoints/SEW/124,67/forecast'+linkedService().myparam}",
 			"enableServerCertificateValidation": false,
 			"authenticationType": "Anonymous"
 		}
