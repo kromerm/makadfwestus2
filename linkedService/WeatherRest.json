@@ -3,8 +3,7 @@
 	"properties": {
 		"parameters": {
 			"myparam": {
-				"type": "string",
-				"defaultValue": "'https://api.weather.gov/gridpoints/SEW/124,67/forecast'"
+				"type": "string"
 			}
 		},
 		"annotations": [],
