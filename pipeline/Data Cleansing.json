@@ -125,6 +125,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataDedupe",
+						"type": "DataFlowReference"
+					},
 					"integrationRuntime": {
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
