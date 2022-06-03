@@ -7,13 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "makadfwestus2"
 		},
+		"Snowflake1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
+		},
 		"tpcds_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
 		},
 		"WeatherRest_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+			"defaultValue": "@{linkedService().myparam}"
 		},
 		"dummyRest2_properties_typeProperties_url": {
 			"type": "string",
@@ -45,10 +49,28 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Snowflake1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Snowflake",
+				"typeProperties": {
+					"connectionString": "[parameters('Snowflake1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/WeatherRest')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"parameters": {
+					"myparam": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "RestService",
 				"typeProperties": {
@@ -168,6 +190,48 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/trigger2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 19,
+					"startTime": "2021-11-17T04:44:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger3')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15,
+						"startTime": "2022-03-23T04:47:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowIRwReuse')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -226,11 +290,12 @@
 				"type": "Managed",
 				"typeProperties": {
 					"computeProperties": {
-						"location": "AutoResolve",
+						"location": "West US",
 						"dataFlowProperties": {
 							"computeType": "General",
 							"coreCount": 16,
 							"timeToLive": 0,
+							"cleanup": true,
 							"externalComputeInfo": []
 						}
 					}
@@ -585,6 +650,25 @@
 						"          each(match(true()))",
 						"     )) ~> outputDupes",
 						"CheckForDupes@NotDupe output() ~> outputNoDupes"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MarksFuncs')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "These are my custom functions",
+				"type": "UDFLibrary",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [],
+					"scriptLines": [
+						"isProfitable(integer, integer) as boolean = ((i1-i2)/i1)>.50,",
+						"toEpoch(timestamp) as long = toLong(i1-toTimestamp('1970-01-01 00:00:00.000','yyyy-MM-dd HH:mm:ss.SSS'))/1000l"
 					]
 				}
 			},
@@ -973,128 +1057,6 @@
 						"CheckForDupes@Duplicates output() ~> outputDupes",
 						"CheckForDupes@NotDupe output() ~> outputNoDupes"
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/default')]",
-			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-			"apiVersion": "2018-06-01",
-			"properties": {},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Avro1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Avro",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "output/avro",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureDataExplorerTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataExplorer1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureDataExplorerTable",
-				"schema": [
-					{
-						"name": "medallion",
-						"type": "guid"
-					},
-					{
-						"name": "hack_license",
-						"type": "guid"
-					},
-					{
-						"name": "vendor_id",
-						"type": "string"
-					},
-					{
-						"name": "rate_code",
-						"type": "long"
-					},
-					{
-						"name": "store_and_fwd_flag",
-						"type": "string"
-					},
-					{
-						"name": "pickup_datetime",
-						"type": "datetime"
-					},
-					{
-						"name": "dropoff_datetime",
-						"type": "datetime"
-					},
-					{
-						"name": "passenger_count",
-						"type": "long"
-					},
-					{
-						"name": "trip_time_in_secs",
-						"type": "long"
-					},
-					{
-						"name": "trip_distance",
-						"type": "real"
-					},
-					{
-						"name": "pickup_longitude",
-						"type": "real"
-					},
-					{
-						"name": "pickup_latitude",
-						"type": "real"
-					},
-					{
-						"name": "dropoff_longitude",
-						"type": "real"
-					},
-					{
-						"name": "dropoff_latitude",
-						"type": "real"
-					}
-				],
-				"typeProperties": {
-					"table": "marktable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureDataExplorerTable2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataExplorer1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureDataExplorerTable",
-				"schema": [],
-				"typeProperties": {
-					"table": "aggtable"
 				}
 			},
 			"dependsOn": []

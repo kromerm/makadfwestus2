@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
 		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
 		"AzureTableStorage1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
@@ -46,6 +50,10 @@
 		"SQLMovies_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SQLMovies'"
+		},
+		"Snowflake1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
 		},
 		"tpcds_connectionString": {
 			"type": "secureString",
@@ -119,13 +127,9 @@
 			"type": "string",
 			"defaultValue": "https://reqres.in"
 		},
-		"Snowflake1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Snowflake1'"
-		},
 		"WeatherRest_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+			"defaultValue": "@{linkedService().myparam}"
 		},
 		"dummyRest2_properties_typeProperties_url": {
 			"type": "string",
@@ -197,6 +201,9 @@
 					"AzureDatabricks1_accessToken": {
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
 					"AzureTableStorage1_connectionString": {
 						"value": "[parameters('AzureTableStorage1_connectionString')]"
 					},
@@ -247,9 +254,6 @@
 					},
 					"RestService5_properties_typeProperties_url": {
 						"value": "[parameters('RestService5_properties_typeProperties_url')]"
-					},
-					"Snowflake1_connectionString": {
-						"value": "[parameters('Snowflake1_connectionString')]"
 					}
 				}
 			},
@@ -268,6 +272,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Snowflake1_connectionString": {
+						"value": "[parameters('Snowflake1_connectionString')]"
 					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"

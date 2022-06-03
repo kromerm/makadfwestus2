@@ -20,6 +20,9 @@
 		"AzureDatabricks1_accessToken": {
 			"value": ""
 		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
 		"AzureTableStorage1_connectionString": {
 			"value": ""
 		},
@@ -33,6 +36,9 @@
 			"value": ""
 		},
 		"SQLMovies_connectionString": {
+			"value": ""
+		},
+		"Snowflake1_connectionString": {
 			"value": ""
 		},
 		"tpcds_connectionString": {
@@ -89,11 +95,8 @@
 		"RestService5_properties_typeProperties_url": {
 			"value": "https://reqres.in"
 		},
-		"Snowflake1_connectionString": {
-			"value": ""
-		},
 		"WeatherRest_properties_typeProperties_url": {
-			"value": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
+			"value": "@{linkedService().myparam}"
 		},
 		"dummyRest2_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/api/v1/create"
