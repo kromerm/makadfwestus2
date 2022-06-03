@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Address Quality",
+						"referenceName": "Address Quality_copy1",
 						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {

@@ -1,5 +1,5 @@
 {
-	"name": "Address Quality",
+	"name": "Address Quality_copy1",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -34,6 +34,12 @@
 				},
 				{
 					"name": "FailedMetadata"
+				},
+				{
+					"name": "FilterOutNULLCountry"
+				},
+				{
+					"name": "MakeFullAddress"
 				}
 			],
 			"scriptLines": [
@@ -63,7 +69,9 @@
 				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
 				"     abort: true) ~> FailedMetadata",
-				"DataQualityRules sink(allowSchemaDrift: true,",
+				"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
+				"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress",
+				"MakeFullAddress sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
