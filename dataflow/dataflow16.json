@@ -36,13 +36,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "AuditSink"
-				},
-				{
-					"dataset": {
-						"referenceName": "SQLMovies",
-						"type": "DatasetReference"
-					},
-					"name": "EntitySink"
 				}
 			],
 			"transformations": [
@@ -120,7 +113,7 @@
 				"     store: 'cache',",
 				"     format: 'inline',",
 				"     output: false,",
-				"     saveOrder: 1) ~> CachedSinkHash",
+				"     saveOrder: 0) ~> CachedSinkHash",
 				"InsertNewRows sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -138,25 +131,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> AuditSink",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
-				"          movie as integer,",
-				"          title as string,",
-				"          genres as string,",
-				"          year as integer,",
-				"          Rating as integer,",
-				"          RottenTomato as integer",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> EntitySink"
+				"     errorHandlingOption: 'stopOnFirstError') ~> AuditSink"
 			]
 		}
 	}
