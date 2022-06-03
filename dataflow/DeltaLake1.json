@@ -30,12 +30,9 @@
 				},
 				{
 					"name": "Filter1"
-				},
-				{
-					"name": "select1"
 				}
 			],
-			"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nFilter1 derive(Rating = iif(year==1988,1,toInteger(Rating)),\n\t\tyear = iif(year==1960,2021,toInteger(year)),\n\t\tmyStruct = @(customer=1,\n\t\tdate=2)) ~> DerivedColumn1\nselect1 alterRow(updateIf(year==1988),\n\tinsertIf(year==2021),\n\tdeleteIf(year==1950)) ~> AlterRow1\nsource1 filter(year == 1988 || year == 1960 || year == 1950) ~> Filter1\nDerivedColumn1 select(mapColumn(\n\t\tmyStructs\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> select1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie','year'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nFilter1 derive(Rating = iif(year==1988,1,toInteger(Rating)),\n\t\tyear = iif(year==1960,2021,toInteger(year)),\n\t\tmyStruct = @(customer=1,\n\t\tdate=2)) ~> DerivedColumn1\nDerivedColumn1 alterRow(updateIf(year==1988),\n\tinsertIf(year==2021),\n\tdeleteIf(year==1950)) ~> AlterRow1\nsource1 filter(year == 1988 || year == 1960 || year == 1950) ~> Filter1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie','year'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
