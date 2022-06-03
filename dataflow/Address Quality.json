@@ -10,13 +10,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "Address1"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlDatabaseDataSource",
-						"type": "DatasetReference"
-					},
-					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -65,10 +58,6 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Address1",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
 				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
 				"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
 				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
