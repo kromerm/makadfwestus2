@@ -49,7 +49,8 @@
 				"MustHaveColorAttribute sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     ignoreAssertFailedRows: true) ~> sink1"
 			]
 		}
 	}
