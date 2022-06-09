@@ -74,7 +74,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     rowUrlColumn: 'myfilename') ~> source1",
+				"     rowUrlColumn: '\\'myfilename\\'') ~> source1",
 				"source(output(",
 				"          {Emp ID} as string,",
 				"          {Name Prefix} as string,",
