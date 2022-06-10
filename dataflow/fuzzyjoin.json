@@ -122,7 +122,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Names2",
-				"select3, select4 join(fuzzyCompare(Name1, Name2, 80.00),",
+				"select3, select4 join(fuzzyCompare(Name1, Name2, 84.00),",
 				"     joinType:'inner',",
 				"     matchType:'fuzzy',",
 				"     ignoreSpaces: false,",
