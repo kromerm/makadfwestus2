@@ -9,14 +9,14 @@
 						"referenceName": "names1001",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "Names1"
 				},
 				{
 					"dataset": {
 						"referenceName": "names100",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "Names2"
 				}
 			],
 			"sinks": [],
@@ -73,7 +73,7 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     ignoreNoFilesFound: false) ~> Names1",
 				"source(output(",
 				"          {Emp ID} as string,",
 				"          {Name Prefix} as string,",
@@ -115,19 +115,19 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source2",
+				"     ignoreNoFilesFound: false) ~> Names2",
 				"select1, select2 join(fuzzyCompare(select1@{Last Name}, select2@{First Name}, 80.00),",
 				"     joinType:'inner',",
 				"     matchType:'fuzzy',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'off')~> join1",
-				"source1 select(mapColumn(",
+				"Names1 select(mapColumn(",
 				"          each(match(true()),",
 				"               replace($$,'.','') = $$)",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"source2 select(mapColumn(",
+				"Names2 select(mapColumn(",
 				"          each(match(true()),",
 				"               replace($$,'.','') = $$)",
 				"     ),",
