@@ -120,6 +120,7 @@
 				"     joinType:'inner',",
 				"     matchType:'fuzzy',",
 				"     ignoreSpaces: false,",
+				"     scoreColumn:'simscore',",
 				"     broadcast: 'off')~> join1",
 				"Names1 select(mapColumn(",
 				"          each(match(true()),",
