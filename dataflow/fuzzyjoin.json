@@ -29,6 +29,12 @@
 				},
 				{
 					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "select4"
 				}
 			],
 			"scriptLines": [
@@ -116,11 +122,10 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Names2",
-				"select1, select2 join(fuzzyCompare(select1@{Last Name}, select2@{First Name}, 80.00),",
+				"select3, select4 join(fuzzyCompare(Name1, Name2, 80.00),",
 				"     joinType:'inner',",
 				"     matchType:'fuzzy',",
 				"     ignoreSpaces: false,",
-				"     scoreColumn:'simscore',",
 				"     broadcast: 'off')~> join1",
 				"Names1 select(mapColumn(",
 				"          each(match(true()),",
@@ -133,7 +138,17 @@
 				"               replace($$,'.','') = $$)",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2"
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 select(mapColumn(",
+				"          Name1 = {Last Name}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select2 select(mapColumn(",
+				"          Name2 = {First Name}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4"
 			]
 		}
 	}
