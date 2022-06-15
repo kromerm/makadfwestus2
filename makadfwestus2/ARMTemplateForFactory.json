@@ -2412,9 +2412,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
 							"continuationSettings": {
@@ -2430,7 +2430,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/CDC ADLS Gen2')]"
+				"[concat(variables('factoryId'), '/dataflows/CDC ADLS Gen2')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
 			]
 		},
 		{
@@ -2463,7 +2464,7 @@
 							},
 							"staging": {},
 							"integrationRuntime": {
-								"referenceName": "smallIR",
+								"referenceName": "dataflowIRwReuse",
 								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
@@ -2481,7 +2482,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/SQLIncremental')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/smallIR')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]"
 			]
 		},
 		{

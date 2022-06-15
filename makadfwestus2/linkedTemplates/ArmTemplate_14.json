@@ -602,7 +602,7 @@
 							},
 							"staging": {},
 							"integrationRuntime": {
-								"referenceName": "smallIR",
+								"referenceName": "dataflowIRwReuse",
 								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
