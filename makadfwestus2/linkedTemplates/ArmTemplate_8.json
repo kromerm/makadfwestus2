@@ -1160,7 +1160,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "cdcMovies",
+								"referenceName": "folderout_cdc",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -1175,28 +1175,15 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [
-						{
-							"name": "DerivedColumn1"
-						}
-					],
+					"transformations": [],
 					"scriptLines": [
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: false,",
+						"source(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: true,",
 						"     enableCdc: true,",
 						"     mode: 'read',",
 						"     skipInitialLoad: false) ~> source1",
-						"source1 derive(currenttime = 'movies'+replace(toString(currentTimestamp()),':','')+'.csv') ~> DerivedColumn1",
-						"DerivedColumn1 sink(allowSchemaDrift: true,",
+						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
 						"     preCommands: [],",

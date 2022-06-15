@@ -14706,7 +14706,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "cdcMovies",
+								"referenceName": "folderout_cdc",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -14721,28 +14721,15 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [
-						{
-							"name": "DerivedColumn1"
-						}
-					],
+					"transformations": [],
 					"scriptLines": [
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: false,",
+						"source(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: true,",
 						"     enableCdc: true,",
 						"     mode: 'read',",
 						"     skipInitialLoad: false) ~> source1",
-						"source1 derive(currenttime = 'movies'+replace(toString(currentTimestamp()),':','')+'.csv') ~> DerivedColumn1",
-						"DerivedColumn1 sink(allowSchemaDrift: true,",
+						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
 						"     preCommands: [],",
@@ -14753,7 +14740,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/cdcMovies')]",
 				"[concat(variables('factoryId'), '/datasets/folderout_cdc')]"
 			]
 		},
@@ -16481,7 +16467,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "folderout",
+								"referenceName": "folderout_cdc",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -16510,6 +16496,9 @@
 						"     format: 'table') ~> source1",
 						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
@@ -16517,7 +16506,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SQLProducts_new')]",
-				"[concat(variables('factoryId'), '/datasets/folderout')]"
+				"[concat(variables('factoryId'), '/datasets/folderout_cdc')]"
 			]
 		},
 		{
@@ -18652,6 +18641,179 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/fuzzyjoin')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "names1001",
+								"type": "DatasetReference"
+							},
+							"name": "Names1"
+						},
+						{
+							"dataset": {
+								"referenceName": "names100",
+								"type": "DatasetReference"
+							},
+							"name": "Names2"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "select4"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {Emp ID} as string,",
+						"          {Name Prefix} as string,",
+						"          {First Name} as string,",
+						"          {Middle Initial} as string,",
+						"          {Last Name} as string,",
+						"          Gender as string,",
+						"          {E Mail} as string,",
+						"          {Father's Name} as string,",
+						"          {Mother's Name} as string,",
+						"          {Mother's Maiden Name} as string,",
+						"          {Date of Birth} as string,",
+						"          {Time of Birth} as string,",
+						"          {Age in Yrs.} as string,",
+						"          {Weight in Kgs.} as string,",
+						"          {Date of Joining} as string,",
+						"          {Quarter of Joining} as string,",
+						"          {Half of Joining} as string,",
+						"          {Year of Joining} as string,",
+						"          {Month of Joining} as string,",
+						"          {Month Name of Joining} as string,",
+						"          {Short Month} as string,",
+						"          {Day of Joining} as string,",
+						"          {DOW of Joining} as string,",
+						"          {Short DOW} as string,",
+						"          {Age in Company (Years)} as string,",
+						"          Salary as string,",
+						"          {Last % Hike} as string,",
+						"          SSN as string,",
+						"          {Phone No. } as string,",
+						"          {Place Name} as string,",
+						"          County as string,",
+						"          City as string,",
+						"          State as string,",
+						"          Zip as string,",
+						"          Region as string,",
+						"          {User Name} as string,",
+						"          Password as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Names1",
+						"source(output(",
+						"          {Emp ID} as string,",
+						"          {Name Prefix} as string,",
+						"          {First Name} as string,",
+						"          {Middle Initial} as string,",
+						"          {Last Name} as string,",
+						"          Gender as string,",
+						"          {E Mail} as string,",
+						"          {Father's Name} as string,",
+						"          {Mother's Name} as string,",
+						"          {Mother's Maiden Name} as string,",
+						"          {Date of Birth} as string,",
+						"          {Time of Birth} as string,",
+						"          {Age in Yrs.} as string,",
+						"          {Weight in Kgs.} as string,",
+						"          {Date of Joining} as string,",
+						"          {Quarter of Joining} as string,",
+						"          {Half of Joining} as string,",
+						"          {Year of Joining} as string,",
+						"          {Month of Joining} as string,",
+						"          {Month Name of Joining} as string,",
+						"          {Short Month} as string,",
+						"          {Day of Joining} as string,",
+						"          {DOW of Joining} as string,",
+						"          {Short DOW} as string,",
+						"          {Age in Company (Years)} as string,",
+						"          Salary as string,",
+						"          {Last % Hike} as string,",
+						"          SSN as string,",
+						"          {Phone No. } as string,",
+						"          {Place Name} as string,",
+						"          County as string,",
+						"          City as string,",
+						"          State as string,",
+						"          Zip as string,",
+						"          Region as string,",
+						"          {User Name} as string,",
+						"          Password as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Names2",
+						"select3, select4 join(fuzzyCompare(Name1, Name2, 84.00),",
+						"     joinType:'inner',",
+						"     matchType:'fuzzy',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'off')~> join1",
+						"Names1 select(mapColumn(",
+						"          each(match(true()),",
+						"               replace($$,'.','') = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"Names2 select(mapColumn(",
+						"          each(match(true()),",
+						"               replace($$,'.','') = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select1 select(mapColumn(",
+						"          Name1 = {Last Name}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"select2 select(mapColumn(",
+						"          Name2 = {First Name}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select4",
+						"join1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: false,",
+						"     saveOrder: 1) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/names1001')]",
+				"[concat(variables('factoryId'), '/datasets/names100')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/hierachical')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -20443,152 +20605,6 @@
 			"apiVersion": "2018-06-01",
 			"properties": {},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/fuzzyjoin')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "names1001",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "join1"
-						},
-						{
-							"name": "MakeFullName"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "copy"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {Emp ID} as string,",
-						"          {Name Prefix} as string,",
-						"          {First Name} as string,",
-						"          {Middle Initial} as string,",
-						"          {Last Name} as string,",
-						"          Gender as string,",
-						"          {E Mail} as string,",
-						"          {Father's Name} as string,",
-						"          {Mother's Name} as string,",
-						"          {Mother's Maiden Name} as string,",
-						"          {Date of Birth} as string,",
-						"          {Time of Birth} as string,",
-						"          {Age in Yrs.} as string,",
-						"          {Weight in Kgs.} as string,",
-						"          {Date of Joining} as string,",
-						"          {Quarter of Joining} as string,",
-						"          {Half of Joining} as string,",
-						"          {Year of Joining} as string,",
-						"          {Month of Joining} as string,",
-						"          {Month Name of Joining} as string,",
-						"          {Short Month} as string,",
-						"          {Day of Joining} as string,",
-						"          {DOW of Joining} as string,",
-						"          {Short DOW} as string,",
-						"          {Age in Company (Years)} as string,",
-						"          Salary as string,",
-						"          {Last % Hike} as string,",
-						"          SSN as string,",
-						"          {Phone No. } as string,",
-						"          {Place Name} as string,",
-						"          County as string,",
-						"          City as string,",
-						"          State as string,",
-						"          Zip as string,",
-						"          Region as string,",
-						"          {User Name} as string,",
-						"          Password as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"MakeFullName, copy join(fuzzyCompare(MakeFullName@fullname1, copy@fullname1, 80.00),",
-						"     joinType:'inner',",
-						"     matchType:'fuzzy',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'off',",
-						"     scoreColumn: 'simscore')~> join1",
-						"select1 derive(fullname1 = {First Name} + ' ' + {Middle Initial} + ' ' + {Last Name}) ~> MakeFullName",
-						"source1 select(mapColumn(",
-						"          each(match(instr(name,'.') > 0),",
-						"               replace($$,'.','') = $$),",
-						"          each(match(instr(name,'.') == 0))",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"MakeFullName select(mapColumn(",
-						"          {Emp ID},",
-						"          {Name Prefix},",
-						"          {First Name},",
-						"          {Middle Initial},",
-						"          {Last Name},",
-						"          Gender,",
-						"          {E Mail},",
-						"          {Father's Name},",
-						"          {Mother's Name},",
-						"          {Mother's Maiden Name},",
-						"          {Date of Birth},",
-						"          {Time of Birth},",
-						"          {Date of Joining},",
-						"          {Quarter of Joining},",
-						"          {Half of Joining},",
-						"          {Year of Joining},",
-						"          {Month of Joining},",
-						"          {Month Name of Joining},",
-						"          {Short Month},",
-						"          {Day of Joining},",
-						"          {DOW of Joining},",
-						"          {Short DOW},",
-						"          {Age in Company (Years)},",
-						"          Salary,",
-						"          {Last % Hike},",
-						"          SSN,",
-						"          {Place Name},",
-						"          County,",
-						"          City,",
-						"          State,",
-						"          Zip,",
-						"          Region,",
-						"          {User Name},",
-						"          Password,",
-						"          fullname1",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> copy",
-						"join1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/names1001')]"
-			]
 		}
 	]
 }
