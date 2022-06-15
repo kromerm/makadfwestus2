@@ -1,5 +1,5 @@
 {
-	"name": "cdcpipe1",
+	"name": "SQL Incremental",
 	"properties": {
 		"activities": [
 			{

@@ -1,5 +1,5 @@
 {
-	"name": "cdcPipeline",
+	"name": "CDC Storage",
 	"properties": {
 		"activities": [
 			{
