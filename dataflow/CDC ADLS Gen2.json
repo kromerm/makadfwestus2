@@ -23,7 +23,7 @@
 			],
 			"transformations": [],
 			"scriptLines": [
-				"source(allowSchemaDrift: false,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: true,",
 				"     enableCdc: true,",
