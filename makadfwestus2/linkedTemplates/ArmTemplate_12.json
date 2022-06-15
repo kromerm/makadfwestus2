@@ -741,7 +741,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/cdcPipeline')]",
+			"name": "[concat(parameters('factoryName'), '/CDC Storage')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
