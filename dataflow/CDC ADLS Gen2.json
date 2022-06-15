@@ -28,7 +28,7 @@
 				"     ignoreNoFilesFound: true,",
 				"     enableCdc: true,",
 				"     mode: 'read',",
-				"     skipInitialLoad: false) ~> source1",
+				"     skipInitialLoad: true) ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
