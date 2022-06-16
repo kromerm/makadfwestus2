@@ -1,6 +1,35 @@
 {
 	"name": "CDCDemo",
 	"properties": {
+		"activities": [
+			{
+				"name": "CDC from files",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DemoOfCDCFiles",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "dataflowIRwReuse",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine",
+					"continuationSettings": {
+						"customizedCheckpointKey": "61d8ece8-ea02-435f-911d-f9e44b6c111c"
+					}
+				}
+			}
+		],
 		"annotations": []
 	}
 }

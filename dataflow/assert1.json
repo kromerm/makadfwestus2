@@ -72,7 +72,8 @@
 				"     store: 'cache',",
 				"     format: 'inline',",
 				"     output: false,",
-				"     saveOrder: 1) ~> sink1"
+				"     saveOrder: 1,",
+				"     ignoreAssertFailedRows: true) ~> sink1"
 			]
 		}
 	}
