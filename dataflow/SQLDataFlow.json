@@ -1,12 +1,12 @@
 {
-	"name": "DemoOfCDCFiles",
+	"name": "SQLDataFlow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "cdcMovies",
+						"referenceName": "SQLProducts_new",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -24,27 +24,31 @@
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
-				"          movie as integer,",
-				"          title as string,",
-				"          genres as string,",
-				"          year as short,",
-				"          Rating as short,",
-				"          RottenTomato as short",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as decimal(19,4),",
+				"          ListPrice as decimal(19,4),",
+				"          {_Inserted} as timestamp,",
+				"          {_LastUpdated} as timestamp,",
+				"          DWhash as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
 				"     enableCdc: true,",
 				"     mode: 'read',",
-				"     skipInitialLoad: false) ~> source1",
+				"     skipInitialLoad: false,",
+				"     waterMarkColumn: '_LastUpdated',",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('roundRobin', 20)) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}

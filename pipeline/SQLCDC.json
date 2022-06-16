@@ -1,9 +1,9 @@
 {
-	"name": "CDCDemo",
+	"name": "SQLCDC",
 	"properties": {
 		"activities": [
 			{
-				"name": "CDC from files",
+				"name": "Data flow1",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,16 +16,16 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DemoOfCDCFiles",
+						"referenceName": "SQLDataFlow",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "dataflowIRwReuse",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine",
 					"continuationSettings": {
-						"customizedCheckpointKey": "6ad3d738-98a3-4982-9c68-55e18f30c0fa"
+						"customizedCheckpointKey": "23695c38-abdc-4f36-93c2-522c3fa022b0"
 					}
 				}
 			}
