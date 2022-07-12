@@ -1,0 +1,12 @@
+{
+	"name": "GoogleMaps",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://maps.googleapis.com/maps",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
