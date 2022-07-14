@@ -20,8 +20,8 @@
 						"type": "DataFlowReference"
 					},
 					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+						"coreCount": 80,
+						"computeType": "MemoryOptimized"
 					},
 					"traceLevel": "Fine"
 				}
