@@ -25,6 +25,38 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Script1",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Data Quality DF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "INSERT INTO [dbo].[ErrorLog]\n           ([ErrorTime]\n           ,[UserName]\n           ,[ErrorNumber]\n           ,[ErrorSeverity]\n           ,[ErrorState]\n           ,[ErrorProcedure]\n           ,[ErrorLine]\n           ,[ErrorMessage])\n     VALUES\n           (CURRENT_TIMESTAMP\n           ,'ADF'\n           ,1\n           ,1\n           ,1\n           ,'assert'\n           ,1\n           ,'schema drift')"
+						}
+					]
+				}
 			}
 		],
 		"annotations": []
