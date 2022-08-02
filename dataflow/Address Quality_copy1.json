@@ -75,6 +75,9 @@
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_container: 'mycontainer',",
+				"     assertFailure_folderPath: 'errors',",
 				"     preCommands: [],",
 				"     postCommands: []) ~> OutputToADLS"
 			]
