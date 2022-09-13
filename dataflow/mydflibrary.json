@@ -1,0 +1,14 @@
+{
+	"name": "mydflibrary",
+	"properties": {
+		"type": "UDFLibrary",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"irr() as integer = 1+1"
+			]
+		}
+	}
+}
