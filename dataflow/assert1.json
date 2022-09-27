@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "adlsgen2folder",
+						"referenceName": "errorfolder",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -70,28 +70,6 @@
 				"          nonUS = hasError('nonUS')) ~> DerivedColumn1",
 				"DerivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          identifier as string,",
-				"          createdOn as string,",
-				"          modifiedOn as string,",
-				"          originalTimeZoneUTCOffset as string,",
-				"          sourceAuthority as string,",
-				"          salutation as string,",
-				"          firstName as string,",
-				"          nickName as string,",
-				"          middleName as string,",
-				"          lastName as string,",
-				"          suffix as string,",
-				"          fullName as string,",
-				"          birthdayDay as string,",
-				"          birthdayMonth as string,",
-				"          birthdayYear as string,",
-				"          birthDate as string,",
-				"          genderCode as string",
-				"     ),",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
