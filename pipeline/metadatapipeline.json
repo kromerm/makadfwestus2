@@ -29,7 +29,30 @@
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "None",
+					"cacheSinks": {
+						"firstRowOnly": true
+					}
+				}
+			},
+			{
+				"name": "Set Avg Temp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "metadataChecker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "metacheck",
+					"value": {
+						"value": "@string(activity('metadataChecker').output.runStatus.output.sink1.value[0].results)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
