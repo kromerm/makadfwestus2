@@ -36,8 +36,8 @@
 				}
 			},
 			{
-				"name": "Set Avg Temp",
-				"type": "SetVariable",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "metadataChecker",
@@ -48,11 +48,32 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "metacheck",
-					"value": {
-						"value": "@string(activity('metadataChecker').output.runStatus.output.OutputToPipeline.value[0].results)",
+					"expression": {
+						"value": "@greater(activity('metadataChecker').output.runStatus.output.OutputToPipeline.value[0].NumBad,0)",
 						"type": "Expression"
-					}
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Good Rows",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Bad Rows",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
 				}
 			}
 		],
