@@ -50,7 +50,7 @@
 				"typeProperties": {
 					"variableName": "metacheck",
 					"value": {
-						"value": "@string(activity('metadataChecker').output.runStatus.output.sink1.value[0].results)",
+						"value": "@string(activity('metadataChecker').output.runStatus.output.OutputToPipeline.value[0].results)",
 						"type": "Expression"
 					}
 				}
@@ -59,7 +59,7 @@
 		"parameters": {
 			"filename": {
 				"type": "string",
-				"defaultValue": "'SampleData/moviesDB.csv'"
+				"defaultValue": "'SampleData/loans.csv'"
 			}
 		},
 		"variables": {
