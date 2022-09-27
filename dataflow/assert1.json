@@ -99,9 +99,6 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
-				"     outputAssertFailedRows: true,",
-				"     assertFailure_container: 'mycontainer',",
-				"     assertFailure_folderPath: 'errors',",
 				"     ignoreAssertFailedRows: true,",
 				"     format: 'inline') ~> sink1"
 			]
