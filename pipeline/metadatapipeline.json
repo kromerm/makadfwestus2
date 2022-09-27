@@ -80,7 +80,7 @@
 		"parameters": {
 			"filename": {
 				"type": "string",
-				"defaultValue": "'SampleData/loans.csv'"
+				"defaultValue": "'SampleData/moviesDB.csv'"
 			}
 		},
 		"variables": {
