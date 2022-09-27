@@ -2,8 +2,11 @@
 	"name": "names1001",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage1",
-			"type": "LinkedServiceReference"
+			"referenceName": "AzureBlobStorage2",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"myparam": "'what?'"
+			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
