@@ -2,11 +2,17 @@
 	"name": "AzureBlobStorage2",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
+		"parameters": {
+			"myparam": {
+				"type": "string",
+				"defaultValue": "'what?'"
+			}
+		},
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
 			"connectionString": "DefaultEndpointsProtocol=https;AccountName=makadf001;EndpointSuffix=core.windows.net;",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1BS0FERldFU1RVUzJfYjg2NDMwZGEtNmMxYi00NDcxLTg2OTgtMjAwMjQzODU5ODkxIg0KfQ=="
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDNBNEJCNjNFLTg5NzctNDYxQy1CQkYxLTlCM0Y2RUIzMjA3N181NGJmNzg3OS0yYmQ0LTRiMDYtODhiNS03MzQwNjZlMzk1N2QiDQp9"
 		}
 	}
 }
