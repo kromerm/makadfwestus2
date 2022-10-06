@@ -1,0 +1,328 @@
+{
+	"name": "adfcdc2",
+	"properties": {
+		"SourceConnectionsInfo": [
+			{
+				"SourceEntities": [
+					{
+						"name": "mycontainer/SampleData/CDC",
+						"properties": {
+							"schema": [
+								{
+									"name": "movie",
+									"dataType": "integer"
+								},
+								{
+									"name": "_c1",
+									"dataType": "string"
+								},
+								{
+									"name": "title",
+									"dataType": "string"
+								},
+								{
+									"name": "_c3",
+									"dataType": "string"
+								},
+								{
+									"name": "genres",
+									"dataType": "string"
+								},
+								{
+									"name": "_c5",
+									"dataType": "string"
+								},
+								{
+									"name": "year",
+									"dataType": "short"
+								},
+								{
+									"name": "_c7",
+									"dataType": "string"
+								},
+								{
+									"name": "Rating",
+									"dataType": "short"
+								},
+								{
+									"name": "_c9",
+									"dataType": "string"
+								},
+								{
+									"name": "RottenTomato",
+									"dataType": "short"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "delimited"
+								},
+								{
+									"name": "container",
+									"value": "mycontainer"
+								},
+								{
+									"name": "fileSystem",
+									"value": "mycontainer"
+								},
+								{
+									"name": "enableCdc",
+									"value": true
+								},
+								{
+									"name": "skipInitialLoad",
+									"value": false
+								},
+								{
+									"name": "columnNamesAsHeader",
+									"value": true
+								},
+								{
+									"name": "columnDelimiter",
+									"value": ","
+								},
+								{
+									"name": "escapeChar",
+									"value": "\\\\"
+								},
+								{
+									"name": "quoteChar",
+									"value": "\\\""
+								},
+								{
+									"name": "folderPath",
+									"value": "SampleData/CDC"
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureBlobStorage",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				}
+			}
+		],
+		"TargetConnectionsInfo": [
+			{
+				"TargetEntities": [
+					{
+						"name": "mycontainer/output/seandemo",
+						"properties": {
+							"schema": [
+								{
+									"name": "movie"
+								},
+								{
+									"name": "_c1"
+								},
+								{
+									"name": "title"
+								},
+								{
+									"name": "_c3"
+								},
+								{
+									"name": "genres"
+								},
+								{
+									"name": "_c5"
+								},
+								{
+									"name": "year"
+								},
+								{
+									"name": "_c7"
+								},
+								{
+									"name": "Rating"
+								},
+								{
+									"name": "_c9"
+								},
+								{
+									"name": "RottenTomato"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "delta"
+								},
+								{
+									"name": "container",
+									"value": "mycontainer"
+								},
+								{
+									"name": "fileSystem",
+									"value": "mycontainer"
+								},
+								{
+									"name": "mergeSchema",
+									"value": true
+								},
+								{
+									"name": "autoCompact",
+									"value": true
+								},
+								{
+									"name": "optimizedWrite",
+									"value": true
+								},
+								{
+									"name": "deletable",
+									"value": false
+								},
+								{
+									"name": "insertable",
+									"value": true
+								},
+								{
+									"name": "updateable",
+									"value": false
+								},
+								{
+									"name": "upsertable",
+									"value": false
+								},
+								{
+									"name": "skipDuplicateMapInputs",
+									"value": true
+								},
+								{
+									"name": "skipDuplicateMapOutputs",
+									"value": true
+								},
+								{
+									"name": "folderPath",
+									"value": "output"
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureBlobFS",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				},
+				"DataMapperMappings": [
+					{
+						"targetEntityName": "mycontainer/output/seandemo",
+						"sourceEntityName": "mycontainer/SampleData/CDC",
+						"sourceConnectionReference": {
+							"connectionName": "AzureBlobStorage1",
+							"type": "linkedservicetype"
+						},
+						"attributeMappingInfo": {
+							"attributeMappings": [
+								{
+									"name": "movie",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "movie",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "title",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "title",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "genres",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "genres",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "year",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "year",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "Rating",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "Rating",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "RottenTomato",
+									"type": "Direct",
+									"functionName": "",
+									"transformationMethodDisplayName": "Direct",
+									"attributeReference": {
+										"name": "RottenTomato",
+										"entity": "mycontainer/SampleData/CDC",
+										"entityConnectionReference": {
+											"connectionName": "AzureBlobStorage1",
+											"type": "linkedservicetype"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"Relationships": []
+			}
+		],
+		"Policy": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15
+			},
+			"mode": "Non-continuous"
+		}
+	}
+}
