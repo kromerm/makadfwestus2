@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SQLDataFlow",
+						"referenceName": "Native SQL CDC",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -25,7 +25,7 @@
 					},
 					"traceLevel": "Fine",
 					"continuationSettings": {
-						"customizedCheckpointKey": "23695c38-abdc-4f36-93c2-522c3fa022b0"
+						"customizedCheckpointKey": "e43bf76e-529c-47e1-b84e-f2fb903221c9"
 					}
 				}
 			}
