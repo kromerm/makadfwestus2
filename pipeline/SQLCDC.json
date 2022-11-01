@@ -30,6 +30,17 @@
 				}
 			}
 		],
+		"variables": {
+			"abc": {
+				"type": "String"
+			},
+			"vvbfb": {
+				"type": "String"
+			},
+			"dsfdsfds": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

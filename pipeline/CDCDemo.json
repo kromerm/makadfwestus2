@@ -23,10 +23,7 @@
 						"referenceName": "dataflowIRwReuse",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Fine",
-					"continuationSettings": {
-						"customizedCheckpointKey": "6ad3d738-98a3-4982-9c68-55e18f30c0fa"
-					}
+					"traceLevel": "Fine"
 				}
 			},
 			{
