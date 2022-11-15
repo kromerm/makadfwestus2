@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "assert1",
+						"referenceName": "sampling",
 						"type": "DataFlowReference"
 					},
 					"compute": {
