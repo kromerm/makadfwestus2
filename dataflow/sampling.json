@@ -112,7 +112,6 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     limit: 20,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 filter(id == 1077501 ||\r",
 				"id == 1077430 ||\r",
