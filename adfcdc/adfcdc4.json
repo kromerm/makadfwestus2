@@ -1,0 +1,268 @@
+{
+	"name": "adfcdc4",
+	"properties": {
+		"SourceConnectionsInfo": [
+			{
+				"SourceEntities": [
+					{
+						"name": "dbo.sales",
+						"properties": {
+							"schema": [
+								{
+									"name": "order_id",
+									"dataType": "integer"
+								},
+								{
+									"name": "customer_id",
+									"dataType": "string"
+								},
+								{
+									"name": "cust_state",
+									"dataType": "string"
+								},
+								{
+									"name": "salesdate",
+									"dataType": "timestamp"
+								},
+								{
+									"name": "amount",
+									"dataType": "decimal(10,2)"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "table"
+								},
+								{
+									"name": "store",
+									"value": "sqlserver"
+								},
+								{
+									"name": "schemaName",
+									"value": "dbo"
+								},
+								{
+									"name": "tableName",
+									"value": "sales"
+								},
+								{
+									"name": "databaseType",
+									"value": "databaseType"
+								},
+								{
+									"name": "database",
+									"value": "database"
+								},
+								{
+									"name": "enableCdc",
+									"value": true
+								},
+								{
+									"name": "skipInitialLoad",
+									"value": true
+								},
+								{
+									"name": "waterMarkColumn",
+									"value": "salesdate"
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureSqlDatabase1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureSqlDatabase",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				}
+			}
+		],
+		"TargetConnectionsInfo": [
+			{
+				"TargetEntities": [
+					{
+						"name": "mycontainer/sales",
+						"properties": {
+							"schema": [
+								{
+									"name": "order_id",
+									"dataType": "integer"
+								},
+								{
+									"name": "customer_id",
+									"dataType": "string"
+								},
+								{
+									"name": "cust_state",
+									"dataType": "string"
+								},
+								{
+									"name": "salesdate",
+									"dataType": "timestamp"
+								},
+								{
+									"name": "amount",
+									"dataType": "decimal(10,2)"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "delta"
+								},
+								{
+									"name": "container",
+									"value": "mycontainer"
+								},
+								{
+									"name": "fileSystem",
+									"value": "mycontainer"
+								},
+								{
+									"name": "mergeSchema",
+									"value": true
+								},
+								{
+									"name": "autoCompact",
+									"value": true
+								},
+								{
+									"name": "optimizedWrite",
+									"value": true
+								},
+								{
+									"name": "deletable",
+									"value": false
+								},
+								{
+									"name": "insertable",
+									"value": true
+								},
+								{
+									"name": "updateable",
+									"value": false
+								},
+								{
+									"name": "upsertable",
+									"value": false
+								},
+								{
+									"name": "skipDuplicateMapInputs",
+									"value": true
+								},
+								{
+									"name": "skipDuplicateMapOutputs",
+									"value": true
+								},
+								{
+									"name": "folderPath",
+									"value": "sales"
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureBlobFS",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				},
+				"DataMapperMappings": [
+					{
+						"targetEntityName": "mycontainer/sales",
+						"sourceEntityName": "dbo.sales",
+						"sourceConnectionReference": {
+							"connectionName": "AzureSqlDatabase1",
+							"type": "linkedservicetype"
+						},
+						"attributeMappingInfo": {
+							"attributeMappings": [
+								{
+									"name": "amount",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "amount",
+										"entity": "dbo.sales",
+										"entityConnectionReference": {
+											"connectionName": "AzureSqlDatabase1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "cust_state",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "cust_state",
+										"entity": "dbo.sales",
+										"entityConnectionReference": {
+											"connectionName": "AzureSqlDatabase1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "customer_id",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "customer_id",
+										"entity": "dbo.sales",
+										"entityConnectionReference": {
+											"connectionName": "AzureSqlDatabase1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "order_id",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "order_id",
+										"entity": "dbo.sales",
+										"entityConnectionReference": {
+											"connectionName": "AzureSqlDatabase1",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "salesdate",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "salesdate",
+										"entity": "dbo.sales",
+										"entityConnectionReference": {
+											"connectionName": "AzureSqlDatabase1",
+											"type": "linkedservicetype"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"Relationships": []
+			}
+		],
+		"Policy": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15
+			},
+			"mode": "Non-continuous"
+		}
+	}
+}
