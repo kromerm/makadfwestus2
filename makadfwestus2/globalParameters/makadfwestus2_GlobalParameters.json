@@ -2,5 +2,9 @@
 	"mygp": {
 		"type": "string",
 		"value": "'test'"
+	},
+	"abc": {
+		"type": "int",
+		"value": 1
 	}
 }

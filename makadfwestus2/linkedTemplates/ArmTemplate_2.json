@@ -13,6 +13,189 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/dedupeFlowlet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "FuzzyMatch"
+						},
+						{
+							"name": "groupSoundex"
+						},
+						{
+							"name": "Orig1"
+						},
+						{
+							"name": "soundexJoin"
+						},
+						{
+							"name": "soundexBranch"
+						},
+						{
+							"name": "groupPhone"
+						},
+						{
+							"name": "phoneBranch"
+						},
+						{
+							"name": "phoneJoin"
+						},
+						{
+							"name": "groupZip"
+						},
+						{
+							"name": "zipBranch"
+						},
+						{
+							"name": "zipJoin"
+						},
+						{
+							"name": "setConstants"
+						},
+						{
+							"name": "matchScore"
+						},
+						{
+							"name": "finalResult"
+						},
+						{
+							"name": "MapNames"
+						},
+						{
+							"name": "CreateFullName"
+						},
+						{
+							"name": "CheckForDupes"
+						},
+						{
+							"name": "inputName"
+						},
+						{
+							"name": "outputDupes"
+						},
+						{
+							"name": "outputNoDupes"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          {Emp ID} as string,",
+						"          {First Name} as string,",
+						"          {Last Name} as string,",
+						"          {Phone No. } as string,",
+						"          County as string,",
+						"          City as string,",
+						"          State as string,",
+						"          Zip as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> inputName",
+						"MapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch",
+						"Orig1 aggregate(groupBy(SoundexValue),",
+						"     soundexmatch = sum(1)) ~> groupSoundex",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> Orig1",
+						"groupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> soundexJoin",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> soundexBranch",
+						"soundexJoin aggregate(groupBy(phone,",
+						"          soundexBranch@SoundexValue),",
+						"     phonematch = sum(1),",
+						"          acctnum_agg = last(acctnum)) ~> groupPhone",
+						"soundexJoin select(mapColumn(",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue = soundexBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> phoneBranch",
+						"groupPhone, phoneBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> phoneJoin",
+						"phoneJoin aggregate(groupBy(zip,",
+						"          phoneBranch@SoundexValue),",
+						"     zipcount = sum(1),",
+						"          acctnum_agg = last(acctnum_agg)) ~> groupZip",
+						"phoneJoin select(mapColumn(",
+						"          phonematch,",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone = phoneBranch@phone,",
+						"          zip,",
+						"          SoundexValue = phoneBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> zipBranch",
+						"groupZip, zipBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> zipJoin",
+						"zipJoin derive(soundexweight = 50,",
+						"          zipweight = 25,",
+						"          phoneweight = 25,",
+						"          soundexbool = iif (soundexmatch > 1, 1, 0),",
+						"          zipbool = iif (zipcount > 1, 1, 0),",
+						"          phonebool = iif (phonematch > 1, 1, 0)) ~> setConstants",
+						"setConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore",
+						"matchScore select(mapColumn(",
+						"          phone,",
+						"          acctnum,",
+						"          fullname,",
+						"          zip = zipBranch@zip,",
+						"          matchscore",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> finalResult",
+						"CreateFullName select(mapColumn(",
+						"          phone = {Phone No. },",
+						"          zip = Zip,",
+						"          fullname,",
+						"          acctnum = {Emp ID}",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> MapNames",
+						"inputName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName",
+						"finalResult split(matchscore > 50,",
+						"     disjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)",
+						"CheckForDupes@Duplicates output() ~> outputDupes",
+						"CheckForDupes@NotDupe output() ~> outputNoDupes"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/flowlet1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -36,9 +219,63 @@
 						"input(output(",
 						"          abc as integer",
 						"     ),",
-						"     order: 0) ~> input1",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> input1",
 						"input1 derive(abc = abc * 2) ~> derivedColumn1",
 						"derivedColumn1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/flowlet2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "input1"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          name as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> input1",
+						"input1 derive(name = upper(name)) ~> derivedColumn1",
+						"derivedColumn1 output(mapColumn(",
+						"          name,",
+						"          name2 = name",
+						"     )) ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/mydflibrary')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "UDFLibrary",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [],
+					"scriptLines": [
+						"irr() as integer = 1+1"
 					]
 				}
 			},
@@ -640,181 +877,6 @@
 				"typeProperties": {
 					"table": "demo123"
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmployeeFiles')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "EmpID",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "Status",
-						"type": "String"
-					},
-					{
-						"name": "Function",
-						"type": "String"
-					},
-					{
-						"name": "Level",
-						"type": "String"
-					},
-					{
-						"name": "Role",
-						"type": "String"
-					},
-					{
-						"name": "StartDate",
-						"type": "String"
-					},
-					{
-						"name": "EndDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmployeeFiles1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "EmpID",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "Status",
-						"type": "String"
-					},
-					{
-						"name": "Function",
-						"type": "String"
-					},
-					{
-						"name": "Level",
-						"type": "String"
-					},
-					{
-						"name": "Role",
-						"type": "String"
-					},
-					{
-						"name": "StartDate",
-						"type": "String"
-					},
-					{
-						"name": "EndDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmployeeInfoDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "EmployeeInfo.csv",
-						"container": "wdf"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "EmployeeId",
-						"type": "String"
-					},
-					{
-						"name": "FirstName",
-						"type": "String"
-					},
-					{
-						"name": "LastName",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "ZIP",
-						"type": "String"
-					},
-					{
-						"name": "Email",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "DateOfJoining",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": []
 		}
