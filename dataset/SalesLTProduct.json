@@ -2,7 +2,7 @@
 	"name": "SalesLTProduct",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase1",
+			"referenceName": "AzureSqlDatabase3",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],

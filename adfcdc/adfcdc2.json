@@ -1,0 +1,173 @@
+{
+	"name": "adfcdc2",
+	"properties": {
+		"SourceConnectionsInfo": [
+			{
+				"SourceEntities": [
+					{
+						"name": "SalesLT.Product",
+						"properties": {
+							"schema": [],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "table"
+								},
+								{
+									"name": "store",
+									"value": "sqlserver"
+								},
+								{
+									"name": "schemaName",
+									"value": "SalesLT"
+								},
+								{
+									"name": "tableName",
+									"value": "Product"
+								},
+								{
+									"name": "databaseType",
+									"value": "databaseType"
+								},
+								{
+									"name": "database",
+									"value": "database"
+								},
+								{
+									"name": "enableNativeCdc",
+									"value": true
+								},
+								{
+									"name": "netChanges",
+									"value": true
+								},
+								{
+									"name": "skipInitialLoad",
+									"value": true
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": true
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": true
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureSqlDatabase3",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureSqlDatabase",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				}
+			}
+		],
+		"TargetConnectionsInfo": [
+			{
+				"TargetEntities": [
+					{
+						"name": "productsnew",
+						"properties": {
+							"schema": [],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "delta"
+								},
+								{
+									"name": "container",
+									"value": "productsnew"
+								},
+								{
+									"name": "fileSystem",
+									"value": "productsnew"
+								},
+								{
+									"name": "mergeSchema",
+									"value": true
+								},
+								{
+									"name": "autoCompact",
+									"value": true
+								},
+								{
+									"name": "optimizedWrite",
+									"value": true
+								},
+								{
+									"name": "deletable",
+									"value": false
+								},
+								{
+									"name": "insertable",
+									"value": true
+								},
+								{
+									"name": "updateable",
+									"value": false
+								},
+								{
+									"name": "upsertable",
+									"value": false
+								},
+								{
+									"name": "skipDuplicateMapInputs",
+									"value": true
+								},
+								{
+									"name": "skipDuplicateMapOutputs",
+									"value": true
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": true
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": true
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureBlobStorage",
+					"type": "linkedservicetype",
+					"isInlineDataset": true
+				},
+				"DataMapperMappings": [
+					{
+						"targetEntityName": "productsnew",
+						"sourceEntityName": "SalesLT.Product",
+						"sourceConnectionReference": {
+							"connectionName": "AzureSqlDatabase3",
+							"type": "linkedservicetype"
+						},
+						"attributeMappingInfo": {
+							"attributeMappings": []
+						}
+					}
+				],
+				"Relationships": []
+			}
+		],
+		"Policy": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15
+			},
+			"mode": "Microbatch"
+		},
+		"allowVNetOverride": false
+	}
+}
