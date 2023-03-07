@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
+		"AzureSqlDatabase3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase3'"
+		},
 		"AzureTableStorage1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
@@ -212,6 +216,9 @@
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
+					"AzureSqlDatabase3_connectionString": {
+						"value": "[parameters('AzureSqlDatabase3_connectionString')]"
+					},
 					"AzureTableStorage1_connectionString": {
 						"value": "[parameters('AzureTableStorage1_connectionString')]"
 					},
@@ -262,9 +269,6 @@
 					},
 					"RestService4_properties_typeProperties_url": {
 						"value": "[parameters('RestService4_properties_typeProperties_url')]"
-					},
-					"RestService5_properties_typeProperties_url": {
-						"value": "[parameters('RestService5_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -292,6 +296,9 @@
 					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"
+					},
+					"RestService5_properties_typeProperties_url": {
+						"value": "[parameters('RestService5_properties_typeProperties_url')]"
 					},
 					"WeatherRest_properties_typeProperties_url": {
 						"value": "[parameters('WeatherRest_properties_typeProperties_url')]"

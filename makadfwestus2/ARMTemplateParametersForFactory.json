@@ -23,6 +23,9 @@
 		"AzureSqlDatabase2_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase3_connectionString": {
+			"value": ""
+		},
 		"AzureTableStorage1_connectionString": {
 			"value": ""
 		},
