@@ -1,0 +1,41 @@
+{
+	"name": "Increase Prices and Check",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "assert1"
+				},
+				{
+					"name": "input1"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as decimal(19,4),",
+				"          ListPrice as decimal(19,4),",
+				"          EffectiveDate as timestamp,",
+				"          Active as integer",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> input1",
+				"input1 derive(ListPrice = ListPrice * 1.2) ~> derivedColumn1",
+				"derivedColumn1 assert(expectTrue(Color != 'Multi', false, 'noMultiColor', null, \"This is a bad row because ${Color} is incorrect\")) ~> assert1",
+				"assert1 output() ~> output1"
+			]
+		}
+	}
+}
