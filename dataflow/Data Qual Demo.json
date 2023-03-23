@@ -1,0 +1,85 @@
+{
+	"name": "Data Qual Demo",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DimProductsTable",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "adlsgen2folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "assert1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as decimal(19,4),",
+				"          ListPrice as decimal(19,4),",
+				"          EffectiveDate as timestamp,",
+				"          Active as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(ListPrice = ListPrice * 1.2) ~> derivedColumn1",
+				"derivedColumn1 assert(expectTrue(Color != 'Multi', false, 'noMultiColor', null, \"This is a bad row because ${Color} is incorrect\")) ~> assert1",
+				"assert1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          identifier as string,",
+				"          createdOn as string,",
+				"          modifiedOn as string,",
+				"          originalTimeZoneUTCOffset as string,",
+				"          sourceAuthority as string,",
+				"          salutation as string,",
+				"          firstName as string,",
+				"          nickName as string,",
+				"          middleName as string,",
+				"          lastName as string,",
+				"          suffix as string,",
+				"          fullName as string,",
+				"          birthdayDay as string,",
+				"          birthdayMonth as string,",
+				"          birthdayYear as string,",
+				"          birthDate as string,",
+				"          genderCode as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_container: 'mycontainer',",
+				"     assertFailure_folderPath: 'output/errorrows') ~> sink1"
+			]
+		}
+	}
+}
