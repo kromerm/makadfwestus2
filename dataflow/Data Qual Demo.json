@@ -10,6 +10,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"name": "source2"
 				}
 			],
 			"sinks": [
@@ -48,6 +51,8 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source2",
 				"source1 derive(ListPrice = ListPrice * 1.2) ~> derivedColumn1",
 				"derivedColumn1 assert(expectTrue(Color != 'Multi', false, 'noMultiColor', null, \"This is a bad row because ${Color} is incorrect\")) ~> assert1",
 				"assert1 sink(allowSchemaDrift: true,",
