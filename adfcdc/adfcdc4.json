@@ -1,0 +1,204 @@
+{
+	"name": "adfcdc4",
+	"properties": {
+		"SourceConnectionsInfo": [
+			{
+				"SourceEntities": [
+					{
+						"name": "jsonsimple",
+						"properties": {
+							"schema": [
+								{
+									"name": "value",
+									"dataType": "binary"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "format",
+									"value": "passthrough"
+								},
+								{
+									"name": "includeHeaders",
+									"value": false
+								},
+								{
+									"name": "eventHubName",
+									"value": "jsonsimple"
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": false
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": false
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "EventHubs1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "EventHubs",
+					"type": "linkedservicetype",
+					"isInlineDataset": true,
+					"commonDslConnectorProperties": [
+						{
+							"name": "allowSchemaDrift",
+							"value": true
+						},
+						{
+							"name": "inferDriftedColumnTypes",
+							"value": true
+						},
+						{
+							"name": "store",
+							"value": "eventhubs"
+						},
+						{
+							"name": "enableCdc",
+							"value": true
+						},
+						{
+							"name": "skipInitialLoad",
+							"value": true
+						}
+					]
+				}
+			}
+		],
+		"TargetConnectionsInfo": [
+			{
+				"TargetEntities": [
+					{
+						"name": "mycontainer/output/cdc/EH",
+						"properties": {
+							"schema": [],
+							"dslConnectorProperties": [
+								{
+									"name": "container",
+									"value": "mycontainer"
+								},
+								{
+									"name": "fileSystem",
+									"value": "mycontainer"
+								},
+								{
+									"name": "folderPath",
+									"value": "output/cdc/EH"
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": true
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": true
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureBlobStorage",
+					"type": "linkedservicetype",
+					"isInlineDataset": true,
+					"commonDslConnectorProperties": [
+						{
+							"name": "allowSchemaDrift",
+							"value": true
+						},
+						{
+							"name": "inferDriftedColumnTypes",
+							"value": true
+						},
+						{
+							"name": "format",
+							"value": "delta"
+						},
+						{
+							"name": "mergeSchema",
+							"value": true
+						},
+						{
+							"name": "autoCompact",
+							"value": true
+						},
+						{
+							"name": "optimizedWrite",
+							"value": true
+						},
+						{
+							"name": "deletable",
+							"value": false
+						},
+						{
+							"name": "insertable",
+							"value": true
+						},
+						{
+							"name": "updateable",
+							"value": false
+						},
+						{
+							"name": "upsertable",
+							"value": false
+						},
+						{
+							"name": "skipDuplicateMapInputs",
+							"value": true
+						},
+						{
+							"name": "skipDuplicateMapOutputs",
+							"value": true
+						}
+					]
+				},
+				"DataMapperMappings": [
+					{
+						"targetEntityName": "mycontainer/output/cdc/EH",
+						"sourceEntityName": "jsonsimple",
+						"sourceConnectionReference": {
+							"connectionName": "EventHubs1",
+							"type": "linkedservicetype"
+						},
+						"attributeMappingInfo": {
+							"attributeMappings": [
+								{
+									"name": "value",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "value",
+										"entity": "jsonsimple",
+										"entityConnectionReference": {
+											"connectionName": "EventHubs1",
+											"type": "linkedservicetype"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"Relationships": []
+			}
+		],
+		"Policy": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1
+			},
+			"mode": "Microbatch"
+		},
+		"allowVNetOverride": false
+	}
+}
