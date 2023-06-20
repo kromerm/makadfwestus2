@@ -19,6 +19,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
 		},
+		"RestService3_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
+		},
+		"RestService4_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
+		},
 		"RestService5_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://reqres.in"
@@ -56,6 +64,36 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService3')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService3_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService4')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService4_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/RestService5')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -363,374 +401,6 @@
 							"externalComputeInfo": []
 						}
 					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DedupeFuzzyFlowlet1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Flowlet",
-				"typeProperties": {
-					"sources": [],
-					"sinks": [],
-					"transformations": [
-						{
-							"name": "FuzzyMatch"
-						},
-						{
-							"name": "groupSoundex"
-						},
-						{
-							"name": "Orig1"
-						},
-						{
-							"name": "soundexJoin"
-						},
-						{
-							"name": "soundexBranch"
-						},
-						{
-							"name": "groupPhone"
-						},
-						{
-							"name": "phoneBranch"
-						},
-						{
-							"name": "phoneJoin"
-						},
-						{
-							"name": "groupZip"
-						},
-						{
-							"name": "zipBranch"
-						},
-						{
-							"name": "zipJoin"
-						},
-						{
-							"name": "setConstants"
-						},
-						{
-							"name": "matchScore"
-						},
-						{
-							"name": "finalResult"
-						},
-						{
-							"name": "MapNames"
-						},
-						{
-							"name": "CreateFullName"
-						},
-						{
-							"name": "CheckForDupes"
-						},
-						{
-							"name": "inputName"
-						},
-						{
-							"name": "outputDupes"
-						},
-						{
-							"name": "outputNoDupes"
-						}
-					],
-					"scriptLines": [
-						"input(output(",
-						"          {Emp ID} as string,",
-						"          {Middle Initial} as string,",
-						"          {Last Name} as string,",
-						"          {Phone No. } as string,",
-						"          Zip as string,",
-						"          {First Name} as string",
-						"     ),",
-						"     order: 0,",
-						"     allowSchemaDrift: true) ~> inputName",
-						"MapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch",
-						"Orig1 aggregate(groupBy(SoundexValue),",
-						"     soundexmatch = sum(1)) ~> groupSoundex",
-						"FuzzyMatch select(mapColumn(",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> Orig1",
-						"groupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> soundexJoin",
-						"FuzzyMatch select(mapColumn(",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> soundexBranch",
-						"soundexJoin aggregate(groupBy(phone,",
-						"          soundexBranch@SoundexValue),",
-						"     phonematch = sum(1),",
-						"          acctnum_agg = last(acctnum)) ~> groupPhone",
-						"soundexJoin select(mapColumn(",
-						"          soundexmatch,",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue = soundexBranch@SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> phoneBranch",
-						"groupPhone, phoneBranch join(acctnum_agg == acctnum,",
-						"     joinType:'right',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> phoneJoin",
-						"phoneJoin aggregate(groupBy(zip,",
-						"          phoneBranch@SoundexValue),",
-						"     zipcount = sum(1),",
-						"          acctnum_agg = last(acctnum_agg)) ~> groupZip",
-						"phoneJoin select(mapColumn(",
-						"          phonematch,",
-						"          soundexmatch,",
-						"          acctnum,",
-						"          fullname,",
-						"          phone = phoneBranch@phone,",
-						"          zip,",
-						"          SoundexValue = phoneBranch@SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> zipBranch",
-						"groupZip, zipBranch join(acctnum_agg == acctnum,",
-						"     joinType:'right',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> zipJoin",
-						"zipJoin derive(soundexweight = 50,",
-						"          zipweight = 25,",
-						"          phoneweight = 25,",
-						"          soundexbool = iif (soundexmatch > 1, 1, 0),",
-						"          zipbool = iif (zipcount > 1, 1, 0),",
-						"          phonebool = iif (phonematch > 1, 1, 0)) ~> setConstants",
-						"setConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore",
-						"matchScore select(mapColumn(",
-						"          phone,",
-						"          acctnum,",
-						"          fullname,",
-						"          zip = zipBranch@zip,",
-						"          matchscore",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> finalResult",
-						"CreateFullName select(mapColumn(",
-						"          phone = {Phone No. },",
-						"          zip = Zip,",
-						"          fullname,",
-						"          acctnum = {Emp ID}",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> MapNames",
-						"inputName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName",
-						"finalResult split(matchscore > 50,",
-						"     disjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)",
-						"CheckForDupes@Duplicates output(mapColumn(",
-						"          each(match(/* All input columns */true()),",
-						"               /* Input name */$$ = $$)",
-						"     )) ~> outputDupes",
-						"CheckForDupes@NotDupe output() ~> outputNoDupes"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DedupeFuzzyFlowlet2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Flowlet",
-				"typeProperties": {
-					"sources": [],
-					"sinks": [],
-					"transformations": [
-						{
-							"name": "FuzzyMatch"
-						},
-						{
-							"name": "groupSoundex"
-						},
-						{
-							"name": "Orig1"
-						},
-						{
-							"name": "soundexJoin"
-						},
-						{
-							"name": "soundexBranch"
-						},
-						{
-							"name": "groupPhone"
-						},
-						{
-							"name": "phoneBranch"
-						},
-						{
-							"name": "phoneJoin"
-						},
-						{
-							"name": "groupZip"
-						},
-						{
-							"name": "zipBranch"
-						},
-						{
-							"name": "zipJoin"
-						},
-						{
-							"name": "setConstants"
-						},
-						{
-							"name": "matchScore"
-						},
-						{
-							"name": "finalResult"
-						},
-						{
-							"name": "MapNames"
-						},
-						{
-							"name": "CreateFullName"
-						},
-						{
-							"name": "CheckForDupes"
-						},
-						{
-							"name": "inputName"
-						},
-						{
-							"name": "outputDupes"
-						},
-						{
-							"name": "outputNoDupes"
-						}
-					],
-					"scriptLines": [
-						"input(output(",
-						"          {Emp ID} as string,",
-						"          {First Name} as string,",
-						"          {Middle Initial} as string,",
-						"          {Last Name} as string,",
-						"          {Phone No. } as string,",
-						"          Zip as string",
-						"     ),",
-						"     order: 0,",
-						"     allowSchemaDrift: true) ~> inputName",
-						"MapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch",
-						"Orig1 aggregate(groupBy(SoundexValue),",
-						"     soundexmatch = sum(1)) ~> groupSoundex",
-						"FuzzyMatch select(mapColumn(",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> Orig1",
-						"groupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> soundexJoin",
-						"FuzzyMatch select(mapColumn(",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> soundexBranch",
-						"soundexJoin aggregate(groupBy(phone,",
-						"          soundexBranch@SoundexValue),",
-						"     phonematch = sum(1),",
-						"          acctnum_agg = last(acctnum)) ~> groupPhone",
-						"soundexJoin select(mapColumn(",
-						"          soundexmatch,",
-						"          acctnum,",
-						"          fullname,",
-						"          phone,",
-						"          zip,",
-						"          SoundexValue = soundexBranch@SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> phoneBranch",
-						"groupPhone, phoneBranch join(acctnum_agg == acctnum,",
-						"     joinType:'right',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> phoneJoin",
-						"phoneJoin aggregate(groupBy(zip,",
-						"          phoneBranch@SoundexValue),",
-						"     zipcount = sum(1),",
-						"          acctnum_agg = last(acctnum_agg)) ~> groupZip",
-						"phoneJoin select(mapColumn(",
-						"          phonematch,",
-						"          soundexmatch,",
-						"          acctnum,",
-						"          fullname,",
-						"          phone = phoneBranch@phone,",
-						"          zip,",
-						"          SoundexValue = phoneBranch@SoundexValue",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> zipBranch",
-						"groupZip, zipBranch join(acctnum_agg == acctnum,",
-						"     joinType:'right',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> zipJoin",
-						"zipJoin derive(soundexweight = 50,",
-						"          zipweight = 25,",
-						"          phoneweight = 25,",
-						"          soundexbool = iif (soundexmatch > 1, 1, 0),",
-						"          zipbool = iif (zipcount > 1, 1, 0),",
-						"          phonebool = iif (phonematch > 1, 1, 0)) ~> setConstants",
-						"setConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore",
-						"matchScore select(mapColumn(",
-						"          phone,",
-						"          acctnum,",
-						"          fullname,",
-						"          zip = zipBranch@zip,",
-						"          matchscore",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> finalResult",
-						"CreateFullName select(mapColumn(",
-						"          phone = {Phone No. },",
-						"          zip = Zip,",
-						"          fullname,",
-						"          acctnum = {Emp ID}",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> MapNames",
-						"inputName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName",
-						"finalResult split(matchscore > 50,",
-						"     disjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)",
-						"CheckForDupes@Duplicates output(mapColumn(",
-						"          each(match(/* All input columns */true()),",
-						"               /* Input name */$$ = $$)",
-						"     )) ~> outputDupes",
-						"CheckForDupes@NotDupe output() ~> outputNoDupes"
-					]
 				}
 			},
 			"dependsOn": []

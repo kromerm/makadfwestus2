@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"AzureSqlDatabase2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
@@ -46,6 +50,10 @@
 		"CosmosDb2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb2'"
+		},
+		"EventHubs1_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'EventHubs1'"
 		},
 		"FileServer1_password": {
 			"type": "secureString",
@@ -94,10 +102,6 @@
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://makkv001.vault.azure.net/"
-		},
-		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "SQLDB1"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
@@ -213,6 +217,9 @@
 					"AzureDatabricks1_accessToken": {
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
@@ -227,6 +234,9 @@
 					},
 					"CosmosDb2_connectionString": {
 						"value": "[parameters('CosmosDb2_connectionString')]"
+					},
+					"EventHubs1_accessKey": {
+						"value": "[parameters('EventHubs1_accessKey')]"
 					},
 					"AzureBlobStorage3_sasUri": {
 						"value": "[parameters('AzureBlobStorage3_sasUri')]"
@@ -263,12 +273,6 @@
 					},
 					"RestService2_properties_typeProperties_url": {
 						"value": "[parameters('RestService2_properties_typeProperties_url')]"
-					},
-					"RestService3_properties_typeProperties_url": {
-						"value": "[parameters('RestService3_properties_typeProperties_url')]"
-					},
-					"RestService4_properties_typeProperties_url": {
-						"value": "[parameters('RestService4_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -296,6 +300,12 @@
 					},
 					"tpcds_connectionString": {
 						"value": "[parameters('tpcds_connectionString')]"
+					},
+					"RestService3_properties_typeProperties_url": {
+						"value": "[parameters('RestService3_properties_typeProperties_url')]"
+					},
+					"RestService4_properties_typeProperties_url": {
+						"value": "[parameters('RestService4_properties_typeProperties_url')]"
 					},
 					"RestService5_properties_typeProperties_url": {
 						"value": "[parameters('RestService5_properties_typeProperties_url')]"
@@ -440,21 +450,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FileServer1_password": {
-						"value": "[parameters('FileServer1_password')]"
-					},
-					"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
-					},
-					"FileServer1_properties_typeProperties_host": {
-						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
-					},
-					"FileServer1_properties_typeProperties_userId": {
-						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -475,6 +470,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FileServer1_password": {
+						"value": "[parameters('FileServer1_password')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"FileServer1_properties_typeProperties_host": {
+						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
+					},
+					"FileServer1_properties_typeProperties_userId": {
+						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -615,6 +622,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_14')]"
+			]
+		},
+		{
+			"name": "makadfwestus2_ArmTemplate_16",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_16.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
@@ -622,7 +649,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_14')]"
+				"[resourceId('Microsoft.Resources/deployments', 'makadfwestus2_ArmTemplate_15')]"
 			]
 		}
 	]

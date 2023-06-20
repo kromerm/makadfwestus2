@@ -13,6 +13,984 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DataQuality1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							},
+							"name": "loansSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "rules",
+								"type": "DatasetReference"
+							},
+							"name": "rules1"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Cast"
+						},
+						{
+							"name": "Aggregate1"
+						},
+						{
+							"name": "ruleNullChecker"
+						}
+					],
+					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loansSource\nsource(output(\n\t\tfield as string,\n\t\tthreshold as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'arrayOfDocuments') ~> rules1\nrules1 derive(threshold = toFloat(threshold)) ~> Cast\nloansSource aggregate(mths_since_last_delinq_nulls = countIf(isNull(mths_since_last_delinq),1),\n\t\tnext_pymnt_d = countIf(isNull(next_pymnt_d),1),\n\t\trowcount = count(1)) ~> Aggregate1\nAggregate1 split(toFloat(mths_since_last_delinq_nulls / rowcount) > sink1#lookup('mths_since_last_delinq').threshold,\n\ttoFloat(next_pymnt_d / rowcount) > sink1#lookup('next_pymnt_d').threshold,\n\tdisjoint: false) ~> ruleNullChecker@(mthssincelastdelinqfail, nextpymntdfail)\nCast sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['field'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nruleNullChecker@mthssincelastdelinqfail sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DedupeFuzzy')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "names1001",
+								"type": "DatasetReference"
+							},
+							"name": "sourceName"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "dupefolder1",
+								"type": "DatasetReference"
+							},
+							"name": "sinkDupes"
+						},
+						{
+							"dataset": {
+								"referenceName": "dupefolder1",
+								"type": "DatasetReference"
+							},
+							"name": "sinkNoDupes"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FuzzyMatch"
+						},
+						{
+							"name": "groupSoundex"
+						},
+						{
+							"name": "Orig1"
+						},
+						{
+							"name": "soundexJoin"
+						},
+						{
+							"name": "soundexBranch"
+						},
+						{
+							"name": "groupPhone"
+						},
+						{
+							"name": "phoneBranch"
+						},
+						{
+							"name": "phoneJoin"
+						},
+						{
+							"name": "groupZip"
+						},
+						{
+							"name": "zipBranch"
+						},
+						{
+							"name": "zipJoin"
+						},
+						{
+							"name": "setConstants"
+						},
+						{
+							"name": "matchScore"
+						},
+						{
+							"name": "finalResult"
+						},
+						{
+							"name": "MapNames"
+						},
+						{
+							"name": "CreateFullName"
+						},
+						{
+							"name": "CheckForDupes"
+						}
+					],
+					"script": "source(output(\n\t\t{Emp ID} as string,\n\t\t{Name Prefix} as string,\n\t\t{First Name} as string,\n\t\t{Middle Initial} as string,\n\t\t{Last Name} as string,\n\t\tGender as string,\n\t\t{E Mail} as string,\n\t\t{Father's Name} as string,\n\t\t{Mother's Name} as string,\n\t\t{Mother's Maiden Name} as string,\n\t\t{Date of Birth} as string,\n\t\t{Time of Birth} as string,\n\t\t{Age in Yrs.} as double '##.##',\n\t\t{Weight in Kgs.} as string,\n\t\t{Date of Joining} as string,\n\t\t{Quarter of Joining} as string,\n\t\t{Half of Joining} as string,\n\t\t{Year of Joining} as string,\n\t\t{Month of Joining} as string,\n\t\t{Month Name of Joining} as string,\n\t\t{Short Month} as string,\n\t\t{Day of Joining} as string,\n\t\t{DOW of Joining} as string,\n\t\t{Short DOW} as string,\n\t\t{Age in Company (Years)} as string,\n\t\tSalary as integer,\n\t\t{Last % Hike} as string,\n\t\tSSN as string,\n\t\t{Phone No. } as string,\n\t\t{Place Name} as string,\n\t\tCounty as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZip as string,\n\t\tRegion as string,\n\t\t{User Name} as string,\n\t\tPassword as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> sourceName\nMapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch\nOrig1 aggregate(groupBy(SoundexValue),\n\tsoundexmatch = sum(1)) ~> groupSoundex\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Orig1\ngroupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,\n\tjoinType:'inner',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> soundexJoin\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> soundexBranch\nsoundexJoin aggregate(groupBy(phone,\n\t\tsoundexBranch@SoundexValue),\n\tphonematch = sum(1),\n\t\tacctnum_agg = last(acctnum)) ~> groupPhone\nsoundexJoin select(mapColumn(\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue = soundexBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> phoneBranch\ngroupPhone, phoneBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> phoneJoin\nphoneJoin aggregate(groupBy(zip,\n\t\tphoneBranch@SoundexValue),\n\tzipcount = sum(1),\n\t\tacctnum_agg = last(acctnum_agg)) ~> groupZip\nphoneJoin select(mapColumn(\n\t\tphonematch,\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone = phoneBranch@phone,\n\t\tzip,\n\t\tSoundexValue = phoneBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> zipBranch\ngroupZip, zipBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> zipJoin\nzipJoin derive(soundexweight = 50,\n\t\tzipweight = 25,\n\t\tphoneweight = 25,\n\t\tsoundexbool = iif (soundexmatch > 1, 1, 0),\n\t\tzipbool = iif (zipcount > 1, 1, 0),\n\t\tphonebool = iif (phonematch > 1, 1, 0)) ~> setConstants\nsetConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore\nmatchScore select(mapColumn(\n\t\tphone,\n\t\tacctnum,\n\t\tfullname,\n\t\tzip = zipBranch@zip,\n\t\tmatchscore\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> finalResult\nCreateFullName select(mapColumn(\n\t\tphone = {Phone No. },\n\t\tzip = Zip,\n\t\tfullname,\n\t\tacctnum = {Emp ID}\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> MapNames\nsourceName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName\nfinalResult split(matchscore > 50,\n\tdisjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)\nCheckForDupes@Duplicates sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkDupes\nCheckForDupes@NotDupe sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['nodupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkNoDupes"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeltaLake1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "Filter1"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nFilter1 derive(Rating = iif(year==1988,1,toInteger(Rating)),\n\t\tyear = iif(year==1960,2021,toInteger(year)),\n\t\tmyStruct = @(customer=1,\n\t\tdate=2)) ~> DerivedColumn1\nDerivedColumn1 alterRow(updateIf(year==1988),\n\tinsertIf(year==2021),\n\tdeleteIf(year==1950)) ~> AlterRow1\nsource1 filter(year == 1988 || year == 1960 || year == 1950) ~> Filter1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie','year'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DemoOfCDCFiles')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "cdcMovies",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout_cdc",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     enableCdc: true,",
+						"     mode: 'read',",
+						"     skipInitialLoad: false) ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 20)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimEmployeeLoader2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "EmployeeFiles1",
+								"type": "DatasetReference"
+							},
+							"name": "Employees1",
+							"description": " Source employees file, changes every day"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimEmp1",
+								"type": "DatasetReference"
+							},
+							"name": "DimEmployees",
+							"description": "Current rows in DimEmployees DW table"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DimEmp1",
+								"type": "DatasetReference"
+							},
+							"name": "sinkNew",
+							"description": " "
+						},
+						{
+							"dataset": {
+								"referenceName": "DimEmp1",
+								"type": "DatasetReference"
+							},
+							"name": "sinkUpdates",
+							"description": " "
+						},
+						{
+							"dataset": {
+								"referenceName": "DimEmp1",
+								"type": "DatasetReference"
+							},
+							"name": "sinkInactive",
+							"description": " Age out old rows"
+						}
+					],
+					"transformations": [
+						{
+							"name": "TypeConversions"
+						},
+						{
+							"name": "TypeConversionsAndSetAttrs"
+						},
+						{
+							"name": "LookupIDs"
+						},
+						{
+							"name": "ConditionalSplit1"
+						},
+						{
+							"name": "checkForChanges"
+						},
+						{
+							"name": "SetAttrsForNew"
+						},
+						{
+							"name": "SetAttrsInactive",
+							"description": "make iscurrent 0"
+						},
+						{
+							"name": "SetAttrsUpdate"
+						},
+						{
+							"name": "NormNames"
+						},
+						{
+							"name": "InactiveFields"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "NullFilter",
+							"description": "Filter out NULLs from source file"
+						},
+						{
+							"name": "NameNorm2"
+						}
+					],
+					"script": "source(output(\n\t\tEmpID as string,\n\t\tRegion as string,\n\t\tStatus as string,\n\t\tFunction as string,\n\t\tLevel as string,\n\t\tRole as string,\n\t\tStartDate as string,\n\t\tEndDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpurgeFiles: true,\n\twildcardPaths:['SampleData/Emps/today/*.csv']) ~> Employees1\nsource(output(\n\t\tEmpID as integer,\n\t\tsurrogatekey as string,\n\t\tRegion as string,\n\t\tStatus as string,\n\t\tEmpFunction as string,\n\t\tLevel as string,\n\t\tRole as string,\n\t\tStartDate as date,\n\t\tEndDate as date,\n\t\tiscurrent as integer,\n\t\tprocesstime as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimEmployees\nDimEmployees derive(EmpID = toInteger(EmpID)) ~> TypeConversions\nNullFilter derive(EmpID = toInteger(EmpID),\n\t\tStartDate = toDate(StartDate,'MM/dd/yyyy'),\n\t\tEndDate = toDate(EndDate,'MM/dd/yyyy'),\n\t\tprocesstime = currentTimestamp()) ~> TypeConversionsAndSetAttrs\nTypeConversionsAndSetAttrs, TypeConversions lookup(TypeConversionsAndSetAttrs@EmpID == TypeConversions@EmpID,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupIDs\nNormNames split(isNull(iscurrent),\n\tdisjoint: false) ~> ConditionalSplit1@(NewRow, CheckForUpdates)\nNameNorm2, TypeConversions exists(NameNorm2@EmpID == TypeConversions@EmpID,\n\tnegate:false,\n\tbroadcast: 'auto')~> checkForChanges\nConditionalSplit1@NewRow derive(iscurrent = 1,\n\t\tsurrogatekey = toString(crc32(EmpID,EmpFunction))) ~> SetAttrsForNew\ncheckForChanges derive(iscurrent = 0) ~> SetAttrsInactive\ncheckForChanges derive(iscurrent = 1) ~> SetAttrsUpdate\nLookupIDs select(mapColumn(\n\t\tEmpID = TypeConversionsAndSetAttrs@EmpID,\n\t\tRegion = Employees1@Region,\n\t\tStatus = Employees1@Status,\n\t\tLevel = Employees1@Level,\n\t\tRole = Employees1@Role,\n\t\tStartDate = TypeConversionsAndSetAttrs@StartDate,\n\t\tEndDate = TypeConversionsAndSetAttrs@EndDate,\n\t\tEmpFunction = Function,\n\t\tiscurrent,\n\t\tprocesstime = TypeConversionsAndSetAttrs@processtime,\n\t\tsurrogatekey\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> NormNames\nSetAttrsInactive select(mapColumn(\n\t\tEmpID,\n\t\tStatus,\n\t\tEndDate,\n\t\tiscurrent,\n\t\tprocesstime\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> InactiveFields\nInactiveFields alterRow(updateIf(true())) ~> AlterRow1\nEmployees1 filter(!isNull(EmpID)) ~> NullFilter\nConditionalSplit1@CheckForUpdates select(mapColumn(\n\t\tEmpID,\n\t\tRegion,\n\t\tStatus,\n\t\tLevel,\n\t\tRole,\n\t\tStartDate,\n\t\tEndDate,\n\t\tEmpFunction,\n\t\tiscurrent,\n\t\tprocesstime,\n\t\tsurrogatekey\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> NameNorm2\nSetAttrsForNew sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tEmpID as integer,\n\t\tsurrogatekey as string,\n\t\tRegion as string,\n\t\tStatus as string,\n\t\tEmpFunction as string,\n\t\tLevel as string,\n\t\tRole as string,\n\t\tStartDate as date,\n\t\tEndDate as date,\n\t\tiscurrent as integer,\n\t\tprocesstime as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tbatchSize: 50,\n\terrorHandlingOption: 'stopOnFirstError',\n\tpartitionBy('roundRobin', 4)) ~> sinkNew\nSetAttrsUpdate sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tEmpID as integer,\n\t\tsurrogatekey as string,\n\t\tRegion as string,\n\t\tStatus as string,\n\t\tEmpFunction as string,\n\t\tLevel as string,\n\t\tRole as string,\n\t\tStartDate as date,\n\t\tEndDate as date,\n\t\tiscurrent as integer,\n\t\tprocesstime as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tbatchSize: 50,\n\terrorHandlingOption: 'stopOnFirstError',\n\tpartitionBy('roundRobin', 4)) ~> sinkUpdates\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tEmpID as integer,\n\t\tsurrogatekey as string,\n\t\tRegion as string,\n\t\tStatus as string,\n\t\tEmpFunction as string,\n\t\tLevel as string,\n\t\tRole as string,\n\t\tStartDate as date,\n\t\tEndDate as date,\n\t\tiscurrent as integer,\n\t\tprocesstime as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['EmpID'],\n\tformat: 'table',\n\tbatchSize: 50,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tEmpID,\n\t\tEndDate,\n\t\tiscurrent,\n\t\tprocesstime\n\t),\n\tpartitionBy('roundRobin', 4)) ~> sinkInactive"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DistinctRows')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesNoSchema",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DistinctRows"
+						},
+						{
+							"name": "MakeRowHash"
+						}
+					],
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nMakeRowHash aggregate(groupBy(rowhash),\n\teach(match(name!='rowhash'), $$ = first($$))) ~> DistinctRows\nsource1 derive(rowhash = sha2(256,columns())) ~> MakeRowHash\nDistinctRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(name!='rowhash'))\n\t)) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DynaCols')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "movies1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "columnmappings"
+						},
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "movies2"
+						}
+					],
+					"sinks": [
+						{
+							"name": "cachedSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ParamReplace"
+						},
+						{
+							"name": "lookupReplace"
+						}
+					],
+					"script": "parameters{\n\tparameter1 as string[] (['a','b','c'])\n}\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies1\nsource(output(\n\t\tnewcolumn as string,\n\t\tprevcolumn as string\n\t),\n\tuseSchema: false,\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'json',\n\tcontainer: 'mycontainer',\n\tfileName: 'nulls.json',\n\tdocumentForm: 'arrayOfDocuments') ~> columnmappings\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies2\nmovies1 select(mapColumn(\n\t\teach(match(position==1),\n\t\t\t$parameter1[1] = $$),\n\t\teach(match(position==2),\n\t\t\t$parameter1[2] = $$),\n\t\teach(match(position==3),\n\t\t\t$parameter1[3] = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ParamReplace\nmovies2 select(mapColumn(\n\t\teach(match(!isNull(cachedSink#lookup(name).prevcolumn)),\n\t\t\tcachedSink#lookup($$).newcolumn = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> lookupReplace\ncolumnmappings sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['prevcolumn'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FactLoader')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQLProducts_new",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tDiscontinuedDate as timestamp,\n\t\tThumbnailPhotoFileName as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Filter Out Last Rows')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "MoviesData"
+						},
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "MaxRows"
+						}
+					],
+					"sinks": [
+						{
+							"name": "cachedSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RowCount"
+						},
+						{
+							"name": "FilterRows"
+						},
+						{
+							"name": "SurrogateKey"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesData\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MaxRows\nMaxRows aggregate(rowcount = count(1)) ~> RowCount\nSurrogateKey filter(sk <= cachedSink#output().rowcount-2) ~> FilterRows\nMoviesData keyGenerate(output(sk as long),\n\tstartAt: 1L,\n\tstepValue: 1L) ~> SurrogateKey\nRowCount sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink\nFilterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\tpartitionBy('roundRobin', (toInteger(cachedSink#output().rowcount)))) ~> sink2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GenericSCDType2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GenericSCD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "GenericDataset3",
+								"type": "DatasetReference"
+							},
+							"name": "GenericInput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SqlDimension3",
+								"type": "DatasetReference"
+							},
+							"name": "ExistingDimensionTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SqlDimension3",
+								"type": "DatasetReference"
+							},
+							"name": "DimensionTableSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "NewAndUpdatedRows"
+						},
+						{
+							"name": "AddHashInput"
+						},
+						{
+							"name": "AddHashExisting"
+						},
+						{
+							"name": "GetMaxSurrogateKey"
+						},
+						{
+							"name": "AddKey"
+						},
+						{
+							"name": "JoinWithMaxSurrogateKey"
+						},
+						{
+							"name": "AddDimensionColumns"
+						},
+						{
+							"name": "FilterForUpdatedValues"
+						},
+						{
+							"name": "UpdateObsolete"
+						},
+						{
+							"name": "DropUnwantedColsInput"
+						},
+						{
+							"name": "UnionAllData"
+						},
+						{
+							"name": "MarkAsUpdate"
+						},
+						{
+							"name": "DropUnwantedColumns"
+						},
+						{
+							"name": "MarkAsInsert"
+						},
+						{
+							"name": "FilterForActive"
+						}
+					],
+					"script": "parameters{\n\tPrimaryKey as string ('ID'),\n\tColumns as string ('Player,Team,Salary')\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> GenericInput\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingDimensionTable\nAddHashInput, AddHashExisting exists(AddHashInput@id_hash == AddHashExisting@id_hash\n\t&& AddHashInput@columns_hash == AddHashExisting@columns_hash,\n\tnegate:true,\n\tbroadcast: 'auto')~> NewAndUpdatedRows\nGenericInput derive(id_hash = md5(byName($PrimaryKey)),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashInput\nFilterForActive derive(id_hash = md5(byNames(split($PrimaryKey,','))),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashExisting\nAddHashExisting aggregate(MaxSurrogateKey = max(toInteger(byName('Key')))) ~> GetMaxSurrogateKey\nNewAndUpdatedRows keyGenerate(output(Key as long),\n\tstartAt: 1L,\n\tstepValue: 1L) ~> AddKey\nAddKey, GetMaxSurrogateKey join(Key == MaxSurrogateKey || true(),\n\tjoinType:'cross',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'right')~> JoinWithMaxSurrogateKey\nJoinWithMaxSurrogateKey derive(Key = Key + MaxSurrogateKey,\n\t\tActive = 1,\n\t\tActiveStartTime = currentUTC(),\n\t\tActiveEndTime = toTimestamp(toString(null()))) ~> AddDimensionColumns\nAddHashExisting, NewAndUpdatedRows exists(AddHashExisting@id_hash == AddHashInput@id_hash,\n\tnegate:false,\n\tbroadcast: 'auto')~> FilterForUpdatedValues\nFilterForUpdatedValues derive(Active = 0,\n\t\tActiveEndTime = currentUTC()) ~> UpdateObsolete\nAddDimensionColumns select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColsInput\nMarkAsInsert, DropUnwantedColumns union(byName: true)~> UnionAllData\nUpdateObsolete alterRow(updateIf(true())) ~> MarkAsUpdate\nMarkAsUpdate select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColumns\nDropUnwantedColsInput alterRow(insertIf(true())) ~> MarkAsInsert\nExistingDimensionTable filter(toInteger(byName('Active')) == 1) ~> FilterForActive\nUnionAllData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:[($PrimaryKey)],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimensionTableSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GenericSCDType21')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GenericSCD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "GenericDataset2",
+								"type": "DatasetReference"
+							},
+							"name": "GenericInput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SqlDimension2",
+								"type": "DatasetReference"
+							},
+							"name": "ExistingDimensionTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SqlDimension2",
+								"type": "DatasetReference"
+							},
+							"name": "DimensionTableSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "NewAndUpdatedRows"
+						},
+						{
+							"name": "AddHashInput"
+						},
+						{
+							"name": "AddHashExisting"
+						},
+						{
+							"name": "GetMaxSurrogateKey"
+						},
+						{
+							"name": "AddKey"
+						},
+						{
+							"name": "JoinWithMaxSurrogateKey"
+						},
+						{
+							"name": "AddDimensionColumns"
+						},
+						{
+							"name": "FilterForUpdatedValues"
+						},
+						{
+							"name": "UpdateObsolete"
+						},
+						{
+							"name": "DropUnwantedColsInput"
+						},
+						{
+							"name": "UnionAllData"
+						},
+						{
+							"name": "MarkAsUpdate"
+						},
+						{
+							"name": "DropUnwantedColumns"
+						},
+						{
+							"name": "MarkAsInsert"
+						},
+						{
+							"name": "FilterForActive"
+						}
+					],
+					"script": "parameters{\n\tPrimaryKey as string ('ID'),\n\tColumns as string ('Player,Team,Salary')\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> GenericInput\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExistingDimensionTable\nAddHashInput, AddHashExisting exists(AddHashInput@id_hash == AddHashExisting@id_hash\n\t&& AddHashInput@columns_hash == AddHashExisting@columns_hash,\n\tnegate:true,\n\tbroadcast: 'auto')~> NewAndUpdatedRows\nGenericInput derive(id_hash = md5(byName($PrimaryKey)),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashInput\nFilterForActive derive(id_hash = md5(byNames(split($PrimaryKey,','))),\n\t\tcolumns_hash = md5(byNames(split($Columns,',')))) ~> AddHashExisting\nAddHashExisting aggregate(MaxSurrogateKey = max(toInteger(byName('Key')))) ~> GetMaxSurrogateKey\nNewAndUpdatedRows keyGenerate(output(Key as long),\n\tstartAt: 1L,\n\tstepValue: 1L) ~> AddKey\nAddKey, GetMaxSurrogateKey join(Key == MaxSurrogateKey || true(),\n\tjoinType:'cross',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'right')~> JoinWithMaxSurrogateKey\nJoinWithMaxSurrogateKey derive(Key = Key + MaxSurrogateKey,\n\t\tActive = 1,\n\t\tActiveStartTime = currentUTC(),\n\t\tActiveEndTime = toTimestamp(toString(null()))) ~> AddDimensionColumns\nAddHashExisting, NewAndUpdatedRows exists(AddHashExisting@id_hash == AddHashInput@id_hash,\n\tnegate:false,\n\tbroadcast: 'auto')~> FilterForUpdatedValues\nFilterForUpdatedValues derive(Active = 0,\n\t\tActiveEndTime = currentUTC()) ~> UpdateObsolete\nAddDimensionColumns select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColsInput\nMarkAsInsert, DropUnwantedColumns union(byName: true)~> UnionAllData\nUpdateObsolete alterRow(updateIf(true())) ~> MarkAsUpdate\nMarkAsUpdate select(mapColumn(\n\t\teach(match(!in(['id_hash','columns_hash','MaxSurrogateKey'],name)))\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropUnwantedColumns\nDropUnwantedColsInput alterRow(insertIf(true())) ~> MarkAsInsert\nExistingDimensionTable filter(toInteger(byName('Active')) == 1) ~> FilterForActive\nUnionAllData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:[($PrimaryKey)],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimensionTableSink"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/KeyCandidates')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "KeyPattern"
+						}
+					],
+					"script": "source(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource1 aggregate(each(match(true()), $$ = countDistinct($$))) ~> KeyPattern\nKeyPattern sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Lake Folders')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "DerivedColumn2"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 50,\n\tignoreNoFilesFound: false) ~> source1\nDerivedColumn1 filter(year == 1980) ~> Filter1\nsource1 derive(currentTime = '_'+regexReplace(toString(currentTimestamp()),'\\\\s| |\\\\.|-|:','')) ~> DerivedColumn1\nsource1 derive(releasedate = iif(year == 1980,'_'+toString(:local1)+right('0'+toString(toInteger((random(1)*12)+1)),2)+right('0'+toString(toInteger((random(2)*12)+1)),2),'_20200311'),\n\t\tlocal1 := year) ~> DerivedColumn2\nFilter1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'currentTime',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nDerivedColumn2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'releasedate',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LoansDataWrangling')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "loans",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loans",
+							"dataset": {
+								"referenceName": "loans",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared loans = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/loan.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = loans,\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each [term] = \" 36 months\"),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Filtered rows\", {{\"grade\", each Text.Lower(_), type text}}),\r\n  #\"Trimmed text\" = Table.TransformColumns(#\"Lowercased text\", {{\"verification_status\", each Text.Trim(_), type text}})\r\nin\r\n  #\"Trimmed text\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Lookups')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select id, member_id, loan_amnt, funded_amnt, term, int_rate,emp_title,\\nemp_length, home_ownership, annual_inc from loanstest',\n\tformat: 'query') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieAnalytics')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "moviesCSV",
+								"type": "DatasetReference"
+							},
+							"name": "MoviesCSVSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1AvgRatingByYear"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink2MinMaxRating"
+						},
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink3Favorites"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AvgComedyRatingByYear"
+						},
+						{
+							"name": "minMaxRatingByYear"
+						},
+						{
+							"name": "Favorite"
+						},
+						{
+							"name": "Filter1"
+						},
+						{
+							"name": "Sort1"
+						}
+					],
+					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesCSVSource\nMoviesCSVSource aggregate(groupBy(year),\n\tavgRatingForComedies = round(avgIf(instr(lower(genres),'comedy')>0,Rating),2)) ~> AvgComedyRatingByYear\nMoviesCSVSource aggregate(groupBy(year),\n\tminRating = min(Rating),\n\t\tmaxRating = max(Rating)) ~> minMaxRatingByYear\nFilter1 derive(Favorite = true()) ~> Favorite\nMoviesCSVSource filter(year == 1980) ~> Filter1\nAvgComedyRatingByYear sort(desc(avgRatingForComedies, true)) ~> Sort1\nSort1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1AvgRatingByYear\nminMaxRatingByYear sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2MinMaxRating\nFavorite sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato,\n\t\tFavorite\n\t)) ~> sink3Favorites"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieDemo')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "MovieData",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MovieData",
+							"dataset": {
+								"referenceName": "MovieData",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared MovieData = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\nshared #\"UserQuery (2)\" = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\nshared #\"UserQuery (3)\" = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Moving Average')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "msftstock",
+								"type": "DatasetReference"
+							},
+							"name": "StocksSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MovingAvgWindow"
+						},
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "Filter1"
+						}
+					],
+					"script": "source(output(\n\t\tDate as date,\n\t\tOpen as double,\n\t\tHigh as double,\n\t\tLow as double,\n\t\tClose as double,\n\t\tVolume as double,\n\t\tDividend as double,\n\t\tSplit as double,\n\t\tAdj_Open as double,\n\t\tAdj_High as double,\n\t\tAdj_Low as double,\n\t\tAdj_Close as double,\n\t\tAdj_Volume as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRowOffset: -7L,\n\tendRowOffset: 7L,\n\tFifteenDayMovingAvg = round(avg(Close),2)) ~> MovingAvgWindow\nMovingAvgWindow select(mapColumn(\n\t\tDate,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Moving Average_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "msftstock",
+								"type": "DatasetReference"
+							},
+							"name": "StocksSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Window1"
+						},
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "Filter1"
+						}
+					],
+					"script": "source(output(\n\t\tDate as date,\n\t\tOpen as double,\n\t\tHigh as double,\n\t\tLow as double,\n\t\tClose as double,\n\t\tVolume as double,\n\t\tDividend as double,\n\t\tSplit as double,\n\t\tAdj_Open as double,\n\t\tAdj_High as double,\n\t\tAdj_Low as double,\n\t\tAdj_Close as double,\n\t\tAdj_Volume as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRange: -(days(1)),\n\tendRange: 0L,\n\tFifteenDayMovingAvg = lag(High,1,1)) ~> Window1\nWindow1 select(mapColumn(\n\t\tHigh,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Native SQL CDC')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -105,1081 +1083,6 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery3')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery4')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						},
-						{
-							"name": "SQLMovies",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQLMovies",
-							"dataset": {
-								"referenceName": "SQLMovies",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared SQLMovies = let\r\n  AdfDoc = Sql.Database(\"maksqldb.database.windows.net\", \"makaw\"),\r\n  InputTable = AdfDoc{[Schema = \"dbo\", Item = \"Movies\"]}[Data]\r\nin\r\n  InputTable;\r\nshared UserQuery = let\r\n  Source = moviesCSV,\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"movie\", Int64.Type}})\r\nin\r\n  #\"Changed column type\";\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery5')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "MoviesD2",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesD2",
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared MoviesD2 = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = MoviesD2\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RowCounts')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "LogRowCounts"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ConditionalSplit1"
-						},
-						{
-							"name": "RowCount"
-						}
-					],
-					"script": "parameters{\n\tlogger as boolean (false())\n}\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 split($logger,\n\tdisjoint: false) ~> ConditionalSplit1@(logon, logoff)\nConditionalSplit1@logon aggregate(rowcount = count(1) /* this is my comment */) ~> RowCount\nConditionalSplit1@logoff sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1\nRowCount sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['rowcounts.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> LogRowCounts"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TaxiWrangle')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "taxi_fare_data_input1",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> taxi_fare_data_input1",
-							"dataset": {
-								"referenceName": "taxi_fare_data_input1",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared taxi_fare_data_input1 = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/trip_fare_1.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\nshared DriverAggs = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/cachedLookups')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						},
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source2"
-						}
-					],
-					"sinks": [
-						{
-							"name": "cachedSink"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "RowCount"
-						},
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource2 aggregate(rowcount = count(1)) ~> RowCount\nsource1 derive(rowcounts = cachedSink#outputs().rowcount) ~> DerivedColumn1\nRowCount sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\tpartitionBy('roundRobin', (toInteger(cachedSink#output().rowcount)))) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/complexDTs')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "mapParquet",
-								"type": "DatasetReference"
-							},
-							"name": "source2"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						},
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "calcMargin"
-						},
-						{
-							"name": "Select1"
-						},
-						{
-							"name": "Aggregate1"
-						},
-						{
-							"name": "formatCalc"
-						}
-					],
-					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tproduct as (name as string, color as string),\n\t\tmargin as [string,decimal(10,0)],\n\t\tdeconstructName as string[][]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source2\nsource2 derive(calcMargin = round(margin['price']-margin['cost'],2)) ~> calcMargin\ncalcMargin select(mapColumn(\n\t\tName,\n\t\tproduct,\n\t\tmargin,\n\t\tcalcMargin,\n\t\tdeconstructName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\ncalcMargin aggregate(avgMargin = toString(round(avg(calcMargin),2))) ~> Aggregate1\nSelect1 derive(calcMargin = toString(calcMargin,'$#.##'),\n\t\tShortName = toString(deconstructName[1]) + ' ' + product.color) ~> formatCalc\nAggregate1 sink(validateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nformatCalc sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tcompressionType: 'snappy',\n\tcompressionLevel: 'Fastest',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'DeltaDT',\n\toverwrite:true,\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/createParts')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "partsource",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SurrogateKey1"
-						},
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"parameters{",
-						"     parameter1 as string",
-						"}",
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 keyGenerate(output(sk as long),",
-						"     startAt: 1L,",
-						"     stepValue: 1L) ~> SurrogateKey1",
-						"SurrogateKey1 derive(month = mod(sk,12)+1) ~> DerivedColumn1",
-						"DerivedColumn1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     mapColumn(",
-						"          movie,",
-						"          title,",
-						"          genres,",
-						"          year,",
-						"          Rating,",
-						"          RottenTomato,",
-						"          sk,",
-						"          month",
-						"     ),",
-						"     partitionBy('key',",
-						"          0,",
-						"          ERROR_FUNCTION('')",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataDedupe')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "names1001",
-								"type": "DatasetReference"
-							},
-							"name": "sourceName"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "dupefolder1",
-								"type": "DatasetReference"
-							},
-							"name": "sinkDupes"
-						},
-						{
-							"dataset": {
-								"referenceName": "dupefolder1",
-								"type": "DatasetReference"
-							},
-							"name": "sinkNoDupes"
-						}
-					],
-					"transformations": [
-						{
-							"name": "FuzzyMatch"
-						},
-						{
-							"name": "groupSoundex"
-						},
-						{
-							"name": "Orig1"
-						},
-						{
-							"name": "soundexJoin"
-						},
-						{
-							"name": "soundexBranch"
-						},
-						{
-							"name": "groupPhone"
-						},
-						{
-							"name": "phoneBranch"
-						},
-						{
-							"name": "phoneJoin"
-						},
-						{
-							"name": "groupZip"
-						},
-						{
-							"name": "zipBranch"
-						},
-						{
-							"name": "zipJoin"
-						},
-						{
-							"name": "setConstants"
-						},
-						{
-							"name": "matchScore"
-						},
-						{
-							"name": "finalResult"
-						},
-						{
-							"name": "MapNames"
-						},
-						{
-							"name": "CreateFullName"
-						},
-						{
-							"name": "CheckForDupes"
-						}
-					],
-					"script": "source(output(\n\t\t{Emp ID} as integer,\n\t\t{Name Prefix} as string,\n\t\t{First Name} as string,\n\t\t{Middle Initial} as string,\n\t\t{Last Name} as string,\n\t\tGender as string,\n\t\t{E Mail} as string,\n\t\t{Father's Name} as string,\n\t\t{Mother's Name} as string,\n\t\t{Mother's Maiden Name} as string,\n\t\t{Date of Birth} as string,\n\t\t{Time of Birth} as string,\n\t\t{Age in Yrs.} as double '##.##',\n\t\t{Weight in Kgs.} as string,\n\t\t{Date of Joining} as string,\n\t\t{Quarter of Joining} as string,\n\t\t{Half of Joining} as string,\n\t\t{Year of Joining} as string,\n\t\t{Month of Joining} as string,\n\t\t{Month Name of Joining} as string,\n\t\t{Short Month} as string,\n\t\t{Day of Joining} as string,\n\t\t{DOW of Joining} as string,\n\t\t{Short DOW} as string,\n\t\t{Age in Company (Years)} as string,\n\t\tSalary as integer,\n\t\t{Last % Hike} as string,\n\t\tSSN as string,\n\t\t{Phone No. } as string,\n\t\t{Place Name} as string,\n\t\tCounty as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZip as string,\n\t\tRegion as string,\n\t\t{User Name} as string,\n\t\tPassword as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('roundRobin', 2)) ~> sourceName\nMapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch\nOrig1 aggregate(groupBy(SoundexValue),\n\tsoundexmatch = sum(1)) ~> groupSoundex\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Orig1\ngroupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,\n\tjoinType:'inner',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> soundexJoin\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> soundexBranch\nsoundexJoin aggregate(groupBy(phone,\n\t\tsoundexBranch@SoundexValue),\n\tphonematch = sum(1),\n\t\tacctnum_agg = last(acctnum)) ~> groupPhone\nsoundexJoin select(mapColumn(\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue = soundexBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> phoneBranch\ngroupPhone, phoneBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> phoneJoin\nphoneJoin aggregate(groupBy(zip,\n\t\tphoneBranch@SoundexValue),\n\tzipcount = sum(1),\n\t\tacctnum_agg = last(acctnum_agg)) ~> groupZip\nphoneJoin select(mapColumn(\n\t\tphonematch,\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone = phoneBranch@phone,\n\t\tzip,\n\t\tSoundexValue = phoneBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> zipBranch\ngroupZip, zipBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> zipJoin\nzipJoin derive(soundexweight = 50,\n\t\tzipweight = 25,\n\t\tphoneweight = 25,\n\t\tsoundexbool = iif (soundexmatch > 1, 1, 0),\n\t\tzipbool = iif (zipcount > 1, 1, 0),\n\t\tphonebool = iif (phonematch > 1, 1, 0)) ~> setConstants\nsetConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore\nmatchScore select(mapColumn(\n\t\tphone,\n\t\tacctnum,\n\t\tfullname,\n\t\tzip = zipBranch@zip,\n\t\tmatchscore\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> finalResult\nCreateFullName select(mapColumn(\n\t\tfullname,\n\t\teach(match(instr(lower(name),'phone')>0),\n\t\t\t'phone' = $$),\n\t\teach(match(instr(lower(name),'zip')>0),\n\t\t\t'zip' = $$),\n\t\teach(match(instr(lower(name),'emp id')>0),\n\t\t\t'acctnum' = $$)\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> MapNames\nsourceName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName\nfinalResult split(matchscore > 50,\n\tdisjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)\nCheckForDupes@Duplicates sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkDupes\nCheckForDupes@NotDupe sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['nodupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkNoDupes"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow10')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "names100",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ExternalCall1",
-							"linkedService": {
-								"referenceName": "Cognitive Service",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "SurrogateKey1"
-						},
-						{
-							"name": "DerivedColumn2"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {Emp ID} as string,",
-						"          {Name Prefix} as string,",
-						"          {First Name} as string,",
-						"          {Middle Initial} as string,",
-						"          {Last Name} as string,",
-						"          Gender as string,",
-						"          {E Mail} as string,",
-						"          {Father's Name} as string,",
-						"          {Mother's Name} as string,",
-						"          {Mother's Maiden Name} as string,",
-						"          {Date of Birth} as string,",
-						"          {Time of Birth} as string,",
-						"          {Age in Yrs.} as string,",
-						"          {Weight in Kgs.} as string,",
-						"          {Date of Joining} as string,",
-						"          {Quarter of Joining} as string,",
-						"          {Half of Joining} as string,",
-						"          {Year of Joining} as string,",
-						"          {Month of Joining} as string,",
-						"          {Month Name of Joining} as string,",
-						"          {Short Month} as string,",
-						"          {Day of Joining} as string,",
-						"          {DOW of Joining} as string,",
-						"          {Short DOW} as string,",
-						"          {Age in Company (Years)} as string,",
-						"          Salary as string,",
-						"          {Last % Hike} as string,",
-						"          SSN as string,",
-						"          {Phone No. } as string,",
-						"          {Place Name} as string,",
-						"          County as string,",
-						"          City as string,",
-						"          State as string,",
-						"          Zip as string,",
-						"          Region as string,",
-						"          {User Name} as string,",
-						"          Password as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"DerivedColumn2 call(mapColumn(",
-						"          documents",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     output(",
-						"          headers as [string,string],",
-						"          body as (documents as (redactedText as string, id as string, entities as (text as string, category as string, offset as integer, length as integer, confidenceScore as double)[])[])",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     format: 'rest',",
-						"     store: 'restservice',",
-						"     timeout: 30,",
-						"     requestInterval: 0,",
-						"     httpMethod: 'POST',",
-						"     headerColumnName: 'headers',",
-						"     bodyColumnName: 'body',",
-						"     requestFormat: ['type' -> 'json'],",
-						"     responseFormat: ['type' -> 'json', 'documentForm' -> 'singleDocument']) ~> ExternalCall1",
-						"SurrogateKey1 derive(language = 'en',",
-						"          text = {Last Name}) ~> DerivedColumn1",
-						"source1 keyGenerate(output(id as long),",
-						"     startAt: 1L,",
-						"     stepValue: 1L) ~> SurrogateKey1",
-						"DerivedColumn1 derive(documents = array(@(id=id,\r",
-						"          language=language,\r",
-						"          text=text))) ~> DerivedColumn2",
-						"ExternalCall1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow11')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "select1"
-						},
-						{
-							"name": "select2"
-						},
-						{
-							"name": "select3"
-						},
-						{
-							"name": "join1"
-						},
-						{
-							"name": "join2"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 select(mapColumn(",
-						"          movie,",
-						"          genres",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"source1 select(mapColumn(",
-						"          title,",
-						"          movie",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select2",
-						"source1 select(mapColumn(",
-						"          Rating,",
-						"          movie",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select3",
-						"select3, select2 join(select3@movie == select2@movie,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
-						"join1, select1 join(select3@movie == select1@movie,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join2",
-						"join2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow12')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Xml2",
-								"type": "DatasetReference"
-							},
-							"name": "source"
-						},
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "derivedColumn2"
-						},
-						{
-							"name": "parse1"
-						},
-						{
-							"name": "stringify1"
-						},
-						{
-							"name": "parse2"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          Customers as (Customer as ({@id} as short, CompanyName as ({@Address} as short, {@Name} as string)))",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     validationMode: 'none',",
-						"     namespaces: false) ~> source",
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 derive(column1 = '<Customers><Customer id=12222><CompanyName Name=Great Address=123 /></Customer></Customers>') ~> derivedColumn2",
-						"derivedColumn2 parse(newcol = column1 ? (Customers as (Customer as ({@id} as short,",
-						"          CompanyName as ({@Address} as short,",
-						"          {@Name} as string)))),",
-						"     format: 'json',",
-						"     documentForm: 'documentPerLine') ~> parse1",
-						"source stringify(column1 = Customers ? string,",
-						"     format: 'json') ~> stringify1",
-						"stringify1 parse(column1 = column1 ? (Customer as ({@id} as integer,",
-						"     CompanyName as ({@Address} as integer,",
-						"     {@Name} as string)))[],",
-						"     format: 'json',",
-						"     documentForm: 'documentPerLine') ~> parse2",
-						"parse2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow15')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "CosmosDb1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          movie as integer,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as short,",
-						"          Rating as short,",
-						"          RottenTomato as short",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 derive(column1 = currentTimestamp()) ~> derivedColumn1",
-						"derivedColumn1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'document',",
-						"     container: (\"Mark\"),",
-						"     deletable: false,",
-						"     insertable: true,",
-						"     updateable: false,",
-						"     upsertable: false,",
-						"     recreate: true,",
-						"     throughput: 1000,",
-						"     store: 'cosmosDB',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "nameswithxml",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Parse1"
-						}
-					],
-					"script": "parameters{\n\tparameter1 as string[] (['a','b'])\n}\nsource(output(\n\t\tacctnum as string,\n\t\tfullname as string,\n\t\tphone as string,\n\t\tzip as string,\n\t\txml as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 parse(customers = xml ? (Customers as (Customer as integer,\n\t\tCompanyName as string)),\n\tformat: 'xml',\n\tnamespaces: true) ~> Parse1\nParse1 sink(validateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow7')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ExternalCall1",
-							"linkedService": {
-								"referenceName": "RestService4",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          movie as string,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as string,",
-						"          Rating as string,",
-						"          RottenTomato as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 call(allowSchemaDrift: true,",
-						"     format: 'rest',",
-						"     store: 'restservice',",
-						"     timeout: 30,",
-						"     requestInterval: 0,",
-						"     headers = ['Ocp-Apim-Subscription-Key' -> 'd68fdeedff6749f89a1a4b21ae55be97', 'Content-Type' -> 'application/json; charset=UTF-8', 'Content-Length' -> '256'],",
-						"     httpMethod: 'POST',",
-						"     requestFormat: ['type' -> 'json'],",
-						"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> ExternalCall1",
-						"ExternalCall1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow8')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "names100",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "Dupes"
-						},
-						{
-							"name": "NotDupe"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Flowlet1",
-							"flowlet": {
-								"referenceName": "DedupeFuzzyFlowlet2",
-								"type": "DataFlowReference",
-								"parameters": {}
-							}
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {Emp ID} as string,",
-						"          {Name Prefix} as string,",
-						"          {First Name} as string,",
-						"          {Middle Initial} as string,",
-						"          {Last Name} as string,",
-						"          Gender as string,",
-						"          {E Mail} as string,",
-						"          {Father's Name} as string,",
-						"          {Mother's Name} as string,",
-						"          {Mother's Maiden Name} as string,",
-						"          {Date of Birth} as string,",
-						"          {Time of Birth} as string,",
-						"          {Age in Yrs.} as string,",
-						"          {Weight in Kgs.} as string,",
-						"          {Date of Joining} as string,",
-						"          {Quarter of Joining} as string,",
-						"          {Half of Joining} as string,",
-						"          {Year of Joining} as string,",
-						"          {Month of Joining} as string,",
-						"          {Month Name of Joining} as string,",
-						"          {Short Month} as string,",
-						"          {Day of Joining} as string,",
-						"          {DOW of Joining} as string,",
-						"          {Short DOW} as string,",
-						"          {Age in Company (Years)} as string,",
-						"          Salary as string,",
-						"          {Last % Hike} as string,",
-						"          SSN as string,",
-						"          {Phone No. } as string,",
-						"          {Place Name} as string,",
-						"          County as string,",
-						"          City as string,",
-						"          State as string,",
-						"          Zip as string,",
-						"          Region as string,",
-						"          {User Name} as string,",
-						"          Password as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 compose(mapColumn(",
-						"          {Emp ID},",
-						"          {First Name},",
-						"          {Middle Initial},",
-						"          {Last Name},",
-						"          {Phone No. },",
-						"          Zip",
-						"     ),",
-						"     composition: 'DedupeFuzzyFlowlet2') ~> Flowlet1@(outputDupes, outputNoDupes)",
-						"Flowlet1@outputDupes sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> Dupes",
-						"Flowlet1@outputNoDupes sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> NotDupe"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow9')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SQLMovies",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"scriptLines": [
-						"source(output(",
-						"          movie as integer,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as integer,",
-						"          Rating as integer,",
-						"          RottenTomato as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     inputs:['@Agency' -> '','@Agency' -> '','@StartDate' -> '','@EndDate' -> '','@IncludeResetOnly' -> ''],",
-						"     procedureName: 'usp_get_raw_data_for_agency_test',",
-						"     schemaName: 'dbo',",
-						"     resultSet: true,",
-						"     format: 'procedure') ~> source1",
-						"source1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 1) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/driftflow-1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviedrift",
-								"type": "DatasetReference"
-							},
-							"name": "source"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tignoreNoFilesFound: false) ~> source\nsource derive(each(match(like(lower(name),'%year%')), $$ = toInteger($$)+10),\n\tpartitionBy('hash', 6,\n\t\tmovie\n\t)) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['drift.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []

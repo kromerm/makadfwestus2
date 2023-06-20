@@ -13,55 +13,1547 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/SqlDimension1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/adfcdc2')]",
+			"type": "Microsoft.DataFactory/factories/adfcdcs",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Table": {
-						"type": "string"
+				"SourceConnectionsInfo": [
+					{
+						"SourceEntities": [
+							{
+								"name": "SalesLT.Product",
+								"properties": {
+									"schema": [],
+									"dslConnectorProperties": [
+										{
+											"name": "format",
+											"value": "table"
+										},
+										{
+											"name": "store",
+											"value": "sqlserver"
+										},
+										{
+											"name": "schemaName",
+											"value": "SalesLT"
+										},
+										{
+											"name": "tableName",
+											"value": "Product"
+										},
+										{
+											"name": "databaseType",
+											"value": "databaseType"
+										},
+										{
+											"name": "database",
+											"value": "database"
+										},
+										{
+											"name": "enableNativeCdc",
+											"value": true
+										},
+										{
+											"name": "netChanges",
+											"value": true
+										},
+										{
+											"name": "skipInitialLoad",
+											"value": true
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": true
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": true
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "AzureSqlDatabase3",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "AzureSqlDatabase",
+							"type": "linkedservicetype",
+							"isInlineDataset": true
+						}
 					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().Table",
-						"type": "Expression"
+				],
+				"TargetConnectionsInfo": [
+					{
+						"TargetEntities": [
+							{
+								"name": "productsnew",
+								"properties": {
+									"schema": [],
+									"dslConnectorProperties": [
+										{
+											"name": "format",
+											"value": "delta"
+										},
+										{
+											"name": "container",
+											"value": "productsnew"
+										},
+										{
+											"name": "fileSystem",
+											"value": "productsnew"
+										},
+										{
+											"name": "mergeSchema",
+											"value": true
+										},
+										{
+											"name": "autoCompact",
+											"value": true
+										},
+										{
+											"name": "optimizedWrite",
+											"value": true
+										},
+										{
+											"name": "deletable",
+											"value": false
+										},
+										{
+											"name": "insertable",
+											"value": true
+										},
+										{
+											"name": "updateable",
+											"value": false
+										},
+										{
+											"name": "upsertable",
+											"value": false
+										},
+										{
+											"name": "skipDuplicateMapInputs",
+											"value": true
+										},
+										{
+											"name": "skipDuplicateMapOutputs",
+											"value": true
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": true
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": true
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "AzureBlobStorage",
+							"type": "linkedservicetype",
+							"isInlineDataset": true
+						},
+						"DataMapperMappings": [
+							{
+								"targetEntityName": "productsnew",
+								"sourceEntityName": "SalesLT.Product",
+								"sourceConnectionReference": {
+									"connectionName": "AzureSqlDatabase3",
+									"type": "linkedservicetype"
+								},
+								"attributeMappingInfo": {
+									"attributeMappings": []
+								}
+							}
+						],
+						"Relationships": []
 					}
-				}
+				],
+				"Policy": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15
+					},
+					"mode": "Microbatch"
+				},
+				"allowVNetOverride": false
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SqlDimension2')]",
+			"name": "[concat(parameters('factoryName'), '/adfcdc3')]",
+			"type": "Microsoft.DataFactory/factories/adfcdcs",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"SourceConnectionsInfo": [
+					{
+						"SourceEntities": [
+							{
+								"name": "SalesLT.Product",
+								"properties": {
+									"schema": [],
+									"dslConnectorProperties": [
+										{
+											"name": "format",
+											"value": "table"
+										},
+										{
+											"name": "store",
+											"value": "sqlserver"
+										},
+										{
+											"name": "schemaName",
+											"value": "SalesLT"
+										},
+										{
+											"name": "tableName",
+											"value": "Product"
+										},
+										{
+											"name": "databaseType",
+											"value": "databaseType"
+										},
+										{
+											"name": "database",
+											"value": "database"
+										},
+										{
+											"name": "enableNativeCdc",
+											"value": true
+										},
+										{
+											"name": "netChanges",
+											"value": true
+										},
+										{
+											"name": "skipInitialLoad",
+											"value": true
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": true
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": true
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "AzureSqlDatabase3",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "AzureSqlDatabase",
+							"type": "linkedservicetype",
+							"isInlineDataset": true
+						}
+					}
+				],
+				"TargetConnectionsInfo": [
+					{
+						"TargetEntities": [
+							{
+								"name": "mycontainer/productsnew",
+								"properties": {
+									"schema": [],
+									"dslConnectorProperties": [
+										{
+											"name": "format",
+											"value": "delta"
+										},
+										{
+											"name": "container",
+											"value": "mycontainer"
+										},
+										{
+											"name": "fileSystem",
+											"value": "mycontainer"
+										},
+										{
+											"name": "mergeSchema",
+											"value": true
+										},
+										{
+											"name": "autoCompact",
+											"value": true
+										},
+										{
+											"name": "optimizedWrite",
+											"value": true
+										},
+										{
+											"name": "deletable",
+											"value": false
+										},
+										{
+											"name": "insertable",
+											"value": true
+										},
+										{
+											"name": "updateable",
+											"value": false
+										},
+										{
+											"name": "upsertable",
+											"value": false
+										},
+										{
+											"name": "skipDuplicateMapInputs",
+											"value": true
+										},
+										{
+											"name": "skipDuplicateMapOutputs",
+											"value": true
+										},
+										{
+											"name": "folderPath",
+											"value": "productsnew"
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": true
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": true
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "AzureBlobStorage",
+							"type": "linkedservicetype",
+							"isInlineDataset": true
+						},
+						"DataMapperMappings": [
+							{
+								"targetEntityName": "mycontainer/productsnew",
+								"sourceEntityName": "SalesLT.Product",
+								"sourceConnectionReference": {
+									"connectionName": "AzureSqlDatabase3",
+									"type": "linkedservicetype"
+								},
+								"attributeMappingInfo": {
+									"attributeMappings": []
+								}
+							}
+						],
+						"Relationships": []
+					}
+				],
+				"Policy": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 1
+					},
+					"mode": "Microbatch"
+				},
+				"allowVNetOverride": false
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adfcdc4')]",
+			"type": "Microsoft.DataFactory/factories/adfcdcs",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"SourceConnectionsInfo": [
+					{
+						"SourceEntities": [
+							{
+								"name": "jsonsimple",
+								"properties": {
+									"schema": [
+										{
+											"name": "value",
+											"dataType": "binary"
+										}
+									],
+									"dslConnectorProperties": [
+										{
+											"name": "format",
+											"value": "passthrough"
+										},
+										{
+											"name": "includeHeaders",
+											"value": false
+										},
+										{
+											"name": "eventHubName",
+											"value": "jsonsimple"
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": false
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": false
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "EventHubs1",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "EventHubs",
+							"type": "linkedservicetype",
+							"isInlineDataset": true,
+							"commonDslConnectorProperties": [
+								{
+									"name": "allowSchemaDrift",
+									"value": true
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": true
+								},
+								{
+									"name": "store",
+									"value": "eventhubs"
+								},
+								{
+									"name": "enableCdc",
+									"value": true
+								},
+								{
+									"name": "skipInitialLoad",
+									"value": true
+								}
+							]
+						}
+					}
+				],
+				"TargetConnectionsInfo": [
+					{
+						"TargetEntities": [
+							{
+								"name": "mycontainer/output/cdc/EH",
+								"properties": {
+									"schema": [],
+									"dslConnectorProperties": [
+										{
+											"name": "container",
+											"value": "mycontainer"
+										},
+										{
+											"name": "fileSystem",
+											"value": "mycontainer"
+										},
+										{
+											"name": "folderPath",
+											"value": "output/cdc/EH"
+										},
+										{
+											"name": "allowSchemaDrift",
+											"value": true
+										},
+										{
+											"name": "inferDriftedColumnTypes",
+											"value": true
+										}
+									]
+								}
+							}
+						],
+						"Connection": {
+							"linkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"linkedServiceType": "AzureBlobStorage",
+							"type": "linkedservicetype",
+							"isInlineDataset": true,
+							"commonDslConnectorProperties": [
+								{
+									"name": "allowSchemaDrift",
+									"value": true
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": true
+								},
+								{
+									"name": "format",
+									"value": "delta"
+								},
+								{
+									"name": "mergeSchema",
+									"value": true
+								},
+								{
+									"name": "autoCompact",
+									"value": true
+								},
+								{
+									"name": "optimizedWrite",
+									"value": true
+								},
+								{
+									"name": "deletable",
+									"value": false
+								},
+								{
+									"name": "insertable",
+									"value": true
+								},
+								{
+									"name": "updateable",
+									"value": false
+								},
+								{
+									"name": "upsertable",
+									"value": false
+								},
+								{
+									"name": "skipDuplicateMapInputs",
+									"value": true
+								},
+								{
+									"name": "skipDuplicateMapOutputs",
+									"value": true
+								}
+							]
+						},
+						"DataMapperMappings": [
+							{
+								"targetEntityName": "mycontainer/output/cdc/EH",
+								"sourceEntityName": "jsonsimple",
+								"sourceConnectionReference": {
+									"connectionName": "EventHubs1",
+									"type": "linkedservicetype"
+								},
+								"attributeMappingInfo": {
+									"attributeMappings": [
+										{
+											"name": "value",
+											"type": "Direct",
+											"functionName": "",
+											"attributeReference": {
+												"name": "value",
+												"entity": "jsonsimple",
+												"entityConnectionReference": {
+													"connectionName": "EventHubs1",
+													"type": "linkedservicetype"
+												}
+											}
+										}
+									]
+								}
+							}
+						],
+						"Relationships": []
+					}
+				],
+				"Policy": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 1
+					},
+					"mode": "Microbatch"
+				},
+				"allowVNetOverride": false
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipelineForDemo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_n1y",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "mycontainer/SampleData/moviesDB.csv"
+							},
+							{
+								"name": "Destination",
+								"value": ".DTPDemo1"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"tableOption": "autoCreate"
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "movie",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "movie",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "title",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "title",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "genres",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "genres",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "year",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "year",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Rating",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Rating",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RottenTomato",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RottenTomato",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_n1y",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_n1y",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_o90')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_o90",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "mycontainer/SampleData/moviesDB.csv"
+							},
+							{
+								"name": "Destination",
+								"value": ".demo123"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"tableOption": "autoCreate"
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "movie",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "movie",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "title",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "title",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "genres",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "genres",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "year",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "year",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Rating",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Rating",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RottenTomato",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RottenTomato",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_o90",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_o90",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_9rl_BottomLevel')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This pipeline will copy objects from one group. The objects belonging to this group will be copied parallelly.",
+				"activities": [
+					{
+						"name": "ListObjectsFromOneGroup",
+						"description": "List objects from one group and iterate each of them to downstream activities",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.ObjectsPerGroupToCopy",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "RouteJobsBasedOnLoadingBehavior",
+									"description": "Check the loading behavior for each object if it requires full load or incremental load. If it is Default or FullLoad case, do full load. If it is DeltaLoad case, do incremental load via watermark column to identify changes.",
+									"type": "Switch",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"on": {
+											"value": "@json(item().DataLoadingBehaviorSettings).dataLoadingBehavior",
+											"type": "Expression"
+										},
+										"cases": [
+											{
+												"value": "FullLoad",
+												"activities": [
+													{
+														"name": "FullLoadOneObject",
+														"description": "Take a full snapshot on this object and copy it to the destination",
+														"type": "Copy",
+														"dependsOn": [],
+														"policy": {
+															"timeout": "7.00:00:00",
+															"retry": 0,
+															"retryIntervalInSeconds": 30,
+															"secureOutput": false,
+															"secureInput": false
+														},
+														"userProperties": [
+															{
+																"name": "Source",
+																"value": "@{json(item().SourceObjectSettings).container}/@{json(item().SourceObjectSettings).folderPath}/@{json(item().SourceObjectSettings).fileName}"
+															},
+															{
+																"name": "Destination",
+																"value": "@{json(item().SinkObjectSettings).container}/@{json(item().SinkObjectSettings).folderPath}/@{json(item().SinkObjectSettings).fileName}"
+															}
+														],
+														"typeProperties": {
+															"source": {
+																"type": "DelimitedTextSource",
+																"storeSettings": {
+																	"type": "AzureBlobStorageReadSettings",
+																	"recursive": {
+																		"value": "@json(item().CopySourceSettings).recursive",
+																		"type": "Expression"
+																	},
+																	"wildcardFileName": {
+																		"value": "@json(item().CopySourceSettings).wildcardFileName",
+																		"type": "Expression"
+																	},
+																	"enablePartitionDiscovery": {
+																		"value": "@json(item().CopySourceSettings).enablePartitionDiscovery",
+																		"type": "Expression"
+																	}
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextReadSettings",
+																	"skipLineCount": {
+																		"value": "@json(item().CopySourceSettings).skipLineCount",
+																		"type": "Expression"
+																	}
+																}
+															},
+															"sink": {
+																"type": "DelimitedTextSink",
+																"storeSettings": {
+																	"type": "AzureBlobStorageWriteSettings"
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextWriteSettings",
+																	"quoteAllText": {
+																		"value": "@json(item().CopySinkSettings).quoteAllText",
+																		"type": "Expression"
+																	},
+																	"fileExtension": {
+																		"value": "@json(item().CopySinkSettings).fileExtension",
+																		"type": "Expression"
+																	}
+																}
+															},
+															"enableStaging": false,
+															"validateDataConsistency": false,
+															"translator": {
+																"value": "@json(item().CopyActivitySettings).translator",
+																"type": "Expression"
+															}
+														},
+														"inputs": [
+															{
+																"referenceName": "MetadataDrivenCopyTask_9rl_SourceDS",
+																"type": "DatasetReference",
+																"parameters": {
+																	"cw_columnDelimiter": {
+																		"value": "@json(item().SourceObjectSettings).columnDelimiter",
+																		"type": "Expression"
+																	},
+																	"cw_escapeChar": {
+																		"value": "@json(item().SourceObjectSettings).escapeChar",
+																		"type": "Expression"
+																	},
+																	"cw_quoteChar": {
+																		"value": "@json(item().SourceObjectSettings).quoteChar",
+																		"type": "Expression"
+																	},
+																	"cw_firstRowAsHeader": {
+																		"value": "@json(item().SourceObjectSettings).firstRowAsHeader",
+																		"type": "Expression"
+																	},
+																	"cw_fileName": {
+																		"value": "@json(item().SourceObjectSettings).fileName",
+																		"type": "Expression"
+																	},
+																	"cw_folderPath": {
+																		"value": "@json(item().SourceObjectSettings).folderPath",
+																		"type": "Expression"
+																	},
+																	"cw_container": {
+																		"value": "@json(item().SourceObjectSettings).container",
+																		"type": "Expression"
+																	}
+																}
+															}
+														],
+														"outputs": [
+															{
+																"referenceName": "MetadataDrivenCopyTask_9rl_DestinationDS",
+																"type": "DatasetReference",
+																"parameters": {
+																	"cw_columnDelimiter": {
+																		"value": "@json(item().SinkObjectSettings).columnDelimiter",
+																		"type": "Expression"
+																	},
+																	"cw_escapeChar": {
+																		"value": "@json(item().SinkObjectSettings).escapeChar",
+																		"type": "Expression"
+																	},
+																	"cw_quoteChar": {
+																		"value": "@json(item().SinkObjectSettings).quoteChar",
+																		"type": "Expression"
+																	},
+																	"cw_fileName": {
+																		"value": "@json(item().SinkObjectSettings).fileName",
+																		"type": "Expression"
+																	},
+																	"cw_folderPath": {
+																		"value": "@json(item().SinkObjectSettings).folderPath",
+																		"type": "Expression"
+																	},
+																	"cw_container": {
+																		"value": "@json(item().SinkObjectSettings).container",
+																		"type": "Expression"
+																	}
+																}
+															}
+														]
+													}
+												]
+											}
+										],
+										"defaultActivities": [
+											{
+												"name": "DefaultFullLoadOneObject",
+												"description": "Take a full snapshot on this object and copy it to the destination",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [
+													{
+														"name": "Source",
+														"value": "@{json(item().SourceObjectSettings).container}/@{json(item().SourceObjectSettings).folderPath}/@{json(item().SourceObjectSettings).fileName}"
+													},
+													{
+														"name": "Destination",
+														"value": "@{json(item().SinkObjectSettings).container}/@{json(item().SinkObjectSettings).folderPath}/@{json(item().SinkObjectSettings).fileName}"
+													}
+												],
+												"typeProperties": {
+													"source": {
+														"type": "DelimitedTextSource",
+														"storeSettings": {
+															"type": "AzureBlobStorageReadSettings",
+															"recursive": {
+																"value": "@json(item().CopySourceSettings).recursive",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@json(item().CopySourceSettings).wildcardFileName",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": {
+																"value": "@json(item().CopySourceSettings).enablePartitionDiscovery",
+																"type": "Expression"
+															}
+														},
+														"formatSettings": {
+															"type": "DelimitedTextReadSettings",
+															"skipLineCount": {
+																"value": "@json(item().CopySourceSettings).skipLineCount",
+																"type": "Expression"
+															}
+														}
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobStorageWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": {
+																"value": "@json(item().CopySinkSettings).quoteAllText",
+																"type": "Expression"
+															},
+															"fileExtension": {
+																"value": "@json(item().CopySinkSettings).fileExtension",
+																"type": "Expression"
+															}
+														}
+													},
+													"enableStaging": false,
+													"validateDataConsistency": false,
+													"translator": {
+														"value": "@json(item().CopyActivitySettings).translator",
+														"type": "Expression"
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "MetadataDrivenCopyTask_9rl_SourceDS",
+														"type": "DatasetReference",
+														"parameters": {
+															"cw_columnDelimiter": {
+																"value": "@json(item().SourceObjectSettings).columnDelimiter",
+																"type": "Expression"
+															},
+															"cw_escapeChar": {
+																"value": "@json(item().SourceObjectSettings).escapeChar",
+																"type": "Expression"
+															},
+															"cw_quoteChar": {
+																"value": "@json(item().SourceObjectSettings).quoteChar",
+																"type": "Expression"
+															},
+															"cw_firstRowAsHeader": {
+																"value": "@json(item().SourceObjectSettings).firstRowAsHeader",
+																"type": "Expression"
+															},
+															"cw_fileName": {
+																"value": "@json(item().SourceObjectSettings).fileName",
+																"type": "Expression"
+															},
+															"cw_folderPath": {
+																"value": "@json(item().SourceObjectSettings).folderPath",
+																"type": "Expression"
+															},
+															"cw_container": {
+																"value": "@json(item().SourceObjectSettings).container",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "MetadataDrivenCopyTask_9rl_DestinationDS",
+														"type": "DatasetReference",
+														"parameters": {
+															"cw_columnDelimiter": {
+																"value": "@json(item().SinkObjectSettings).columnDelimiter",
+																"type": "Expression"
+															},
+															"cw_escapeChar": {
+																"value": "@json(item().SinkObjectSettings).escapeChar",
+																"type": "Expression"
+															},
+															"cw_quoteChar": {
+																"value": "@json(item().SinkObjectSettings).quoteChar",
+																"type": "Expression"
+															},
+															"cw_fileName": {
+																"value": "@json(item().SinkObjectSettings).fileName",
+																"type": "Expression"
+															},
+															"cw_folderPath": {
+																"value": "@json(item().SinkObjectSettings).folderPath",
+																"type": "Expression"
+															},
+															"cw_container": {
+																"value": "@json(item().SinkObjectSettings).container",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"ObjectsPerGroupToCopy": {
+						"type": "Array"
+					}
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_9rl_20210818"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/fileWatcher')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "facts",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(string(length(activity('Get Metadata1').output.childItems)), '4')\n",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Signal Complete",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://makpipelinecomplete.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01",
+										"method": "POST",
+										"headers": {
+											"aeg-sas-key": "\n\ndwImM+vtA/xrJPeJYWI5WjXaHMqpARGzE/QZv+Lhn2g="
+										},
+										"body": {
+											"value": "@json(variables('myid'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "myid",
+										"value": {
+											"value": "@concat('[{\"id\":\"',string(rand(1,5000000)),'\",\"eventType\":\"pipelineCompleted\",\"subject\":\"pipeline\",\"eventTime\":\"2021-08-10T21:03:07+00:00\",\"data\":{\"status\":\"complete\"},\"dataVersion\":\"1.0\"}]')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"myid": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/lookupPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select id, member_id, loan_amnt, funded_amnt, term, int_rate,emp_title,\nemp_length, home_ownership, annual_inc, url, purpose, title from loanstest",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadUncommitted",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "www.yahoo.com",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@activity('Lookup1').output",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Metadata1').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFileName": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "folderout",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "folderout",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
+					"referenceName": "AzureSynapseAnalytics1",
 					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"Table": {
-						"type": "string"
-					}
-				},
 				"annotations": [],
-				"type": "AzureSqlTable",
+				"type": "AzureSqlDWTable",
 				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": {
-						"value": "@dataset().Table",
-						"type": "Expression"
-					}
+					"table": "loans"
 				}
 			},
 			"dependsOn": []
@@ -100,6 +1592,335 @@
 						}
 					],
 					"script": "source(output(\n\t\tmedallion as string,\n\t\thack_license as string,\n\t\tvendor_id as string,\n\t\trate_code as long,\n\t\tstore_and_fwd_flag as string,\n\t\tpickup_datetime as timestamp,\n\t\tdropoff_datetime as timestamp,\n\t\tpassenger_count as long,\n\t\ttrip_time_in_secs as long,\n\t\ttrip_distance as double,\n\t\tpickup_longitude as double,\n\t\tpickup_latitude as double,\n\t\tdropoff_longitude as double,\n\t\tdropoff_latitude as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table') ~> source1\nsource1 aggregate(groupBy(vendor_id),\n\tavgDistance = round(avg(trip_distance),2)) ~> Aggregate1\nAggregate1 derive(vendorFullName = case (vendor_id == 'CMT', 'Mobile Knowledge Systems',      vendor_id == 'VTS', 'Verifone Transportation Systems')) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AWDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AWCustAddress",
+								"type": "DatasetReference"
+							},
+							"name": "CustAddress"
+						},
+						{
+							"dataset": {
+								"referenceName": "AWCustomers",
+								"type": "DatasetReference"
+							},
+							"name": "Customers"
+						},
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "AWAddress"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sourceQuery"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinCustomerBridge"
+						},
+						{
+							"name": "JoinAddress"
+						},
+						{
+							"name": "RowCount1"
+						},
+						{
+							"name": "RowCount2"
+						},
+						{
+							"name": "SelectColumns"
+						},
+						{
+							"name": "WhereFilter"
+						},
+						{
+							"name": "RowCount3"
+						}
+					],
+					"script": "parameters{\n\tCustomerID as integer (29485)\n}\nsource(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustAddress\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Customers\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AWAddress\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: '   SELECT\\n   \t\ta.CustomerID,\\n\t\tNameStyle,\\n\t\tTitle,\\n\t\tFirstName,\\n\t\tLastName,\\n\t\tCompanyName,\\n\t\tSalesPerson,\\n\t\tEmailAddress,\\n\t\tPhone,\\n\t\tAddressLine1,\\n\t\tAddressLine2,\\n\t\tCity,\\n\t\tStateProvince,\\n\t\tCountryRegion,\\n\t\tPostalCode\\n   FROM SalesLT.Customer a  \\n   INNER JOIN SalesLT.CustomerAddress b ON a.CustomerID = b.CustomerID\\n   INNER JOIN SalesLT.Address c ON b.AddressID = c.AddressID\\n   WHERE StateProvince = \\'Washington\\' or StateProvince = \\'Pennsylvania\\'',\n\tformat: 'query') ~> sourceQuery\nCustomers, CustAddress join(Customers@CustomerID == CustAddress@CustomerID,\n\tjoinType:'inner',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> JoinCustomerBridge\nJoinCustomerBridge, AWAddress join(CustAddress@AddressID == AWAddress@AddressID,\n\tjoinType:'inner',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> JoinAddress\nCustomers aggregate(rowcount = count()) ~> RowCount1\nJoinAddress aggregate(rowcount = count()) ~> RowCount2\nJoinAddress select(mapColumn(\n\t\tCustomerID = Customers@CustomerID,\n\t\tNameStyle,\n\t\tTitle,\n\t\tFirstName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tSalesPerson,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectColumns\nSelectColumns filter(CustomerID == $CustomerID) ~> WhereFilter\nWhereFilter aggregate(rowcount = count()) ~> RowCount3\nWhereFilter sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 0) ~> sink1\nsourceQuery sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address Quality')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "Address1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "OutputToADLS",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "DataQualityRules"
+						},
+						{
+							"name": "MetadataChecker"
+						},
+						{
+							"name": "FailedMetadata"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AddressID as integer,",
+						"          AddressLine1 as string,",
+						"          AddressLine2 as string,",
+						"          City as string,",
+						"          StateProvince as string,",
+						"          CountryRegion as string,",
+						"          PostalCode as string,",
+						"          rowguid as string,",
+						"          ModifiedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Address1",
+						"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
+						"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
+						"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+						"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
+						"        iif(!in(columnNames(),'City'),false(),\r",
+						"            iif(!in(columnNames(),'StateProvince'),false(),\r",
+						"                iif(!in(columnNames(),'CountryRegion'),false(),\r",
+						"                    iif(!in(columnNames(),'PostalCode'),false(),true())))))),",
+						"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
+						"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
+						"     abort: true) ~> FailedMetadata",
+						"DataQualityRules sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     preCommands: [],",
+						"     postCommands: []) ~> OutputToADLS"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address Quality_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "Address1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "folderout",
+								"type": "DatasetReference"
+							},
+							"name": "OutputToADLS",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "DataQualityRules"
+						},
+						{
+							"name": "MetadataChecker"
+						},
+						{
+							"name": "FailedMetadata"
+						},
+						{
+							"name": "FilterOutNULLCountry"
+						},
+						{
+							"name": "MakeFullAddress"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AddressID as integer,",
+						"          AddressLine1 as string,",
+						"          AddressLine2 as string,",
+						"          City as string,",
+						"          StateProvince as string,",
+						"          CountryRegion as string,",
+						"          PostalCode as string,",
+						"          rowguid as string,",
+						"          ModifiedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Address1",
+						"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
+						"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
+						"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+						"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
+						"        iif(!in(columnNames(),'City'),false(),\r",
+						"            iif(!in(columnNames(),'StateProvince'),false(),\r",
+						"                iif(!in(columnNames(),'CountryRegion'),false(),\r",
+						"                    iif(!in(columnNames(),'PostalCode'),false(),true())))))),",
+						"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
+						"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
+						"     abort: true) ~> FailedMetadata",
+						"DataQualityRules filter(!isNull(CountryRegion)) ~> FilterOutNULLCountry",
+						"FilterOutNULLCountry derive({Full Address} = \"{AddressLine1} {City}, {StateProvince} {PostalCode}\") ~> MakeFullAddress",
+						"MakeFullAddress sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_container: 'mycontainer',",
+						"     assertFailure_folderPath: 'errors',",
+						"     preCommands: [],",
+						"     postCommands: []) ~> OutputToADLS"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AddressQuality')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "Address1"
+						},
+						{
+							"dataset": {
+								"referenceName": "Address",
+								"type": "DatasetReference"
+							},
+							"name": "Address2"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Assert1"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AddressID as integer,",
+						"          AddressLine1 as string,",
+						"          AddressLine2 as string,",
+						"          City as string,",
+						"          StateProvince as string,",
+						"          CountryRegion as string,",
+						"          PostalCode as string,",
+						"          rowguid as string,",
+						"          ModifiedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Address1",
+						"source(output(",
+						"          AddressID as integer,",
+						"          AddressLine1 as string,",
+						"          AddressLine2 as string,",
+						"          City as string,",
+						"          StateProvince as string,",
+						"          CountryRegion as string,",
+						"          PostalCode as string,",
+						"          rowguid as string,",
+						"          ModifiedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Address2",
+						"Address1, Address2 assert(expectTrue(Address1@CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
+						"     expectUnique(Address1@AddressLine1, false, 'addressIdUnique', null, toString(AddressID) + ' is not unique.'),",
+						"     expectExists(Address1@AddressID == Address2@AddressID, false, 'assertExists', null, toString(Address@AddressID) + ' is not present in both tables.')) ~> Assert1",
+						"Assert1 derive(column1 = isError(),",
+						"          column2 = hasError('assertUsOnly')) ~> DerivedColumn1",
+						"DerivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: false,",
+						"     saveOrder: 1) ~> sink1"
+					]
 				}
 			},
 			"dependsOn": []
@@ -268,7 +2089,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DataQuality1')]",
+			"name": "[concat(parameters('factoryName'), '/Data Qual Demo')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -277,148 +2098,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							},
-							"name": "loansSource"
-						},
-						{
-							"dataset": {
-								"referenceName": "rules",
-								"type": "DatasetReference"
-							},
-							"name": "rules1"
-						}
-					],
-					"sinks": [
-						{
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Cast"
-						},
-						{
-							"name": "Aggregate1"
-						},
-						{
-							"name": "ruleNullChecker"
-						}
-					],
-					"script": "source(output(\n\t\tid as integer,\n\t\tmember_id as integer,\n\t\tloan_amnt as double,\n\t\tfunded_amnt as double,\n\t\tfunded_amnt_inv as double,\n\t\tterm as string,\n\t\tint_rate as double,\n\t\tinstallment as double,\n\t\tgrade as string,\n\t\tsub_grade as string,\n\t\temp_title as string,\n\t\temp_length as string,\n\t\thome_ownership as string,\n\t\tannual_inc as double,\n\t\tverification_status as string,\n\t\tissue_d as string,\n\t\tloan_status as string,\n\t\tpymnt_plan as boolean,\n\t\turl as string,\n\t\tdesc as string,\n\t\tpurpose as string,\n\t\ttitle as string,\n\t\tzip_code as string,\n\t\taddr_state as string,\n\t\tdti as double,\n\t\tdelinq_2yrs as double,\n\t\tearliest_cr_line as string,\n\t\tinq_last_6mths as double,\n\t\tmths_since_last_delinq as double,\n\t\tmths_since_last_record as double,\n\t\topen_acc as double,\n\t\tpub_rec as double,\n\t\trevol_bal as double,\n\t\trevol_util as double,\n\t\ttotal_acc as double,\n\t\tinitial_list_status as boolean,\n\t\tout_prncp as double,\n\t\tout_prncp_inv as double,\n\t\ttotal_pymnt as double,\n\t\ttotal_pymnt_inv as double,\n\t\ttotal_rec_prncp as double,\n\t\ttotal_rec_int as double,\n\t\ttotal_rec_late_fee as double,\n\t\trecoveries as double,\n\t\tcollection_recovery_fee as double,\n\t\tlast_pymnt_d as string,\n\t\tlast_pymnt_amnt as double,\n\t\tnext_pymnt_d as string,\n\t\tlast_credit_pull_d as string,\n\t\tcollections_12_mths_ex_med as double,\n\t\tmths_since_last_major_derog as string,\n\t\tpolicy_code as double,\n\t\tapplication_type as string,\n\t\tannual_inc_joint as string,\n\t\tdti_joint as string,\n\t\tverification_status_joint as string,\n\t\tacc_now_delinq as double,\n\t\ttot_coll_amt as string,\n\t\ttot_cur_bal as string,\n\t\topen_acc_6m as string,\n\t\topen_il_6m as string,\n\t\topen_il_12m as string,\n\t\topen_il_24m as string,\n\t\tmths_since_rcnt_il as string,\n\t\ttotal_bal_il as string,\n\t\til_util as string,\n\t\topen_rv_12m as string,\n\t\topen_rv_24m as string,\n\t\tmax_bal_bc as string,\n\t\tall_util as string,\n\t\ttotal_rev_hi_lim as string,\n\t\tinq_fi as string,\n\t\ttotal_cu_tl as string,\n\t\tinq_last_12m as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loansSource\nsource(output(\n\t\tfield as string,\n\t\tthreshold as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'arrayOfDocuments') ~> rules1\nrules1 derive(threshold = toFloat(threshold)) ~> Cast\nloansSource aggregate(mths_since_last_delinq_nulls = countIf(isNull(mths_since_last_delinq),1),\n\t\tnext_pymnt_d = countIf(isNull(next_pymnt_d),1),\n\t\trowcount = count(1)) ~> Aggregate1\nAggregate1 split(toFloat(mths_since_last_delinq_nulls / rowcount) > sink1#lookup('mths_since_last_delinq').threshold,\n\ttoFloat(next_pymnt_d / rowcount) > sink1#lookup('next_pymnt_d').threshold,\n\tdisjoint: false) ~> ruleNullChecker@(mthssincelastdelinqfail, nextpymntdfail)\nCast sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['field'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nruleNullChecker@mthssincelastdelinqfail sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DedupeFuzzy')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "names1001",
-								"type": "DatasetReference"
-							},
-							"name": "sourceName"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "dupefolder1",
-								"type": "DatasetReference"
-							},
-							"name": "sinkDupes"
-						},
-						{
-							"dataset": {
-								"referenceName": "dupefolder1",
-								"type": "DatasetReference"
-							},
-							"name": "sinkNoDupes"
-						}
-					],
-					"transformations": [
-						{
-							"name": "FuzzyMatch"
-						},
-						{
-							"name": "groupSoundex"
-						},
-						{
-							"name": "Orig1"
-						},
-						{
-							"name": "soundexJoin"
-						},
-						{
-							"name": "soundexBranch"
-						},
-						{
-							"name": "groupPhone"
-						},
-						{
-							"name": "phoneBranch"
-						},
-						{
-							"name": "phoneJoin"
-						},
-						{
-							"name": "groupZip"
-						},
-						{
-							"name": "zipBranch"
-						},
-						{
-							"name": "zipJoin"
-						},
-						{
-							"name": "setConstants"
-						},
-						{
-							"name": "matchScore"
-						},
-						{
-							"name": "finalResult"
-						},
-						{
-							"name": "MapNames"
-						},
-						{
-							"name": "CreateFullName"
-						},
-						{
-							"name": "CheckForDupes"
-						}
-					],
-					"script": "source(output(\n\t\t{Emp ID} as string,\n\t\t{Name Prefix} as string,\n\t\t{First Name} as string,\n\t\t{Middle Initial} as string,\n\t\t{Last Name} as string,\n\t\tGender as string,\n\t\t{E Mail} as string,\n\t\t{Father's Name} as string,\n\t\t{Mother's Name} as string,\n\t\t{Mother's Maiden Name} as string,\n\t\t{Date of Birth} as string,\n\t\t{Time of Birth} as string,\n\t\t{Age in Yrs.} as double '##.##',\n\t\t{Weight in Kgs.} as string,\n\t\t{Date of Joining} as string,\n\t\t{Quarter of Joining} as string,\n\t\t{Half of Joining} as string,\n\t\t{Year of Joining} as string,\n\t\t{Month of Joining} as string,\n\t\t{Month Name of Joining} as string,\n\t\t{Short Month} as string,\n\t\t{Day of Joining} as string,\n\t\t{DOW of Joining} as string,\n\t\t{Short DOW} as string,\n\t\t{Age in Company (Years)} as string,\n\t\tSalary as integer,\n\t\t{Last % Hike} as string,\n\t\tSSN as string,\n\t\t{Phone No. } as string,\n\t\t{Place Name} as string,\n\t\tCounty as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZip as string,\n\t\tRegion as string,\n\t\t{User Name} as string,\n\t\tPassword as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> sourceName\nMapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch\nOrig1 aggregate(groupBy(SoundexValue),\n\tsoundexmatch = sum(1)) ~> groupSoundex\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Orig1\ngroupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,\n\tjoinType:'inner',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> soundexJoin\nFuzzyMatch select(mapColumn(\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> soundexBranch\nsoundexJoin aggregate(groupBy(phone,\n\t\tsoundexBranch@SoundexValue),\n\tphonematch = sum(1),\n\t\tacctnum_agg = last(acctnum)) ~> groupPhone\nsoundexJoin select(mapColumn(\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone,\n\t\tzip,\n\t\tSoundexValue = soundexBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> phoneBranch\ngroupPhone, phoneBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> phoneJoin\nphoneJoin aggregate(groupBy(zip,\n\t\tphoneBranch@SoundexValue),\n\tzipcount = sum(1),\n\t\tacctnum_agg = last(acctnum_agg)) ~> groupZip\nphoneJoin select(mapColumn(\n\t\tphonematch,\n\t\tsoundexmatch,\n\t\tacctnum,\n\t\tfullname,\n\t\tphone = phoneBranch@phone,\n\t\tzip,\n\t\tSoundexValue = phoneBranch@SoundexValue\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> zipBranch\ngroupZip, zipBranch join(acctnum_agg == acctnum,\n\tjoinType:'right',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> zipJoin\nzipJoin derive(soundexweight = 50,\n\t\tzipweight = 25,\n\t\tphoneweight = 25,\n\t\tsoundexbool = iif (soundexmatch > 1, 1, 0),\n\t\tzipbool = iif (zipcount > 1, 1, 0),\n\t\tphonebool = iif (phonematch > 1, 1, 0)) ~> setConstants\nsetConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore\nmatchScore select(mapColumn(\n\t\tphone,\n\t\tacctnum,\n\t\tfullname,\n\t\tzip = zipBranch@zip,\n\t\tmatchscore\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> finalResult\nCreateFullName select(mapColumn(\n\t\tphone = {Phone No. },\n\t\tzip = Zip,\n\t\tfullname,\n\t\tacctnum = {Emp ID}\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> MapNames\nsourceName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName\nfinalResult split(matchscore > 50,\n\tdisjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)\nCheckForDupes@Duplicates sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkDupes\nCheckForDupes@NotDupe sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['nodupes.csv'],\n\tpartitionBy('hash', 1)) ~> sinkNoDupes"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DeltaLake1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviesCSV",
+								"referenceName": "DimProductsTable",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -426,459 +2106,72 @@
 					],
 					"sinks": [
 						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage1",
+							"dataset": {
+								"referenceName": "adlsgen2folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureBlobStorage1",
 								"type": "LinkedServiceReference"
-							},
-							"name": "sink1"
+							}
 						}
 					],
 					"transformations": [
 						{
-							"name": "DerivedColumn1"
+							"name": "derivedColumn1"
 						},
 						{
-							"name": "AlterRow1"
-						},
-						{
-							"name": "Filter1"
+							"name": "assert1"
 						}
 					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nFilter1 derive(Rating = iif(year==1988,1,toInteger(Rating)),\n\t\tyear = iif(year==1960,2021,toInteger(year)),\n\t\tmyStruct = @(customer=1,\n\t\tdate=2)) ~> DerivedColumn1\nDerivedColumn1 alterRow(updateIf(year==1988),\n\tinsertIf(year==2021),\n\tdeleteIf(year==1950)) ~> AlterRow1\nsource1 filter(year == 1988 || year == 1960 || year == 1950) ~> Filter1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'moviesdelta',\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:true,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['movie','year'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DemoOfCDCFiles')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "cdcMovies",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout_cdc",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
 					"scriptLines": [
 						"source(output(",
-						"          movie as integer,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as short,",
-						"          Rating as short,",
-						"          RottenTomato as short",
+						"          ProductID as integer,",
+						"          Name as string,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          StandardCost as decimal(19,4),",
+						"          ListPrice as decimal(19,4),",
+						"          EffectiveDate as timestamp,",
+						"          Active as integer",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     enableCdc: true,",
-						"     mode: 'read',",
-						"     skipInitialLoad: false) ~> source1",
-						"source1 sink(allowSchemaDrift: true,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source1",
+						"source1 derive(ListPrice = ListPrice * 1.2) ~> derivedColumn1",
+						"derivedColumn1 assert(expectTrue(Color != 'Multi', false, 'noMultiColor', null, \"This is a bad row because ${Color} is incorrect\")) ~> assert1",
+						"assert1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     input(",
+						"          identifier as string,",
+						"          createdOn as string,",
+						"          modifiedOn as string,",
+						"          originalTimeZoneUTCOffset as string,",
+						"          sourceAuthority as string,",
+						"          salutation as string,",
+						"          firstName as string,",
+						"          nickName as string,",
+						"          middleName as string,",
+						"          lastName as string,",
+						"          suffix as string,",
+						"          fullName as string,",
+						"          birthdayDay as string,",
+						"          birthdayMonth as string,",
+						"          birthdayYear as string,",
+						"          birthDate as string,",
+						"          genderCode as string",
+						"     ),",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 20)) ~> sink1"
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_container: 'mycontainer',",
+						"     assertFailure_folderPath: 'output/errorrows') ~> sink1"
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DistinctRows')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesNoSchema",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "DistinctRows"
-						},
-						{
-							"name": "MakeRowHash"
-						}
-					],
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nMakeRowHash aggregate(groupBy(rowhash),\n\teach(match(name!='rowhash'), $$ = first($$))) ~> DistinctRows\nsource1 derive(rowhash = sha2(256,columns())) ~> MakeRowHash\nDistinctRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(name!='rowhash'))\n\t)) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DynaCols')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "movies1"
-						},
-						{
-							"linkedService": {
-								"referenceName": "AzureBlobStorage1",
-								"type": "LinkedServiceReference"
-							},
-							"name": "columnmappings"
-						},
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "movies2"
-						}
-					],
-					"sinks": [
-						{
-							"name": "cachedSink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "ParamReplace"
-						},
-						{
-							"name": "lookupReplace"
-						}
-					],
-					"script": "parameters{\n\tparameter1 as string[] (['a','b','c'])\n}\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies1\nsource(output(\n\t\tnewcolumn as string,\n\t\tprevcolumn as string\n\t),\n\tuseSchema: false,\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'json',\n\tcontainer: 'mycontainer',\n\tfileName: 'nulls.json',\n\tdocumentForm: 'arrayOfDocuments') ~> columnmappings\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> movies2\nmovies1 select(mapColumn(\n\t\teach(match(position==1),\n\t\t\t$parameter1[1] = $$),\n\t\teach(match(position==2),\n\t\t\t$parameter1[2] = $$),\n\t\teach(match(position==3),\n\t\t\t$parameter1[3] = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ParamReplace\nmovies2 select(mapColumn(\n\t\teach(match(!isNull(cachedSink#lookup(name).prevcolumn)),\n\t\t\tcachedSink#lookup($$).newcolumn = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> lookupReplace\ncolumnmappings sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tkeys:['prevcolumn'],\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Filter Out Last Rows')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "MoviesData"
-						},
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "MaxRows"
-						}
-					],
-					"sinks": [
-						{
-							"name": "cachedSink"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "RowCount"
-						},
-						{
-							"name": "FilterRows"
-						},
-						{
-							"name": "SurrogateKey"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesData\nsource(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\tRottenTomato as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MaxRows\nMaxRows aggregate(rowcount = count(1)) ~> RowCount\nSurrogateKey filter(sk <= cachedSink#output().rowcount-2) ~> FilterRows\nMoviesData keyGenerate(output(sk as long),\n\tstartAt: 1L,\n\tstepValue: 1L) ~> SurrogateKey\nRowCount sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> cachedSink\nFilterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\tpartitionBy('roundRobin', (toInteger(cachedSink#output().rowcount)))) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Lake Folders')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesD2",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "DerivedColumn2"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 50,\n\tignoreNoFilesFound: false) ~> source1\nDerivedColumn1 filter(year == 1980) ~> Filter1\nsource1 derive(currentTime = '_'+regexReplace(toString(currentTimestamp()),'\\\\s| |\\\\.|-|:','')) ~> DerivedColumn1\nsource1 derive(releasedate = iif(year == 1980,'_'+toString(:local1)+right('0'+toString(toInteger((random(1)*12)+1)),2)+right('0'+toString(toInteger((random(2)*12)+1)),2),'_20200311'),\n\t\tlocal1 := year) ~> DerivedColumn2\nFilter1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'currentTime',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nDerivedColumn2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\trowFolderUrlColumn:'releasedate',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LoansDataWrangling')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "loans",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> loans",
-							"dataset": {
-								"referenceName": "loans",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared loans = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/loan.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = loans,\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each [term] = \" 36 months\"),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Filtered rows\", {{\"grade\", each Text.Lower(_), type text}}),\r\n  #\"Trimmed text\" = Table.TransformColumns(#\"Lowercased text\", {{\"verification_status\", each Text.Trim(_), type text}})\r\nin\r\n  #\"Trimmed text\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovieAnalytics')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							},
-							"name": "MoviesCSVSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1AvgRatingByYear"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink2MinMaxRating"
-						},
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink3Favorites"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AvgComedyRatingByYear"
-						},
-						{
-							"name": "minMaxRatingByYear"
-						},
-						{
-							"name": "Favorite"
-						},
-						{
-							"name": "Filter1"
-						},
-						{
-							"name": "Sort1"
-						}
-					],
-					"script": "source(output(\n\t\tmovie as integer,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as short,\n\t\tRating as short,\n\t\tRottenTomato as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesCSVSource\nMoviesCSVSource aggregate(groupBy(year),\n\tavgRatingForComedies = round(avgIf(instr(lower(genres),'comedy')>0,Rating),2)) ~> AvgComedyRatingByYear\nMoviesCSVSource aggregate(groupBy(year),\n\tminRating = min(Rating),\n\t\tmaxRating = max(Rating)) ~> minMaxRatingByYear\nFilter1 derive(Favorite = true()) ~> Favorite\nMoviesCSVSource filter(year == 1980) ~> Filter1\nAvgComedyRatingByYear sort(desc(avgRatingForComedies, true)) ~> Sort1\nSort1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1AvgRatingByYear\nminMaxRatingByYear sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2MinMaxRating\nFavorite sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\tRottenTomato,\n\t\tFavorite\n\t)) ~> sink3Favorites"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovieDemo')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "MovieData",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MovieData",
-							"dataset": {
-								"referenceName": "MovieData",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared MovieData = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\nshared #\"UserQuery (2)\" = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\nshared #\"UserQuery (3)\" = let\r\n  Source = MovieData,\r\n  #\"Uppercased text\" = Table.TransformColumns(Source, {{\"genres\", each Text.Upper(_), type text}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Uppercased text\", {{\"RottenTomato\", Int64.Type}}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Changed column type\", {{\"RottenTomato\", Order.Descending}}),\r\n  #\"Lowercased text\" = Table.TransformColumns(#\"Sorted rows\", {{\"title\", each Text.Lower(_), type text}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Lowercased text\", each [genres] = \"COMEDY\" or [genres] = \"DOCUMENTARY\" or [genres] = \"DRAMA\" or [genres] = \"HORROR\" or [genres] = \"MUSICAL\"),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows\", {\"title\", \"RottenTomato\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed columns\", {{\"Rating\", Int64.Type}}),\r\n  #\"Pivoted column\" = Table.Pivot(Table.TransformColumnTypes(#\"Changed column type 1\", {{\"genres\", type text}}), {\"DRAMA\", \"HORROR\", \"COMEDY\", \"MUSICAL\", \"DOCUMENTARY\"}, \"genres\", \"Rating\", List.Average)\r\nin\r\n  #\"Pivoted column\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Moving Average')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "msftstock",
-								"type": "DatasetReference"
-							},
-							"name": "StocksSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "MovingAvgWindow"
-						},
-						{
-							"name": "Select1"
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "Filter1"
-						}
-					],
-					"script": "source(output(\n\t\tDate as date,\n\t\tOpen as double,\n\t\tHigh as double,\n\t\tLow as double,\n\t\tClose as double,\n\t\tVolume as double,\n\t\tDividend as double,\n\t\tSplit as double,\n\t\tAdj_Open as double,\n\t\tAdj_High as double,\n\t\tAdj_Low as double,\n\t\tAdj_Close as double,\n\t\tAdj_Volume as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRowOffset: -7L,\n\tendRowOffset: 7L,\n\tFifteenDayMovingAvg = round(avg(Close),2)) ~> MovingAvgWindow\nMovingAvgWindow select(mapColumn(\n\t\tDate,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Moving Average_copy1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "msftstock",
-								"type": "DatasetReference"
-							},
-							"name": "StocksSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "folderout",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Window1"
-						},
-						{
-							"name": "Select1"
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "Filter1"
-						}
-					],
-					"script": "source(output(\n\t\tDate as date,\n\t\tOpen as double,\n\t\tHigh as double,\n\t\tLow as double,\n\t\tClose as double,\n\t\tVolume as double,\n\t\tDividend as double,\n\t\tSplit as double,\n\t\tAdj_Open as double,\n\t\tAdj_High as double,\n\t\tAdj_Low as double,\n\t\tAdj_Close as double,\n\t\tAdj_Volume as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> StocksSource\nFilter1 window(over(stocksymbol),\n\tasc(Date, true),\n\tstartRange: -(days(1)),\n\tendRange: 0L,\n\tFifteenDayMovingAvg = lag(High,1,1)) ~> Window1\nWindow1 select(mapColumn(\n\t\tHigh,\n\t\tClose,\n\t\tFifteenDayMovingAvg\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStocksSource derive(stocksymbol = 'msft') ~> DerivedColumn1\nDerivedColumn1 filter(High > 0) ~> Filter1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []

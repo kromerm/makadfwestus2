@@ -20,6 +20,9 @@
 		"AzureDatabricks1_accessToken": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"AzureSqlDatabase2_connectionString": {
 			"value": ""
 		},
@@ -33,6 +36,9 @@
 			"value": ""
 		},
 		"CosmosDb2_connectionString": {
+			"value": ""
+		},
+		"EventHubs1_accessKey": {
 			"value": ""
 		},
 		"FileServer1_password": {
@@ -70,9 +76,6 @@
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://makkv001.vault.azure.net/"
-		},
-		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
-			"value": "SQLDB1"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_connectionString_secretName": {
 			"value": "SQLDW"

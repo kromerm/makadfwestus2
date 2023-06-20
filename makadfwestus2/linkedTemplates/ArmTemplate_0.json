@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"AzureSqlDatabase2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
@@ -46,6 +50,10 @@
 		"CosmosDb2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb2'"
+		},
+		"EventHubs1_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'EventHubs1'"
 		},
 		"AzureBlobStorage3_sasUri": {
 			"type": "secureString",
@@ -94,14 +102,6 @@
 		"RestService2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
-		},
-		"RestService3_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
-		},
-		"RestService4_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
 		}
 	},
 	"variables": {
@@ -305,6 +305,12 @@
 						"name": "Set variable1",
 						"type": "SetVariable",
 						"dependsOn": [],
+						"policy": {
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "myid",
@@ -442,6 +448,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase2')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -534,6 +553,24 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/EventHubs1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "EventHubs",
+				"typeProperties": {
+					"namespaceName": "eventHubsCDC",
+					"accessKeyName": "SampleSharedAccessKey",
+					"accessKey": {
+						"type": "SecureString",
+						"value": "[parameters('EventHubs1_accessKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/GoogleMaps')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -573,36 +610,6 @@
 				"typeProperties": {
 					"url": "[parameters('RestService2_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestService3')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService3_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestService4')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService4_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": false,
 					"authenticationType": "Anonymous"
 				}
 			},

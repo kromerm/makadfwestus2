@@ -13,6 +13,418 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DedupeFuzzyFlowlet1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "FuzzyMatch"
+						},
+						{
+							"name": "groupSoundex"
+						},
+						{
+							"name": "Orig1"
+						},
+						{
+							"name": "soundexJoin"
+						},
+						{
+							"name": "soundexBranch"
+						},
+						{
+							"name": "groupPhone"
+						},
+						{
+							"name": "phoneBranch"
+						},
+						{
+							"name": "phoneJoin"
+						},
+						{
+							"name": "groupZip"
+						},
+						{
+							"name": "zipBranch"
+						},
+						{
+							"name": "zipJoin"
+						},
+						{
+							"name": "setConstants"
+						},
+						{
+							"name": "matchScore"
+						},
+						{
+							"name": "finalResult"
+						},
+						{
+							"name": "MapNames"
+						},
+						{
+							"name": "CreateFullName"
+						},
+						{
+							"name": "CheckForDupes"
+						},
+						{
+							"name": "inputName"
+						},
+						{
+							"name": "outputDupes"
+						},
+						{
+							"name": "outputNoDupes"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          {Emp ID} as string,",
+						"          {Middle Initial} as string,",
+						"          {Last Name} as string,",
+						"          {Phone No. } as string,",
+						"          Zip as string,",
+						"          {First Name} as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> inputName",
+						"MapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch",
+						"Orig1 aggregate(groupBy(SoundexValue),",
+						"     soundexmatch = sum(1)) ~> groupSoundex",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> Orig1",
+						"groupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> soundexJoin",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> soundexBranch",
+						"soundexJoin aggregate(groupBy(phone,",
+						"          soundexBranch@SoundexValue),",
+						"     phonematch = sum(1),",
+						"          acctnum_agg = last(acctnum)) ~> groupPhone",
+						"soundexJoin select(mapColumn(",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue = soundexBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> phoneBranch",
+						"groupPhone, phoneBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> phoneJoin",
+						"phoneJoin aggregate(groupBy(zip,",
+						"          phoneBranch@SoundexValue),",
+						"     zipcount = sum(1),",
+						"          acctnum_agg = last(acctnum_agg)) ~> groupZip",
+						"phoneJoin select(mapColumn(",
+						"          phonematch,",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone = phoneBranch@phone,",
+						"          zip,",
+						"          SoundexValue = phoneBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> zipBranch",
+						"groupZip, zipBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> zipJoin",
+						"zipJoin derive(soundexweight = 50,",
+						"          zipweight = 25,",
+						"          phoneweight = 25,",
+						"          soundexbool = iif (soundexmatch > 1, 1, 0),",
+						"          zipbool = iif (zipcount > 1, 1, 0),",
+						"          phonebool = iif (phonematch > 1, 1, 0)) ~> setConstants",
+						"setConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore",
+						"matchScore select(mapColumn(",
+						"          phone,",
+						"          acctnum,",
+						"          fullname,",
+						"          zip = zipBranch@zip,",
+						"          matchscore",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> finalResult",
+						"CreateFullName select(mapColumn(",
+						"          phone = {Phone No. },",
+						"          zip = Zip,",
+						"          fullname,",
+						"          acctnum = {Emp ID}",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> MapNames",
+						"inputName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName",
+						"finalResult split(matchscore > 50,",
+						"     disjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)",
+						"CheckForDupes@Duplicates output(mapColumn(",
+						"          each(match(/* All input columns */true()),",
+						"               /* Input name */$$ = $$)",
+						"     )) ~> outputDupes",
+						"CheckForDupes@NotDupe output() ~> outputNoDupes"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DedupeFuzzyFlowlet2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "FuzzyMatch"
+						},
+						{
+							"name": "groupSoundex"
+						},
+						{
+							"name": "Orig1"
+						},
+						{
+							"name": "soundexJoin"
+						},
+						{
+							"name": "soundexBranch"
+						},
+						{
+							"name": "groupPhone"
+						},
+						{
+							"name": "phoneBranch"
+						},
+						{
+							"name": "phoneJoin"
+						},
+						{
+							"name": "groupZip"
+						},
+						{
+							"name": "zipBranch"
+						},
+						{
+							"name": "zipJoin"
+						},
+						{
+							"name": "setConstants"
+						},
+						{
+							"name": "matchScore"
+						},
+						{
+							"name": "finalResult"
+						},
+						{
+							"name": "MapNames"
+						},
+						{
+							"name": "CreateFullName"
+						},
+						{
+							"name": "CheckForDupes"
+						},
+						{
+							"name": "inputName"
+						},
+						{
+							"name": "outputDupes"
+						},
+						{
+							"name": "outputNoDupes"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          {Emp ID} as string,",
+						"          {First Name} as string,",
+						"          {Middle Initial} as string,",
+						"          {Last Name} as string,",
+						"          {Phone No. } as string,",
+						"          Zip as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> inputName",
+						"MapNames derive(SoundexValue = soundex(fullname)) ~> FuzzyMatch",
+						"Orig1 aggregate(groupBy(SoundexValue),",
+						"     soundexmatch = sum(1)) ~> groupSoundex",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> Orig1",
+						"groupSoundex, soundexBranch join(groupSoundex@SoundexValue == soundexBranch@SoundexValue,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> soundexJoin",
+						"FuzzyMatch select(mapColumn(",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> soundexBranch",
+						"soundexJoin aggregate(groupBy(phone,",
+						"          soundexBranch@SoundexValue),",
+						"     phonematch = sum(1),",
+						"          acctnum_agg = last(acctnum)) ~> groupPhone",
+						"soundexJoin select(mapColumn(",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone,",
+						"          zip,",
+						"          SoundexValue = soundexBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> phoneBranch",
+						"groupPhone, phoneBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> phoneJoin",
+						"phoneJoin aggregate(groupBy(zip,",
+						"          phoneBranch@SoundexValue),",
+						"     zipcount = sum(1),",
+						"          acctnum_agg = last(acctnum_agg)) ~> groupZip",
+						"phoneJoin select(mapColumn(",
+						"          phonematch,",
+						"          soundexmatch,",
+						"          acctnum,",
+						"          fullname,",
+						"          phone = phoneBranch@phone,",
+						"          zip,",
+						"          SoundexValue = phoneBranch@SoundexValue",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> zipBranch",
+						"groupZip, zipBranch join(acctnum_agg == acctnum,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> zipJoin",
+						"zipJoin derive(soundexweight = 50,",
+						"          zipweight = 25,",
+						"          phoneweight = 25,",
+						"          soundexbool = iif (soundexmatch > 1, 1, 0),",
+						"          zipbool = iif (zipcount > 1, 1, 0),",
+						"          phonebool = iif (phonematch > 1, 1, 0)) ~> setConstants",
+						"setConstants derive(matchscore = (soundexbool * 50) + (zipbool * 25) + (phonebool * 25)) ~> matchScore",
+						"matchScore select(mapColumn(",
+						"          phone,",
+						"          acctnum,",
+						"          fullname,",
+						"          zip = zipBranch@zip,",
+						"          matchscore",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> finalResult",
+						"CreateFullName select(mapColumn(",
+						"          phone = {Phone No. },",
+						"          zip = Zip,",
+						"          fullname,",
+						"          acctnum = {Emp ID}",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> MapNames",
+						"inputName derive(fullname = {First Name} + ' ' + {Last Name}) ~> CreateFullName",
+						"finalResult split(matchscore > 50,",
+						"     disjoint: false) ~> CheckForDupes@(Duplicates, NotDupe)",
+						"CheckForDupes@Duplicates output(mapColumn(",
+						"          each(match(/* All input columns */true()),",
+						"               /* Input name */$$ = $$)",
+						"     )) ~> outputDupes",
+						"CheckForDupes@NotDupe output() ~> outputNoDupes"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Increase Prices and Check')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "assert1"
+						},
+						{
+							"name": "input1"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          ProductID as integer,",
+						"          Name as string,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          StandardCost as decimal(19,4),",
+						"          ListPrice as decimal(19,4),",
+						"          EffectiveDate as timestamp,",
+						"          Active as integer",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> input1",
+						"input1 derive(ListPrice = ListPrice * 1.2) ~> derivedColumn1",
+						"derivedColumn1 assert(expectTrue(Color != 'Multi', false, 'noMultiColor', null, \"This is a bad row because ${Color} is incorrect\")) ~> assert1",
+						"assert1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MarksFuncs')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -526,6 +938,192 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AWCustAddress')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AddressID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AddressType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "CustomerAddress"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AWCustomers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NameStyle",
+						"type": "bit"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MiddleName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Suffix",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesPerson",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PasswordHash",
+						"type": "varchar"
+					},
+					{
+						"name": "PasswordSalt",
+						"type": "varchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "Customer"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AddressID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AddressLine1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "City",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StateProvince",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CountryRegion",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PostalCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "Address"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Avro1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -661,402 +1259,62 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Binary1')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseDataSource1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Connection to your source data store.",
 				"linkedServiceName": {
-					"referenceName": "tpcds",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Binary",
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "tpcds100/store_sales",
-						"container": "store1"
-					}
+					"schema": "dbo",
+					"table": "DataSourceTable"
 				}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Binary2')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseDataSource2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Connection to your source data store.",
 				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Binary",
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "SampleData/tpcds/tpcsales",
-						"container": "mycontainer"
-					}
+					"schema": "dbo",
+					"table": "DataSourceTable"
 				}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseExternal_ControlTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "External control table to store high water mark value.",
 				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "wdfoutput"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": {
-							"value": "@dataset().ContainerName",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SINK_KEY1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "wdfoutput"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": {
-							"value": "@dataset().ContainerName",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataDestination')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to your destination data store.",
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": {
-							"value": "@{dataset().Data_Destination_Directory}",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@{dataset().Data_Destination_Container}",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataDestination1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to your destination data store.",
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": {
-							"value": "@{dataset().Data_Destination_Directory}",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@{dataset().Data_Destination_Container}",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataDestination2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to your destination data store.",
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": {
-							"value": "@{dataset().Data_Destination_Directory}",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@{dataset().Data_Destination_Container}",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "DelimitedText",
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "moviesDB.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "genres",
-						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					},
-					{
-						"name": "Rating",
-						"type": "String"
-					},
-					{
-						"name": "RottenTomato",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "SampleData/Soccer",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "id_odsp",
-						"type": "String"
-					},
-					{
-						"name": "id_event",
-						"type": "String"
-					},
-					{
-						"name": "sort_order",
-						"type": "String"
-					},
-					{
-						"name": "time",
-						"type": "String"
-					},
-					{
-						"name": "text",
-						"type": "String"
-					},
-					{
-						"name": "event_type",
-						"type": "String"
-					},
-					{
-						"name": "event_type2",
-						"type": "String"
-					},
-					{
-						"name": "side",
-						"type": "String"
-					},
-					{
-						"name": "event_team",
-						"type": "String"
-					},
-					{
-						"name": "opponent",
-						"type": "String"
-					},
-					{
-						"name": "player",
-						"type": "String"
-					},
-					{
-						"name": "player2",
-						"type": "String"
-					},
-					{
-						"name": "player_in",
-						"type": "String"
-					},
-					{
-						"name": "player_out",
-						"type": "String"
-					},
-					{
-						"name": "shot_place",
-						"type": "String"
-					},
-					{
-						"name": "shot_outcome",
-						"type": "String"
-					},
-					{
-						"name": "is_goal",
-						"type": "String"
-					},
-					{
-						"name": "location",
-						"type": "String"
-					},
-					{
-						"name": "bodypart",
-						"type": "String"
-					},
-					{
-						"name": "assist_method",
-						"type": "String"
-					},
-					{
-						"name": "situation",
-						"type": "String"
-					},
-					{
-						"name": "fast_break",
-						"type": "String"
-					}
-				]
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
 			},
 			"dependsOn": []
 		}

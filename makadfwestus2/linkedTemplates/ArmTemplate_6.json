@@ -13,1705 +13,247 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/folderout_cdc')]",
+			"name": "[concat(parameters('factoryName'), '/SalesLTProduct')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
+					"referenceName": "AzureSqlDatabase3",
 					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "output/cdc",
-						"fileSystem": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/genericfolder')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/loans')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "loan.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "String"
-					},
-					{
-						"name": "member_id",
-						"type": "String"
-					},
-					{
-						"name": "loan_amnt",
-						"type": "String"
-					},
-					{
-						"name": "funded_amnt",
-						"type": "String"
-					},
-					{
-						"name": "funded_amnt_inv",
-						"type": "String"
-					},
-					{
-						"name": "term",
-						"type": "String"
-					},
-					{
-						"name": "int_rate",
-						"type": "String"
-					},
-					{
-						"name": "installment",
-						"type": "String"
-					},
-					{
-						"name": "grade",
-						"type": "String"
-					},
-					{
-						"name": "sub_grade",
-						"type": "String"
-					},
-					{
-						"name": "emp_title",
-						"type": "String"
-					},
-					{
-						"name": "emp_length",
-						"type": "String"
-					},
-					{
-						"name": "home_ownership",
-						"type": "String"
-					},
-					{
-						"name": "annual_inc",
-						"type": "String"
-					},
-					{
-						"name": "verification_status",
-						"type": "String"
-					},
-					{
-						"name": "issue_d",
-						"type": "String"
-					},
-					{
-						"name": "loan_status",
-						"type": "String"
-					},
-					{
-						"name": "pymnt_plan",
-						"type": "String"
-					},
-					{
-						"name": "url",
-						"type": "String"
-					},
-					{
-						"name": "desc",
-						"type": "String"
-					},
-					{
-						"name": "purpose",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "zip_code",
-						"type": "String"
-					},
-					{
-						"name": "addr_state",
-						"type": "String"
-					},
-					{
-						"name": "dti",
-						"type": "String"
-					},
-					{
-						"name": "delinq_2yrs",
-						"type": "String"
-					},
-					{
-						"name": "earliest_cr_line",
-						"type": "String"
-					},
-					{
-						"name": "inq_last_6mths",
-						"type": "String"
-					},
-					{
-						"name": "mths_since_last_delinq",
-						"type": "String"
-					},
-					{
-						"name": "mths_since_last_record",
-						"type": "String"
-					},
-					{
-						"name": "open_acc",
-						"type": "String"
-					},
-					{
-						"name": "pub_rec",
-						"type": "String"
-					},
-					{
-						"name": "revol_bal",
-						"type": "String"
-					},
-					{
-						"name": "revol_util",
-						"type": "String"
-					},
-					{
-						"name": "total_acc",
-						"type": "String"
-					},
-					{
-						"name": "initial_list_status",
-						"type": "String"
-					},
-					{
-						"name": "out_prncp",
-						"type": "String"
-					},
-					{
-						"name": "out_prncp_inv",
-						"type": "String"
-					},
-					{
-						"name": "total_pymnt",
-						"type": "String"
-					},
-					{
-						"name": "total_pymnt_inv",
-						"type": "String"
-					},
-					{
-						"name": "total_rec_prncp",
-						"type": "String"
-					},
-					{
-						"name": "total_rec_int",
-						"type": "String"
-					},
-					{
-						"name": "total_rec_late_fee",
-						"type": "String"
-					},
-					{
-						"name": "recoveries",
-						"type": "String"
-					},
-					{
-						"name": "collection_recovery_fee",
-						"type": "String"
-					},
-					{
-						"name": "last_pymnt_d",
-						"type": "String"
-					},
-					{
-						"name": "last_pymnt_amnt",
-						"type": "String"
-					},
-					{
-						"name": "next_pymnt_d",
-						"type": "String"
-					},
-					{
-						"name": "last_credit_pull_d",
-						"type": "String"
-					},
-					{
-						"name": "collections_12_mths_ex_med",
-						"type": "String"
-					},
-					{
-						"name": "mths_since_last_major_derog",
-						"type": "String"
-					},
-					{
-						"name": "policy_code",
-						"type": "String"
-					},
-					{
-						"name": "application_type",
-						"type": "String"
-					},
-					{
-						"name": "annual_inc_joint",
-						"type": "String"
-					},
-					{
-						"name": "dti_joint",
-						"type": "String"
-					},
-					{
-						"name": "verification_status_joint",
-						"type": "String"
-					},
-					{
-						"name": "acc_now_delinq",
-						"type": "String"
-					},
-					{
-						"name": "tot_coll_amt",
-						"type": "String"
-					},
-					{
-						"name": "tot_cur_bal",
-						"type": "String"
-					},
-					{
-						"name": "open_acc_6m",
-						"type": "String"
-					},
-					{
-						"name": "open_il_6m",
-						"type": "String"
-					},
-					{
-						"name": "open_il_12m",
-						"type": "String"
-					},
-					{
-						"name": "open_il_24m",
-						"type": "String"
-					},
-					{
-						"name": "mths_since_rcnt_il",
-						"type": "String"
-					},
-					{
-						"name": "total_bal_il",
-						"type": "String"
-					},
-					{
-						"name": "il_util",
-						"type": "String"
-					},
-					{
-						"name": "open_rv_12m",
-						"type": "String"
-					},
-					{
-						"name": "open_rv_24m",
-						"type": "String"
-					},
-					{
-						"name": "max_bal_bc",
-						"type": "String"
-					},
-					{
-						"name": "all_util",
-						"type": "String"
-					},
-					{
-						"name": "total_rev_hi_lim",
-						"type": "String"
-					},
-					{
-						"name": "inq_fi",
-						"type": "String"
-					},
-					{
-						"name": "total_cu_tl",
-						"type": "String"
-					},
-					{
-						"name": "inq_last_12m",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/loansSink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "output/parts/loans",
-						"fileSystem": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/mapParquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "moviemap1.parquet",
-						"folderPath": "output/parquet",
-						"container": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/moviedrift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"param1": {
-						"type": "string",
-						"defaultValue": "'stuff'"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "movies.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "genres",
-						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/moviesCSV')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "moviesDB.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "genres",
-						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					},
-					{
-						"name": "Rating",
-						"type": "String"
-					},
-					{
-						"name": "RottenTomato",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/moviesCSV1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "moviesDB.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "genres",
-						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					},
-					{
-						"name": "Rating",
-						"type": "String"
-					},
-					{
-						"name": "RottenTomato",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/movieswithjson')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "movieswjson.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "movie",
-						"type": "String"
-					},
-					{
-						"name": "title",
-						"type": "String"
-					},
-					{
-						"name": "genres",
-						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					},
-					{
-						"name": "Rating",
-						"type": "String"
-					},
-					{
-						"name": "RottenTomato",
-						"type": "String"
-					},
-					{
-						"name": "data",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/msftstock')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "EOD-MSFT.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Date",
-						"type": "String"
-					},
-					{
-						"name": "Open",
-						"type": "String"
-					},
-					{
-						"name": "High",
-						"type": "String"
-					},
-					{
-						"name": "Low",
-						"type": "String"
-					},
-					{
-						"name": "Close",
-						"type": "String"
-					},
-					{
-						"name": "Volume",
-						"type": "String"
-					},
-					{
-						"name": "Dividend",
-						"type": "String"
-					},
-					{
-						"name": "Split",
-						"type": "String"
-					},
-					{
-						"name": "Adj_Open",
-						"type": "String"
-					},
-					{
-						"name": "Adj_High",
-						"type": "String"
-					},
-					{
-						"name": "Adj_Low",
-						"type": "String"
-					},
-					{
-						"name": "Adj_Close",
-						"type": "String"
-					},
-					{
-						"name": "Adj_Volume",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/names100')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "90 Records B.csv",
-						"folderPath": "SampleData/HR",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Emp ID",
-						"type": "String"
-					},
-					{
-						"name": "Name Prefix",
-						"type": "String"
-					},
-					{
-						"name": "First Name",
-						"type": "String"
-					},
-					{
-						"name": "Middle Initial",
-						"type": "String"
-					},
-					{
-						"name": "Last Name",
-						"type": "String"
-					},
-					{
-						"name": "Gender",
-						"type": "String"
-					},
-					{
-						"name": "E Mail",
-						"type": "String"
-					},
-					{
-						"name": "Father's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Maiden Name",
-						"type": "String"
-					},
-					{
-						"name": "Date of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Time of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Age in Yrs.",
-						"type": "String"
-					},
-					{
-						"name": "Weight in Kgs.",
-						"type": "String"
-					},
-					{
-						"name": "Date of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Quarter of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Half of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Year of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month Name of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short Month",
-						"type": "String"
-					},
-					{
-						"name": "Day of Joining",
-						"type": "String"
-					},
-					{
-						"name": "DOW of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short DOW",
-						"type": "String"
-					},
-					{
-						"name": "Age in Company (Years)",
-						"type": "String"
-					},
-					{
-						"name": "Salary",
-						"type": "String"
-					},
-					{
-						"name": "Last % Hike",
-						"type": "String"
-					},
-					{
-						"name": "SSN",
-						"type": "String"
-					},
-					{
-						"name": "Phone No. ",
-						"type": "String"
-					},
-					{
-						"name": "Place Name",
-						"type": "String"
-					},
-					{
-						"name": "County",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "Zip",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "User Name",
-						"type": "String"
-					},
-					{
-						"name": "Password",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/names1001')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage2",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"myparam": "'what?'"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "90 Records.csv",
-						"folderPath": "SampleData/HR",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Emp ID",
-						"type": "String"
-					},
-					{
-						"name": "Name Prefix",
-						"type": "String"
-					},
-					{
-						"name": "First Name",
-						"type": "String"
-					},
-					{
-						"name": "Middle Initial",
-						"type": "String"
-					},
-					{
-						"name": "Last Name",
-						"type": "String"
-					},
-					{
-						"name": "Gender",
-						"type": "String"
-					},
-					{
-						"name": "E Mail",
-						"type": "String"
-					},
-					{
-						"name": "Father's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Maiden Name",
-						"type": "String"
-					},
-					{
-						"name": "Date of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Time of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Age in Yrs.",
-						"type": "String"
-					},
-					{
-						"name": "Weight in Kgs.",
-						"type": "String"
-					},
-					{
-						"name": "Date of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Quarter of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Half of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Year of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month Name of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short Month",
-						"type": "String"
-					},
-					{
-						"name": "Day of Joining",
-						"type": "String"
-					},
-					{
-						"name": "DOW of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short DOW",
-						"type": "String"
-					},
-					{
-						"name": "Age in Company (Years)",
-						"type": "String"
-					},
-					{
-						"name": "Salary",
-						"type": "String"
-					},
-					{
-						"name": "Last % Hike",
-						"type": "String"
-					},
-					{
-						"name": "SSN",
-						"type": "String"
-					},
-					{
-						"name": "Phone No. ",
-						"type": "String"
-					},
-					{
-						"name": "Place Name",
-						"type": "String"
-					},
-					{
-						"name": "County",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "Zip",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "User Name",
-						"type": "String"
-					},
-					{
-						"name": "Password",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/names1002')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "90 Records.csv",
-						"folderPath": "SampleData/HR",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Emp ID",
-						"type": "String"
-					},
-					{
-						"name": "Name Prefix",
-						"type": "String"
-					},
-					{
-						"name": "First Name",
-						"type": "String"
-					},
-					{
-						"name": "Middle Initial",
-						"type": "String"
-					},
-					{
-						"name": "Last Name",
-						"type": "String"
-					},
-					{
-						"name": "Gender",
-						"type": "String"
-					},
-					{
-						"name": "E Mail",
-						"type": "String"
-					},
-					{
-						"name": "Father's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Name",
-						"type": "String"
-					},
-					{
-						"name": "Mother's Maiden Name",
-						"type": "String"
-					},
-					{
-						"name": "Date of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Time of Birth",
-						"type": "String"
-					},
-					{
-						"name": "Age in Yrs.",
-						"type": "String"
-					},
-					{
-						"name": "Weight in Kgs.",
-						"type": "String"
-					},
-					{
-						"name": "Date of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Quarter of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Half of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Year of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Month Name of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short Month",
-						"type": "String"
-					},
-					{
-						"name": "Day of Joining",
-						"type": "String"
-					},
-					{
-						"name": "DOW of Joining",
-						"type": "String"
-					},
-					{
-						"name": "Short DOW",
-						"type": "String"
-					},
-					{
-						"name": "Age in Company (Years)",
-						"type": "String"
-					},
-					{
-						"name": "Salary",
-						"type": "String"
-					},
-					{
-						"name": "Last % Hike",
-						"type": "String"
-					},
-					{
-						"name": "SSN",
-						"type": "String"
-					},
-					{
-						"name": "Phone No. ",
-						"type": "String"
-					},
-					{
-						"name": "Place Name",
-						"type": "String"
-					},
-					{
-						"name": "County",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "Zip",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "User Name",
-						"type": "String"
-					},
-					{
-						"name": "Password",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/nameswithxml')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "names2.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "acctnum",
-						"type": "String"
-					},
-					{
-						"name": "fullname",
-						"type": "String"
-					},
-					{
-						"name": "phone",
-						"type": "String"
-					},
-					{
-						"name": "zip",
-						"type": "String"
-					},
-					{
-						"name": "xml",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/partsource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "myfolder/partdata",
-						"fileSystem": "mycontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/rules')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "nulls.json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"field": {
-							"type": "string"
-						},
-						"threshold": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sqldbwithparam')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase2",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"dbname": "'makaw'"
-					}
-				},
-				"parameters": {
-					"tablename": {
-						"type": "string",
-						"defaultValue": "'loans'"
-					}
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [
 					{
-						"name": "id",
+						"name": "ProductID",
 						"type": "int",
 						"precision": 10
 					},
 					{
-						"name": "member_id",
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Color",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StandardCost",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "ListPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Weight",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "ProductCategoryID",
 						"type": "int",
 						"precision": 10
 					},
 					{
-						"name": "loan_amnt",
-						"type": "float",
-						"precision": 15
+						"name": "ProductModelID",
+						"type": "int",
+						"precision": 10
 					},
 					{
-						"name": "funded_amnt",
-						"type": "float",
-						"precision": 15
+						"name": "SellStartDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
 					},
 					{
-						"name": "funded_amnt_inv",
-						"type": "float",
-						"precision": 15
+						"name": "SellEndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
 					},
 					{
-						"name": "term",
+						"name": "DiscontinuedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ThumbnailPhotoFileName",
 						"type": "nvarchar"
 					},
 					{
-						"name": "int_rate",
-						"type": "float",
-						"precision": 15
+						"name": "rowguid",
+						"type": "uniqueidentifier"
 					},
 					{
-						"name": "installment",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sub_grade",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "emp_length",
-						"type": "nvarchar"
-					},
-					{
-						"name": "home_ownership",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "verification_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "issue_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "loan_status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pymnt_plan",
-						"type": "bit"
-					},
-					{
-						"name": "url",
-						"type": "nvarchar"
-					},
-					{
-						"name": "desc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "purpose",
-						"type": "nvarchar"
-					},
-					{
-						"name": "title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "zip_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "addr_state",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "delinq_2yrs",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "earliest_cr_line",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_6mths",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_record",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "open_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "pub_rec",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_bal",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "revol_util",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_acc",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "initial_list_status",
-						"type": "bit"
-					},
-					{
-						"name": "out_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "out_prncp_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_pymnt_inv",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_prncp",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_int",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "total_rec_late_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "recoveries",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "collection_recovery_fee",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "last_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_pymnt_amnt",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "next_pymnt_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "last_credit_pull_d",
-						"type": "nvarchar"
-					},
-					{
-						"name": "collections_12_mths_ex_med",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "mths_since_last_major_derog",
-						"type": "nvarchar"
-					},
-					{
-						"name": "policy_code",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "application_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "annual_inc_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "dti_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "verification_status_joint",
-						"type": "nvarchar"
-					},
-					{
-						"name": "acc_now_delinq",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "tot_coll_amt",
-						"type": "nvarchar"
-					},
-					{
-						"name": "tot_cur_bal",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_acc_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_6m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_il_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "mths_since_rcnt_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_bal_il",
-						"type": "nvarchar"
-					},
-					{
-						"name": "il_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_12m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "open_rv_24m",
-						"type": "nvarchar"
-					},
-					{
-						"name": "max_bal_bc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "all_util",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_rev_hi_lim",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_fi",
-						"type": "nvarchar"
-					},
-					{
-						"name": "total_cu_tl",
-						"type": "nvarchar"
-					},
-					{
-						"name": "inq_last_12m",
-						"type": "nvarchar"
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
 					}
 				],
 				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "Product"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SnowflakeTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Snowflake1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SnowflakeTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_n1y')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "moviesDB.csv",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movie",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RottenTomato",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_o90')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "moviesDB.csv",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movie",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RottenTomato",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlDimension')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
 					"schema": "dbo",
 					"table": {
-						"value": "@dataset().tablename",
+						"value": "@dataset().Table",
 						"type": "Expression"
 					}
 				}
@@ -1719,94 +261,134 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/taxi_fare_data_input1')]",
+			"name": "[concat(parameters('factoryName'), '/SqlDimension1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().Table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlDimension2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().Table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlDimension3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().Table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TaxiSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "TaxiDemo"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "trip_fare_1.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
+						"type": "AzureBlobFSLocation",
+						"folderPath": "taxi-output",
+						"fileSystem": "sample-data"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "medallion",
-						"type": "String"
-					},
-					{
-						"name": " hack_license",
-						"type": "String"
-					},
-					{
-						"name": " vendor_id",
-						"type": "String"
-					},
-					{
-						"name": " pickup_datetime",
-						"type": "String"
-					},
-					{
-						"name": " payment_type",
-						"type": "String"
-					},
-					{
-						"name": " fare_amount",
-						"type": "String"
-					},
-					{
-						"name": " surcharge",
-						"type": "String"
-					},
-					{
-						"name": " mta_tax",
-						"type": "String"
-					},
-					{
-						"name": " tip_amount",
-						"type": "String"
-					},
-					{
-						"name": " tolls_amount",
-						"type": "String"
-					},
-					{
-						"name": " total_amount",
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/taxi_trip_data_input1')]",
+			"name": "[concat(parameters('factoryName'), '/TripData')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
+					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "TaxiDemo"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobStorageLocation",
+						"type": "AzureBlobFSLocation",
 						"fileName": "trip_data_1.csv",
-						"folderPath": "SampleData",
-						"container": "mycontainer"
+						"fileSystem": "sample-data"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -1875,7 +457,472 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/textWithJSON')]",
+			"name": "[concat(parameters('factoryName'), '/TripFares')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "TaxiDemo"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "taxi_fares.csv",
+						"fileSystem": "sample-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "medallion",
+						"type": "String"
+					},
+					{
+						"name": "hack_license",
+						"type": "String"
+					},
+					{
+						"name": "vendor_id",
+						"type": "String"
+					},
+					{
+						"name": "pickup_datetime",
+						"type": "String"
+					},
+					{
+						"name": "payment_type",
+						"type": "String"
+					},
+					{
+						"name": "fare_amount",
+						"type": "String"
+					},
+					{
+						"name": "surcharge",
+						"type": "String"
+					},
+					{
+						"name": "mta_tax",
+						"type": "String"
+					},
+					{
+						"name": "tip_amount",
+						"type": "String"
+					},
+					{
+						"name": "tolls_amount",
+						"type": "String"
+					},
+					{
+						"name": "total_amount",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Xml1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "mark.xml",
+						"folderPath": "SampleData/XML",
+						"container": "mycontainer"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Xml2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "customers.xml",
+						"folderPath": "SampleData",
+						"container": "mycontainer"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adlsgen2folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SampleData",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "identifier",
+						"type": "String"
+					},
+					{
+						"name": "createdOn",
+						"type": "String"
+					},
+					{
+						"name": "modifiedOn",
+						"type": "String"
+					},
+					{
+						"name": "originalTimeZoneUTCOffset",
+						"type": "String"
+					},
+					{
+						"name": "sourceAuthority",
+						"type": "String"
+					},
+					{
+						"name": "salutation",
+						"type": "String"
+					},
+					{
+						"name": "firstName",
+						"type": "String"
+					},
+					{
+						"name": "nickName",
+						"type": "String"
+					},
+					{
+						"name": "middleName",
+						"type": "String"
+					},
+					{
+						"name": "lastName",
+						"type": "String"
+					},
+					{
+						"name": "suffix",
+						"type": "String"
+					},
+					{
+						"name": "fullName",
+						"type": "String"
+					},
+					{
+						"name": "birthdayDay",
+						"type": "String"
+					},
+					{
+						"name": "birthdayMonth",
+						"type": "String"
+					},
+					{
+						"name": "birthdayYear",
+						"type": "String"
+					},
+					{
+						"name": "birthDate",
+						"type": "String"
+					},
+					{
+						"name": "genderCode",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cdcMovies')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "cdc",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movie",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RottenTomato",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/datedim')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "part-00000-7e8901d3-b6e7-4dc3-b6dd-af0a9093a8d4-c000.snappy.parquet",
+						"folderPath": "SampleData/tpcds",
+						"container": "mycontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "d_date_sk",
+						"type": "INT32"
+					},
+					{
+						"name": "d_date_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_date",
+						"type": "DATE"
+					},
+					{
+						"name": "d_month_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_week_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_quarter_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_year",
+						"type": "INT32"
+					},
+					{
+						"name": "d_dow",
+						"type": "INT32"
+					},
+					{
+						"name": "d_moy",
+						"type": "INT32"
+					},
+					{
+						"name": "d_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_qoy",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_year",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_quarter_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_fy_week_seq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_day_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_quarter_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_holiday",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_weekend",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_following_holiday",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_first_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_last_dom",
+						"type": "INT32"
+					},
+					{
+						"name": "d_same_day_ly",
+						"type": "INT32"
+					},
+					{
+						"name": "d_same_day_lq",
+						"type": "INT32"
+					},
+					{
+						"name": "d_current_day",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_week",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_month",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_quarter",
+						"type": "UTF8"
+					},
+					{
+						"name": "d_current_year",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dogjson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Dog.json",
+						"container": "mycontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"success": {
+							"type": "string"
+						},
+						"timestamp": {
+							"type": "string"
+						},
+						"base": {
+							"type": "string"
+						},
+						"date": {
+							"type": "string"
+						},
+						"rates": {
+							"type": "object",
+							"properties": {
+								"AED": {
+									"type": "number"
+								},
+								"AFN": {
+									"type": "number"
+								},
+								"ALL": {
+									"type": "number"
+								},
+								"AMD": {
+									"type": "number"
+								},
+								"UAH": {
+									"type": "number"
+								},
+								"UGX": {
+									"type": "number"
+								},
+								"USD": {
+									"type": "number"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dqrules')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1888,31 +935,84 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "Currency_ARS.txt",
-						"folderPath": "SampleData",
+						"fileName": "dqrules1.csv",
 						"container": "mycontainer"
 					},
-					"columnDelimiter": "\t",
+					"columnDelimiter": ",",
 					"escapeChar": "\\",
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": [
 					{
+						"name": "Rule Name",
 						"type": "String"
 					},
 					{
+						"name": "Source",
 						"type": "String"
 					},
 					{
+						"name": "Type",
 						"type": "String"
 					},
 					{
-						"type": "String"
-					},
-					{
+						"name": "PassRule",
 						"type": "String"
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dupefolder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output/dupes",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dupefolder1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output/dupes",
+						"container": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": []
 		}
