@@ -227,7 +227,34 @@
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"queries": []
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQueryadlsgen2folder",
+									"dataset": {
+										"referenceName": "adlsgen2folder",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tidentifier as string,\n\t\tcreatedOn as string,\n\t\tmodifiedOn as string,\n\t\toriginalTimeZoneUTCOffset as string,\n\t\tsourceAuthority as string,\n\t\tsalutation as string,\n\t\tfirstName as string,\n\t\tnickName as string,\n\t\tmiddleName as string,\n\t\tlastName as string,\n\t\tsuffix as string,\n\t\tfullName as string,\n\t\tbirthdayDay as string,\n\t\tbirthdayMonth as string,\n\t\tbirthdayYear as string,\n\t\tbirthDate as string,\n\t\tgenderCode as string\n\t),\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQueryadlsgen2folder"
+								}
+							]
+						},
+						{
+							"queryName": "DriverAggs",
+							"dataflowSinks": [
+								{
+									"name": "DriverAggsadlsgen2folder",
+									"dataset": {
+										"referenceName": "adlsgen2folder",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tidentifier as string,\n\t\tcreatedOn as string,\n\t\tmodifiedOn as string,\n\t\toriginalTimeZoneUTCOffset as string,\n\t\tsourceAuthority as string,\n\t\tsalutation as string,\n\t\tfirstName as string,\n\t\tnickName as string,\n\t\tmiddleName as string,\n\t\tlastName as string,\n\t\tsuffix as string,\n\t\tfullName as string,\n\t\tbirthdayDay as string,\n\t\tbirthdayMonth as string,\n\t\tbirthdayYear as string,\n\t\tbirthDate as string,\n\t\tgenderCode as string\n\t),\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DriverAggsadlsgen2folder"
+								}
+							]
+						}
+					]
 				}
 			},
 			{
@@ -252,7 +279,11 @@
 							"name": "Fail1",
 							"type": "Fail",
 							"dependsOn": [],
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"message": "'Pipeline failure'",
+								"errorCode": "101"
+							}
 						}
 					],
 					"ifTrueActivities": [
@@ -276,7 +307,7 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "insert values (1, 1, 1, 'Pipeline failure')"
+										"text": "insert values (1, 1, 1, 'Pipeline success')"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
