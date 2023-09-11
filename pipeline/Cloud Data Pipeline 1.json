@@ -85,10 +85,11 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"itemName"
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -134,7 +135,19 @@
 									},
 									"type": "NotebookReference"
 								},
-								"snapshot": true
+								"parameters": {
+									"myparam": {
+										"value": "1",
+										"type": "int"
+									}
+								},
+								"snapshot": true,
+								"conf": {
+									"spark.dynamicAllocation.enabled": null,
+									"spark.dynamicAllocation.minExecutors": null,
+									"spark.dynamicAllocation.maxExecutors": null
+								},
+								"numExecutors": null
 							},
 							"linkedServiceName": {
 								"referenceName": "AzureSynapseArtifacts1",
