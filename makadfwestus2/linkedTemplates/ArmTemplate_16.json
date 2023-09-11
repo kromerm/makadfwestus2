@@ -530,6 +530,34 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pipeline5')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger33')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Cloud Data Pipeline 1",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15,
+						"startTime": "2023-09-11T23:40:00",
+						"timeZone": "Pacific Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
