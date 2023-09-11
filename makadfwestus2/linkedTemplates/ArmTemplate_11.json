@@ -13,50 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery3')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "moviesCSV",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> moviesCSV",
-							"dataset": {
-								"referenceName": "moviesCSV",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared moviesCSV = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/moviesDB.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = moviesCSV\r\nin\r\n  Source;\r\n"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/PowerQuery4')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -694,7 +650,7 @@
 							"name": "formatCalc"
 						}
 					],
-					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tproduct as (name as string, color as string),\n\t\tmargin as [string,decimal(10,0)],\n\t\tdeconstructName as string[][]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source2\nsource2 derive(calcMargin = round(margin['price']-margin['cost'],2)) ~> calcMargin\ncalcMargin select(mapColumn(\n\t\tName,\n\t\tproduct,\n\t\tmargin,\n\t\tcalcMargin,\n\t\tdeconstructName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\ncalcMargin aggregate(avgMargin = toString(round(avg(calcMargin),2))) ~> Aggregate1\nSelect1 derive(calcMargin = toString(calcMargin,'$#.##'),\n\t\tShortName = toString(deconstructName[1]) + ' ' + product.color) ~> formatCalc\nAggregate1 sink(validateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nformatCalc sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tcompressionType: 'snappy',\n\tcompressionLevel: 'Fastest',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'DeltaDT',\n\toverwrite:true,\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+					"script": "source(output(\n\t\tProductID as integer,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as decimal(19,4),\n\t\tListPrice as decimal(19,4),\n\t\tSize as string,\n\t\tWeight as decimal(8,2),\n\t\tProductCategoryID as integer,\n\t\tProductModelID as integer,\n\t\tSellStartDate as timestamp,\n\t\tSellEndDate as timestamp,\n\t\tproduct as (name as string, color as string),\n\t\tmargin as [string,decimal(10,0)],\n\t\tdeconstructName as string[][]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source2\nsource2 derive(calcMargin = round(margin['price']-margin['cost'],2)) ~> calcMargin\ncalcMargin select(mapColumn(\n\t\tName,\n\t\tproduct,\n\t\tmargin,\n\t\tcalcMargin,\n\t\tdeconstructName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\ncalcMargin aggregate(avgMargin = toString(round(avg(calcMargin),2))) ~> Aggregate1\nSelect1 derive(calcMargin = toString(calcMargin,'$#.##'),\n\t\tShortName = toString(deconstructName[1]) + ' ' + product.color) ~> formatCalc\nAggregate1 sink(validateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> sink1\nformatCalc sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tcompressionType: 'snappy',\n\tcompressionLevel: 'Fastest',\n\tfileSystem: 'mycontainer',\n\tfolderPath: 'DeltaDT',\n\toverwrite: true,\n\tmergeSchema: false,\n\tautoCompact: false,\n\toptimizedWrite: false,\n\tvacuum: 0,\n\tdeletable: false,\n\tinsertable: true,\n\tupdateable: false,\n\tupsertable: false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
 				}
 			},
 			"dependsOn": []
@@ -1164,6 +1120,182 @@
 						"     format: 'inline',",
 						"     output: false,",
 						"     saveOrder: 1) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow13')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NewProducts",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimProductsTable",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "adlsgen2folder",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "exists1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Name as string,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          StandardCost as string,",
+						"          ListPrice as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     enableCdc: true,",
+						"     mode: 'read',",
+						"     skipInitialLoad: true) ~> source1",
+						"source(output(",
+						"          ProductID as integer,",
+						"          Name as string,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          StandardCost as decimal(19,4),",
+						"          ListPrice as decimal(19,4),",
+						"          EffectiveDate as timestamp,",
+						"          Active as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source2",
+						"derivedColumn1, source2 exists(toString(byName('source1@Name')) == toString(byName('source1@Name')),",
+						"     negate:false,",
+						"     broadcast: 'left')~> exists1",
+						"source2 filter(Name == 'My Bike') ~> filter1",
+						"source1 derive(Name = 'lol') ~> derivedColumn1",
+						"exists1 sink(allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     input(",
+						"          identifier as string,",
+						"          createdOn as string,",
+						"          modifiedOn as string,",
+						"          originalTimeZoneUTCOffset as string,",
+						"          sourceAuthority as string,",
+						"          salutation as string,",
+						"          firstName as string,",
+						"          nickName as string,",
+						"          middleName as string,",
+						"          lastName as string,",
+						"          suffix as string,",
+						"          fullName as string,",
+						"          birthdayDay as string,",
+						"          birthdayMonth as string,",
+						"          birthdayYear as string,",
+						"          birthDate as string,",
+						"          genderCode as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          Name,",
+						"          ProductNumber,",
+						"          Color,",
+						"          StandardCost,",
+						"          ListPrice",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow15')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesD2",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "CosmosDb1",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 derive(column1 = currentTimestamp()) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'document',",
+						"     container: (\"Mark\"),",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     throughput: 1000,",
+						"     store: 'cosmosDB',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},

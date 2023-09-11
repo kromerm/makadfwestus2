@@ -13,6 +13,73 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DimEmp1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EmpID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "surrogatekey",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmpFunction",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Level",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Role",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "date"
+					},
+					{
+						"name": "EndDate",
+						"type": "date"
+					},
+					{
+						"name": "iscurrent",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "processtime",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[dbo].[DimEmp]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DimProductsTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2357,111 +2424,6 @@
 						},
 						"message": {
 							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json4folder')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "output/json",
-						"container": "mycontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"@CustomerID": {
-							"type": "string"
-						},
-						"AW:CompanyName": {
-							"type": "string"
-						},
-						"AW:ContactName": {
-							"type": "string"
-						},
-						"AW:ContactTitle": {
-							"type": "string"
-						},
-						"AW:FullAddress": {
-							"type": "object",
-							"properties": {
-								"AW:Address": {
-									"type": "string"
-								},
-								"AW:City": {
-									"type": "string"
-								},
-								"AW:Country": {
-									"type": "string"
-								},
-								"AW:PostalCode": {
-									"type": "integer"
-								},
-								"AW:Region": {
-									"type": "string"
-								}
-							}
-						},
-						"AW:Phone": {
-							"type": "string"
-						},
-						"AW:CustomerID": {
-							"type": "string"
-						},
-						"AW:EmployeeID": {
-							"type": "integer"
-						},
-						"AW:OrderDate": {
-							"type": "string"
-						},
-						"AW:RequiredDate": {
-							"type": "string"
-						},
-						"AW:ShipInfo": {
-							"type": "object",
-							"properties": {
-								"@ShippedDate": {
-									"type": "string"
-								},
-								"AW:Freight": {
-									"type": "number"
-								},
-								"AW:ShipAddress": {
-									"type": "string"
-								},
-								"AW:ShipCity": {
-									"type": "string"
-								},
-								"AW:ShipCountry": {
-									"type": "string"
-								},
-								"AW:ShipName": {
-									"type": "string"
-								},
-								"AW:ShipPostalCode": {
-									"type": "integer"
-								},
-								"AW:ShipRegion": {
-									"type": "string"
-								},
-								"AW:ShipVia": {
-									"type": "integer"
-								}
-							}
 						}
 					}
 				}

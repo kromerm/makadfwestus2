@@ -87,6 +87,10 @@
 			"type": "string",
 			"defaultValue": "https://makkv001.vault.azure.net/"
 		},
+		"AzureSynapseArtifacts1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://maksynapsega.dev.azuresynapse.net"
+		},
 		"Cognitive Service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://markcog1.cognitiveservices.azure.com/text/analytics/v3.1/entities/recognition/pii"
@@ -98,10 +102,6 @@
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.weather.gov/gridpoints/SEW/124,67/forecast"
-		},
-		"RestService2_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
 		}
 	},
 	"variables": {
@@ -306,8 +306,6 @@
 						"type": "SetVariable",
 						"dependsOn": [],
 						"policy": {
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
@@ -493,6 +491,21 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseArtifacts1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSynapseArtifacts",
+				"typeProperties": {
+					"endpoint": "[parameters('AzureSynapseArtifacts1_properties_typeProperties_endpoint')]",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/1e42591f-1f0c-4c5a-b7f2-a268f6105ec5/resourceGroups/makwest/providers/Microsoft.Synapse/workspaces/maksynapsega"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureTableStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -594,21 +607,6 @@
 				"type": "RestService",
 				"typeProperties": {
 					"url": "[parameters('RestService1_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestService2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService2_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
 				}

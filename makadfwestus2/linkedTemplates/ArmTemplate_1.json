@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tpcds'"
 		},
+		"RestService2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.zipcodeapi.com/rest/DemoOnly0071qYVwi9NpUu82Aqp6E6Y5i5obenc0oqc3xLxbxTEwuNhq4iLTCYaZ/city-zips.json"
+		},
 		"RestService3_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.cognitive.microsofttranslator.com/"
@@ -64,6 +68,21 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService2_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/RestService3')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -381,27 +400,6 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/smallIR')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "West US",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 16,
-							"timeToLive": 0,
-							"cleanup": true,
-							"externalComputeInfo": []
-						}
-					}
-				}
 			},
 			"dependsOn": []
 		}
