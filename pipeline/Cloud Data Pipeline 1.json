@@ -127,6 +127,13 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"notebook": {
+									"referenceName": {
+										"value": "Notebook 1",
+										"type": "Expression"
+									},
+									"type": "NotebookReference"
+								},
 								"snapshot": true
 							},
 							"linkedServiceName": {
