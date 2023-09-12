@@ -116,7 +116,7 @@
 					},
 					"activities": [
 						{
-							"name": "Notebook1",
+							"name": "Notebook Aggregations",
 							"type": "SynapseNotebook",
 							"dependsOn": [],
 							"policy": {
@@ -142,12 +142,21 @@
 									}
 								},
 								"snapshot": true,
-								"conf": {
-									"spark.dynamicAllocation.enabled": null,
-									"spark.dynamicAllocation.minExecutors": null,
-									"spark.dynamicAllocation.maxExecutors": null
+								"sparkPool": {
+									"referenceName": {
+										"value": "marksparkpool1",
+										"type": "Expression"
+									},
+									"type": "BigDataPoolReference"
 								},
-								"numExecutors": null
+								"executorSize": "Medium",
+								"conf": {
+									"spark.dynamicAllocation.enabled": false,
+									"spark.dynamicAllocation.minExecutors": 2,
+									"spark.dynamicAllocation.maxExecutors": 2
+								},
+								"driverSize": "Medium",
+								"numExecutors": 2
 							},
 							"linkedServiceName": {
 								"referenceName": "AzureSynapseArtifacts1",
@@ -159,7 +168,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Notebook1",
+									"activity": "Notebook Aggregations",
 									"dependencyConditions": [
 										"Succeeded"
 									]
