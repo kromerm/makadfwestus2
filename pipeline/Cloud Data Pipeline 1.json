@@ -137,7 +137,10 @@
 								},
 								"parameters": {
 									"myparam": {
-										"value": "1",
+										"value": {
+											"value": "@item()",
+											"type": "Expression"
+										},
 										"type": "int"
 									}
 								},
