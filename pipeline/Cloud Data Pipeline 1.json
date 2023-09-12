@@ -81,7 +81,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "adlsgen2folder",
+						"referenceName": "adlsgen2folder_copy1",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
