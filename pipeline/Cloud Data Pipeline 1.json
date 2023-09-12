@@ -141,7 +141,7 @@
 											"value": "@item()",
 											"type": "Expression"
 										},
-										"type": "int"
+										"type": "string"
 									}
 								},
 								"snapshot": true,
