@@ -447,12 +447,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "adlsgen2folder",
+								"referenceName": "adlsgen2folder_copy1",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
 							"fieldList": [
-								"itemName"
+								"childItems"
 							],
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
@@ -483,7 +483,7 @@
 							},
 							"activities": [
 								{
-									"name": "Notebook1",
+									"name": "Notebook Aggregations",
 									"type": "SynapseNotebook",
 									"dependsOn": [],
 									"policy": {
@@ -502,13 +502,31 @@
 											},
 											"type": "NotebookReference"
 										},
-										"snapshot": true,
-										"conf": {
-											"spark.dynamicAllocation.enabled": null,
-											"spark.dynamicAllocation.minExecutors": null,
-											"spark.dynamicAllocation.maxExecutors": null
+										"parameters": {
+											"myparam": {
+												"value": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"type": "int"
+											}
 										},
-										"numExecutors": null
+										"snapshot": true,
+										"sparkPool": {
+											"referenceName": {
+												"value": "marksparkpool1",
+												"type": "Expression"
+											},
+											"type": "BigDataPoolReference"
+										},
+										"executorSize": "Medium",
+										"conf": {
+											"spark.dynamicAllocation.enabled": false,
+											"spark.dynamicAllocation.minExecutors": 2,
+											"spark.dynamicAllocation.maxExecutors": 2
+										},
+										"driverSize": "Medium",
+										"numExecutors": 2
 									},
 									"linkedServiceName": {
 										"referenceName": "AzureSynapseArtifacts1",
@@ -520,7 +538,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "Notebook1",
+											"activity": "Notebook Aggregations",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -763,6 +781,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/taxi_fare_data_input1')]",
 				"[concat(variables('factoryId'), '/datasets/adlsgen2folder')]",
+				"[concat(variables('factoryId'), '/datasets/adlsgen2folder_copy1')]",
 				"[concat(variables('factoryId'), '/dataflows/Address Quality')]",
 				"[concat(variables('factoryId'), '/dataflows/SCD Type 2')]",
 				"[concat(variables('factoryId'), '/dataflows/TaxiWrangle')]",
@@ -11894,6 +11913,103 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/adlsgen2folder_copy1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SampleData/iterator",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "identifier",
+						"type": "String"
+					},
+					{
+						"name": "createdOn",
+						"type": "String"
+					},
+					{
+						"name": "modifiedOn",
+						"type": "String"
+					},
+					{
+						"name": "originalTimeZoneUTCOffset",
+						"type": "String"
+					},
+					{
+						"name": "sourceAuthority",
+						"type": "String"
+					},
+					{
+						"name": "salutation",
+						"type": "String"
+					},
+					{
+						"name": "firstName",
+						"type": "String"
+					},
+					{
+						"name": "nickName",
+						"type": "String"
+					},
+					{
+						"name": "middleName",
+						"type": "String"
+					},
+					{
+						"name": "lastName",
+						"type": "String"
+					},
+					{
+						"name": "suffix",
+						"type": "String"
+					},
+					{
+						"name": "fullName",
+						"type": "String"
+					},
+					{
+						"name": "birthdayDay",
+						"type": "String"
+					},
+					{
+						"name": "birthdayMonth",
+						"type": "String"
+					},
+					{
+						"name": "birthdayYear",
+						"type": "String"
+					},
+					{
+						"name": "birthDate",
+						"type": "String"
+					},
+					{
+						"name": "genderCode",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/cdcMovies')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -22375,7 +22491,7 @@
 							"name": "Select1"
 						}
 					],
-					"script": "source(output(\n\t\tbody as ({@context} as string[], geometry as (coordinates as double[][][], type as string), properties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string), type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'GET',\n\ttimeout: 30,\n\trequestInterval: 0,\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1\nsource1 stringify(mydata = body.properties.periods ? string,\n\tformat: 'json') ~> Stringify1\nStringify1 select(mapColumn(\n\t\tcontext = mydata\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+					"script": "source(output(\n\t\tbody as ({@context} as string[], geometry as (coordinates as double[][][], type as string), properties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string), type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'GET',\n\ttimeout: 30,\n\trequestInterval: 0,\n\tpaginationRules: ['supportRFC5988' -> 'true'],\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1\nsource1 stringify(mydata = body.properties.periods ? string,\n\tformat: 'json') ~> Stringify1\nStringify1 select(mapColumn(\n\t\tcontext = mydata\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": [
