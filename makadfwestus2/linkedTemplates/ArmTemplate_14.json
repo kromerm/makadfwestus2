@@ -213,7 +213,7 @@
 							"name": "Select1"
 						}
 					],
-					"script": "source(output(\n\t\tbody as ({@context} as string[], geometry as (coordinates as double[][][], type as string), properties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string), type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'GET',\n\ttimeout: 30,\n\trequestInterval: 0,\n\tpaginationRules: ['supportRFC5988' -> 'true'],\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1\nsource1 stringify(mydata = body.properties.periods ? string,\n\tformat: 'json') ~> Stringify1\nStringify1 select(mapColumn(\n\t\tcontext = mydata\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
+					"script": "source(output(\n\t\tbody as ({@context} as string[], geometry as (coordinates as double[][][], type as string), properties as (elevation as (unitCode as string, value as double), forecastGenerator as string, generatedAt as string, periods as (detailedForecast as string, endTime as string, icon as string, isDaytime as boolean, name as string, number as short, shortForecast as string, startTime as string, temperature as short, temperatureTrend as string, temperatureUnit as boolean, windDirection as string, windSpeed as string)[], units as string, updateTime as string, updated as string, validTimes as string), type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'GET',\n\ttimeout: 30,\n\trequestInterval: 0,\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1\nsource1 stringify(mydata = body.properties.periods ? string,\n\tformat: 'json') ~> Stringify1\nStringify1 select(mapColumn(\n\t\tcontext = mydata\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink1"
 				}
 			},
 			"dependsOn": []
@@ -721,10 +721,10 @@
 										"parameters": {
 											"myparam": {
 												"value": {
-													"value": "@item()",
+													"value": "@item().name",
 													"type": "Expression"
 												},
-												"type": "int"
+												"type": "string"
 											}
 										},
 										"snapshot": true,
