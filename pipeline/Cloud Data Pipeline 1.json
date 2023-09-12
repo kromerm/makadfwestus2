@@ -138,7 +138,7 @@
 								"parameters": {
 									"myparam": {
 										"value": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										},
 										"type": "string"
