@@ -167,7 +167,7 @@
 							}
 						},
 						{
-							"name": "Stored procedure1",
+							"name": "sproc Upper Case",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
