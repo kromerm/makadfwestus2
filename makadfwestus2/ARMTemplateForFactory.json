@@ -676,9 +676,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "dataflowIRwReuse",
+								"type": "IntegrationRuntimeReference"
 							},
 							"queries": [
 								{
@@ -750,7 +750,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 0, 'Pipeline failed') into ErrorLog2"
+												"text": "insert into ErrorLog2 values (1, 1, 0, 'Pipeline failed') "
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -778,7 +778,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 1, 'Pipeline success') into ErrorLog2"
+												"text": "insert into ErrorLog2 values (1, 1, 1, 'Pipeline success') "
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -801,6 +801,7 @@
 				"[concat(variables('factoryId'), '/dataflows/Address Quality')]",
 				"[concat(variables('factoryId'), '/dataflows/SCD Type 2')]",
 				"[concat(variables('factoryId'), '/dataflows/TaxiWrangle')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/dataflowIRwReuse')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseArtifacts1')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
@@ -15439,10 +15440,11 @@
 					"computeProperties": {
 						"location": "AutoResolve",
 						"dataFlowProperties": {
-							"computeType": "MemoryOptimized",
+							"computeType": "General",
 							"coreCount": 48,
 							"timeToLive": 240,
 							"cleanup": false,
+							"customProperties": [],
 							"externalComputeInfo": []
 						}
 					}
