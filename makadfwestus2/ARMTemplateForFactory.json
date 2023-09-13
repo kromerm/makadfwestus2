@@ -731,19 +731,35 @@
 							},
 							"ifFalseActivities": [
 								{
-									"name": "Fail1",
-									"type": "Fail",
+									"name": "Log failure",
+									"type": "Script",
 									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
 									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
 									"typeProperties": {
-										"message": "'Pipeline failure'",
-										"errorCode": "101"
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "insert values (1, 1, 0, 'Pipeline failed')"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
 									}
 								}
 							],
 							"ifTrueActivities": [
 								{
-									"name": "Script1",
+									"name": "Log success",
 									"type": "Script",
 									"dependsOn": [],
 									"policy": {
@@ -22999,7 +23015,6 @@
 					},
 					"mode": "Microbatch"
 				},
-				"status": "Started",
 				"allowVNetOverride": false
 			},
 			"dependsOn": [
