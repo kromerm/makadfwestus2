@@ -367,7 +367,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
+						"name": "Acquire Taxi Data",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -427,11 +427,11 @@
 						]
 					},
 					{
-						"name": "Get Metadata1",
+						"name": "Inspect data",
 						"type": "GetMetadata",
 						"dependsOn": [
 							{
-								"activity": "Copy data1",
+								"activity": "Acquire Taxi Data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -465,11 +465,11 @@
 						}
 					},
 					{
-						"name": "ForEach1",
+						"name": "Iterator over each file",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "Inspect data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -478,7 +478,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1').output.childItems",
+								"value": "@activity('Inspect data').output.childItems",
 								"type": "Expression"
 							},
 							"activities": [
@@ -574,7 +574,7 @@
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "ForEach1",
+								"activity": "Iterator over each file",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -750,7 +750,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 0, 'Pipeline failed')"
+												"text": "insert values (1, 1, 0, 'Pipeline failed') into ErrorLog2"
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -778,7 +778,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 1, 'Pipeline success')"
+												"text": "insert values (1, 1, 1, 'Pipeline success') into ErrorLog2"
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -18500,7 +18500,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared taxi_fare_data_input1 = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/trip_fare_1.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\nshared DriverAggs = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\n",
+					"script": "section Section1;\r\nshared taxi_fare_data_input1 = let AdfDoc = AzureStorage.BlobContents(\"https://makadf001.blob.core.windows.net/mycontainer/SampleData/trip_fare_1.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\nshared DriverAggs = let\r\n  Source = taxi_fare_data_input1,\r\n  #\"Changed column type\" = Table.TransformColumns(Source, {{\" pickup_datetime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"en-us\"]), type datetime}})\r\nin\r\n  #\"Changed column type\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},

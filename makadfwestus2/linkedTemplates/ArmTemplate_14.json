@@ -583,7 +583,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
+						"name": "Acquire Taxi Data",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -643,11 +643,11 @@
 						]
 					},
 					{
-						"name": "Get Metadata1",
+						"name": "Inspect data",
 						"type": "GetMetadata",
 						"dependsOn": [
 							{
-								"activity": "Copy data1",
+								"activity": "Acquire Taxi Data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -681,11 +681,11 @@
 						}
 					},
 					{
-						"name": "ForEach1",
+						"name": "Iterator over each file",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "Inspect data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -694,7 +694,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1').output.childItems",
+								"value": "@activity('Inspect data').output.childItems",
 								"type": "Expression"
 							},
 							"activities": [
@@ -790,7 +790,7 @@
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "ForEach1",
+								"activity": "Iterator over each file",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -966,7 +966,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 0, 'Pipeline failed')"
+												"text": "insert values (1, 1, 0, 'Pipeline failed') into ErrorLog2"
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -994,7 +994,7 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "insert values (1, 1, 1, 'Pipeline success')"
+												"text": "insert values (1, 1, 1, 'Pipeline success') into ErrorLog2"
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
