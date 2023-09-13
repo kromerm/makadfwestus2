@@ -6,10 +6,11 @@
 			"computeProperties": {
 				"location": "AutoResolve",
 				"dataFlowProperties": {
-					"computeType": "MemoryOptimized",
+					"computeType": "General",
 					"coreCount": 48,
 					"timeToLive": 240,
 					"cleanup": false,
+					"customProperties": [],
 					"externalComputeInfo": []
 				}
 			}
