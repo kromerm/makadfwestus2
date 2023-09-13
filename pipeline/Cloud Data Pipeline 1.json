@@ -360,7 +360,7 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "insert values (1, 1, 0, 'Pipeline failed') into "
+										"text": "insert values (1, 1, 0, 'Pipeline failed') into ErrorLog2"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
@@ -388,7 +388,7 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "insert values (1, 1, 1, 'Pipeline success')"
+										"text": "insert values (1, 1, 1, 'Pipeline success') into ErrorLog2"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
