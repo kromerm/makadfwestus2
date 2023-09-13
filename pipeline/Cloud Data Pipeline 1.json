@@ -111,7 +111,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('Inspect data').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
