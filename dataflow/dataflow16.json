@@ -26,10 +26,10 @@
 					"name": "RemoveUnnecessaryColumns"
 				},
 				{
-					"name": "filter1"
+					"name": "FilterOutNoStock"
 				},
 				{
-					"name": "aggregate1"
+					"name": "AvgPriceByCategory"
 				}
 			],
 			"scriptLines": [
@@ -62,10 +62,10 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> filter1",
-				"filter1 aggregate(groupBy(CategoryName),",
-				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> aggregate1",
-				"aggregate1 sink(allowSchemaDrift: true,",
+				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> FilterOutNoStock",
+				"FilterOutNoStock aggregate(groupBy(CategoryName),",
+				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> AvgPriceByCategory",
+				"AvgPriceByCategory sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          identifier as string,",
