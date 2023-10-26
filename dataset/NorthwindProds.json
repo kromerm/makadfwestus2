@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable3",
+	"name": "NorthwindProds",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NorthwindSQLDB",
