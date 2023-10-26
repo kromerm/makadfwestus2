@@ -1,0 +1,38 @@
+{
+	"name": "dataflow16",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "NorthwindProds",
+						"type": "DatasetReference"
+					},
+					"name": "NorthwindProds"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as integer,",
+				"          ProductName as string,",
+				"          SupplierID as integer,",
+				"          CategoryID as integer,",
+				"          QuantityPerUnit as string,",
+				"          UnitPrice as decimal(19,4),",
+				"          UnitsInStock as integer,",
+				"          UnitsOnOrder as integer,",
+				"          ReorderLevel as integer,",
+				"          Discontinued as boolean,",
+				"          CategoryName as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> NorthwindProds"
+			]
+		}
+	}
+}
