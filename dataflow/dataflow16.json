@@ -12,7 +12,15 @@
 					"name": "NorthwindProds"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "adlsgen2folder",
+						"type": "DatasetReference"
+					},
+					"name": "StoreOutputInLake"
+				}
+			],
 			"transformations": [
 				{
 					"name": "RemoveUnnecessaryColumns"
@@ -56,7 +64,33 @@
 				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
 				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> filter1",
 				"filter1 aggregate(groupBy(CategoryName),",
-				"     AveragePriceByCategory = avg(UnitPrice)) ~> aggregate1"
+				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          identifier as string,",
+				"          createdOn as string,",
+				"          modifiedOn as string,",
+				"          originalTimeZoneUTCOffset as string,",
+				"          sourceAuthority as string,",
+				"          salutation as string,",
+				"          firstName as string,",
+				"          nickName as string,",
+				"          middleName as string,",
+				"          lastName as string,",
+				"          suffix as string,",
+				"          fullName as string,",
+				"          birthdayDay as string,",
+				"          birthdayMonth as string,",
+				"          birthdayYear as string,",
+				"          birthDate as string,",
+				"          genderCode as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> StoreOutputInLake"
 			]
 		}
 	}
