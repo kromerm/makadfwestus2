@@ -19,6 +19,9 @@
 				},
 				{
 					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
 				}
 			],
 			"scriptLines": [
@@ -46,11 +49,14 @@
 				"          UnitPrice,",
 				"          UnitsInStock,",
 				"          UnitsOnOrder,",
-				"          Discontinued",
+				"          Discontinued,",
+				"          CategoryName",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> filter1"
+				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> filter1",
+				"filter1 aggregate(groupBy(CategoryName),",
+				"     AveragePriceByCategory = avg(UnitPrice)) ~> aggregate1"
 			]
 		}
 	}
