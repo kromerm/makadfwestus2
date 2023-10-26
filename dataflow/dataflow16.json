@@ -50,7 +50,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"RemoveUnnecessaryColumns filter(Discontinued) ~> filter1"
+				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> filter1"
 			]
 		}
 	}
