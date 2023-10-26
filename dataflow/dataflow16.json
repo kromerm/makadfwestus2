@@ -13,7 +13,11 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "RemoveUnnecessaryColumns"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          ProductID as integer,",
@@ -31,7 +35,18 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> NorthwindProds"
+				"     format: 'table') ~> NorthwindProds",
+				"NorthwindProds select(mapColumn(",
+				"          ProductID,",
+				"          ProductName,",
+				"          QuantityPerUnit,",
+				"          UnitPrice,",
+				"          UnitsInStock,",
+				"          UnitsOnOrder,",
+				"          Discontinued",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns"
 			]
 		}
 	}
