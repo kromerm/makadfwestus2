@@ -1,5 +1,5 @@
 {
-	"name": "dataflow16",
+	"name": "Northwinds Prods By Category",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
