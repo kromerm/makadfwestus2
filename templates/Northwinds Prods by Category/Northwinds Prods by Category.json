@@ -1,0 +1,328 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"NorthwindSQLDB": {
+			"type": "string"
+		},
+		"AzureDataLakeStorage1": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwinds Prods by Category')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Northwinds Prods By Category",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Northwinds Prods By Category",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Northwinds Prods By Category')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwinds Prods By Category')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NorthwindProds",
+								"type": "DatasetReference"
+							},
+							"name": "NorthwindProds"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "adlsgen2folder",
+								"type": "DatasetReference"
+							},
+							"name": "StoreOutputInLake"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RemoveUnnecessaryColumns"
+						},
+						{
+							"name": "FilterOutNoStock"
+						},
+						{
+							"name": "AvgPriceByCategory"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ProductID as integer,",
+						"          ProductName as string,",
+						"          SupplierID as integer,",
+						"          CategoryID as integer,",
+						"          QuantityPerUnit as string,",
+						"          UnitPrice as decimal(19,4),",
+						"          UnitsInStock as integer,",
+						"          UnitsOnOrder as integer,",
+						"          ReorderLevel as integer,",
+						"          Discontinued as boolean,",
+						"          CategoryName as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> NorthwindProds",
+						"NorthwindProds select(mapColumn(",
+						"          ProductID,",
+						"          ProductName,",
+						"          QuantityPerUnit,",
+						"          UnitPrice,",
+						"          UnitsInStock,",
+						"          UnitsOnOrder,",
+						"          Discontinued,",
+						"          CategoryName",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
+						"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> FilterOutNoStock",
+						"FilterOutNoStock aggregate(groupBy(CategoryName),",
+						"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> AvgPriceByCategory",
+						"AvgPriceByCategory sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          identifier as string,",
+						"          createdOn as string,",
+						"          modifiedOn as string,",
+						"          originalTimeZoneUTCOffset as string,",
+						"          sourceAuthority as string,",
+						"          salutation as string,",
+						"          firstName as string,",
+						"          nickName as string,",
+						"          middleName as string,",
+						"          lastName as string,",
+						"          suffix as string,",
+						"          fullName as string,",
+						"          birthdayDay as string,",
+						"          birthdayMonth as string,",
+						"          birthdayYear as string,",
+						"          birthDate as string,",
+						"          genderCode as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> StoreOutputInLake"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NorthwindProds')]",
+				"[concat(variables('factoryId'), '/datasets/adlsgen2folder')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NorthwindProds')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('NorthwindSQLDB')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerUnit",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "UnitsInStock",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "UnitsOnOrder",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ReorderLevel",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discontinued",
+						"type": "bit"
+					},
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Alphabetical list of products"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adlsgen2folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureDataLakeStorage1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SampleData",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "identifier",
+						"type": "String"
+					},
+					{
+						"name": "createdOn",
+						"type": "String"
+					},
+					{
+						"name": "modifiedOn",
+						"type": "String"
+					},
+					{
+						"name": "originalTimeZoneUTCOffset",
+						"type": "String"
+					},
+					{
+						"name": "sourceAuthority",
+						"type": "String"
+					},
+					{
+						"name": "salutation",
+						"type": "String"
+					},
+					{
+						"name": "firstName",
+						"type": "String"
+					},
+					{
+						"name": "nickName",
+						"type": "String"
+					},
+					{
+						"name": "middleName",
+						"type": "String"
+					},
+					{
+						"name": "lastName",
+						"type": "String"
+					},
+					{
+						"name": "suffix",
+						"type": "String"
+					},
+					{
+						"name": "fullName",
+						"type": "String"
+					},
+					{
+						"name": "birthdayDay",
+						"type": "String"
+					},
+					{
+						"name": "birthdayMonth",
+						"type": "String"
+					},
+					{
+						"name": "birthdayYear",
+						"type": "String"
+					},
+					{
+						"name": "birthDate",
+						"type": "String"
+					},
+					{
+						"name": "genderCode",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}
