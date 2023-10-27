@@ -9,83 +9,83 @@
 						"referenceName": "NorthwindCategories",
 						"type": "DatasetReference"
 					},
-					"name": "NorthwindProds"
+					"name": "NorthwindCategories"
 				},
 				{
 					"dataset": {
-						"referenceName": "adlsgen2folder",
+						"referenceName": "NorthwindsProdsFile",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "NorthwindsProdsFile"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CategoryAverages",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateCategoryAverages"
+				}
+			],
 			"transformations": [
 				{
-					"name": "RemoveUnnecessaryColumns"
+					"name": "InnerJoin"
 				},
 				{
-					"name": "FilterOutNoStock"
+					"name": "KeepRelevantColumns"
 				},
 				{
-					"name": "AvgPriceByCategory"
+					"name": "SetUpsert"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          ProductID as integer,",
-				"          ProductName as string,",
-				"          SupplierID as integer,",
 				"          CategoryID as integer,",
-				"          QuantityPerUnit as string,",
-				"          UnitPrice as decimal(19,4),",
-				"          UnitsInStock as integer,",
-				"          UnitsOnOrder as integer,",
-				"          ReorderLevel as integer,",
-				"          Discontinued as boolean,",
-				"          CategoryName as string",
+				"          CategoryName as string,",
+				"          Description as string,",
+				"          Picture as binary",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> NorthwindProds",
+				"     format: 'table') ~> NorthwindCategories",
 				"source(output(",
-				"          identifier as string,",
-				"          createdOn as string,",
-				"          modifiedOn as string,",
-				"          originalTimeZoneUTCOffset as string,",
-				"          sourceAuthority as string,",
-				"          salutation as string,",
-				"          firstName as string,",
-				"          nickName as string,",
-				"          middleName as string,",
-				"          lastName as string,",
-				"          suffix as string,",
-				"          fullName as string,",
-				"          birthdayDay as string,",
-				"          birthdayMonth as string,",
-				"          birthdayYear as string,",
-				"          birthDate as string,",
-				"          genderCode as string",
+				"          CategoryName as string,",
+				"          AveragePriceByCategory as double",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"NorthwindProds select(mapColumn(",
-				"          ProductID,",
-				"          ProductName,",
-				"          QuantityPerUnit,",
-				"          UnitPrice,",
-				"          UnitsInStock,",
-				"          UnitsOnOrder,",
-				"          Discontinued,",
-				"          CategoryName",
+				"     ignoreNoFilesFound: false) ~> NorthwindsProdsFile",
+				"NorthwindCategories, NorthwindsProdsFile join(NorthwindCategories@CategoryName == NorthwindsProdsFile@CategoryName,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> InnerJoin",
+				"InnerJoin select(mapColumn(",
+				"          CategoryName = NorthwindCategories@CategoryName,",
+				"          Description,",
+				"          CategoryName = NorthwindsProdsFile@CategoryName,",
+				"          AveragePriceByCategory",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> FilterOutNoStock",
-				"FilterOutNoStock aggregate(groupBy(CategoryName),",
-				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> AvgPriceByCategory"
+				"     skipDuplicateMapOutputs: true) ~> KeepRelevantColumns",
+				"KeepRelevantColumns alterRow(upsertIf(true())) ~> SetUpsert",
+				"SetUpsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CategoryName as string,",
+				"          Description as string,",
+				"          AveragePriceByCategory as decimal(18,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> UpdateCategoryAverages"
 			]
 		}
 	}

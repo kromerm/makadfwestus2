@@ -1,34 +1,31 @@
 {
-	"name": "NorthwindCategories",
+	"name": "CategoryAverages",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "NorthwindSQLDB",
+			"referenceName": "AzureSqlDatabase1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "CategoryID",
-				"type": "int",
-				"precision": 10
-			},
-			{
 				"name": "CategoryName",
 				"type": "nvarchar"
 			},
 			{
 				"name": "Description",
-				"type": "ntext"
+				"type": "nvarchar"
 			},
 			{
-				"name": "Picture",
-				"type": "image"
+				"name": "AveragePriceByCategory",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
 			}
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Categories"
+			"table": "CategoryAverages"
 		}
 	}
 }
