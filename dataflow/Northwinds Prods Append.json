@@ -1,26 +1,25 @@
 {
-	"name": "Northwinds Prods By Category",
+	"name": "Northwinds Prods Append",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "NorthwindProds",
+						"referenceName": "NorthwindCategories",
 						"type": "DatasetReference"
 					},
 					"name": "NorthwindProds"
-				}
-			],
-			"sinks": [
+				},
 				{
 					"dataset": {
 						"referenceName": "adlsgen2folder",
 						"type": "DatasetReference"
 					},
-					"name": "StoreOutputInLake"
+					"name": "source1"
 				}
 			],
+			"sinks": [],
 			"transformations": [
 				{
 					"name": "RemoveUnnecessaryColumns"
@@ -50,24 +49,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> NorthwindProds",
-				"NorthwindProds select(mapColumn(",
-				"          ProductID,",
-				"          ProductName,",
-				"          QuantityPerUnit,",
-				"          UnitPrice,",
-				"          UnitsInStock,",
-				"          UnitsOnOrder,",
-				"          Discontinued,",
-				"          CategoryName",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> FilterOutNoStock",
-				"FilterOutNoStock aggregate(groupBy(CategoryName),",
-				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> AvgPriceByCategory",
-				"AvgPriceByCategory sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
+				"source(output(",
 				"          identifier as string,",
 				"          createdOn as string,",
 				"          modifiedOn as string,",
@@ -86,13 +68,24 @@
 				"          birthDate as string,",
 				"          genderCode as string",
 				"     ),",
-				"     partitionFileNames:['northwindprods.csv'],",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"NorthwindProds select(mapColumn(",
+				"          ProductID,",
+				"          ProductName,",
+				"          QuantityPerUnit,",
+				"          UnitPrice,",
+				"          UnitsInStock,",
+				"          UnitsOnOrder,",
+				"          Discontinued,",
+				"          CategoryName",
+				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> StoreOutputInLake"
+				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
+				"RemoveUnnecessaryColumns filter(UnitsInStock > 0) ~> FilterOutNoStock",
+				"FilterOutNoStock aggregate(groupBy(CategoryName),",
+				"     AveragePriceByCategory = round(avg(UnitPrice),2)) ~> AvgPriceByCategory"
 			]
 		}
 	}
