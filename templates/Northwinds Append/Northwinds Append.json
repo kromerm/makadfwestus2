@@ -1,0 +1,328 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"NorthwindSQLDB": {
+			"type": "string"
+		},
+		"AzureDataLakeStorage1": {
+			"type": "string"
+		},
+		"AzureSqlDatabase1": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwinds Append')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Northwinds Append",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Northwinds Categories Append",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Northwinds Categories Append')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwinds Categories Append')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NorthwindCategories",
+								"type": "DatasetReference"
+							},
+							"name": "NorthwindCategories"
+						},
+						{
+							"dataset": {
+								"referenceName": "NorthwindsProdsFile",
+								"type": "DatasetReference"
+							},
+							"name": "NorthwindsProdsFile"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CategoryAverages",
+								"type": "DatasetReference"
+							},
+							"name": "UpdateCategoryAverages"
+						}
+					],
+					"transformations": [
+						{
+							"name": "InnerJoin"
+						},
+						{
+							"name": "KeepRelevantColumns"
+						},
+						{
+							"name": "SetUpsert"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          CategoryID as integer,",
+						"          CategoryName as string,",
+						"          Description as string,",
+						"          Picture as binary",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> NorthwindCategories",
+						"source(output(",
+						"          CategoryName as string,",
+						"          AveragePriceByCategory as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> NorthwindsProdsFile",
+						"NorthwindCategories, NorthwindsProdsFile join(NorthwindCategories@CategoryName == NorthwindsProdsFile@CategoryName,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> InnerJoin",
+						"InnerJoin select(mapColumn(",
+						"          CategoryName = NorthwindCategories@CategoryName,",
+						"          Description,",
+						"          CategoryName = NorthwindsProdsFile@CategoryName,",
+						"          AveragePriceByCategory",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> KeepRelevantColumns",
+						"KeepRelevantColumns alterRow(upsertIf(true())) ~> SetUpsert",
+						"SetUpsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CategoryName as string,",
+						"          Description as string,",
+						"          AveragePriceByCategory as decimal(18,2)",
+						"     ),",
+						"     deletable:true,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     keys:['CategoryName'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> UpdateCategoryAverages"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NorthwindCategories')]",
+				"[concat(variables('factoryId'), '/datasets/NorthwindsProdsFile')]",
+				"[concat(variables('factoryId'), '/datasets/CategoryAverages')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NorthwindCategories')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('NorthwindSQLDB')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Description",
+						"type": "ntext"
+					},
+					{
+						"name": "Picture",
+						"type": "image"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Categories"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NorthwindsProdsFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureDataLakeStorage1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "northwindprods.csv",
+						"folderPath": "SampleData",
+						"fileSystem": "mycontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "identifier",
+						"type": "String"
+					},
+					{
+						"name": "createdOn",
+						"type": "String"
+					},
+					{
+						"name": "modifiedOn",
+						"type": "String"
+					},
+					{
+						"name": "originalTimeZoneUTCOffset",
+						"type": "String"
+					},
+					{
+						"name": "sourceAuthority",
+						"type": "String"
+					},
+					{
+						"name": "salutation",
+						"type": "String"
+					},
+					{
+						"name": "firstName",
+						"type": "String"
+					},
+					{
+						"name": "nickName",
+						"type": "String"
+					},
+					{
+						"name": "middleName",
+						"type": "String"
+					},
+					{
+						"name": "lastName",
+						"type": "String"
+					},
+					{
+						"name": "suffix",
+						"type": "String"
+					},
+					{
+						"name": "fullName",
+						"type": "String"
+					},
+					{
+						"name": "birthdayDay",
+						"type": "String"
+					},
+					{
+						"name": "birthdayMonth",
+						"type": "String"
+					},
+					{
+						"name": "birthdayYear",
+						"type": "String"
+					},
+					{
+						"name": "birthDate",
+						"type": "String"
+					},
+					{
+						"name": "genderCode",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CategoryAverages')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureSqlDatabase1')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AveragePriceByCategory",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "CategoryAverages"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
