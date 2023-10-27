@@ -1,5 +1,5 @@
 {
-	"name": "Northwinds Prods Append",
+	"name": "Northwinds Categories Append",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
