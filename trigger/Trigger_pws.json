@@ -1,0 +1,24 @@
+{
+	"name": "Trigger_pws",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MetadataDrivenCopyTask_pws_TopLevel",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2023-11-24T19:58:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
