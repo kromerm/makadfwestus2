@@ -9,16 +9,27 @@
 						"referenceName": "SQLMovies",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "MoviesSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "adlsgen2folder",
+						"type": "DatasetReference"
+					},
+					"name": "OutputToLake"
+				}
+			],
 			"transformations": [
 				{
-					"name": "select1"
+					"name": "SelectColumns"
 				},
 				{
-					"name": "aggregate1"
+					"name": "AvgRatingPerYear"
+				},
+				{
+					"name": "FormatRating"
 				}
 			],
 			"scriptLines": [
@@ -33,8 +44,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"source1 select(mapColumn(",
+				"     format: 'table') ~> MoviesSource",
+				"MoviesSource select(mapColumn(",
 				"          movie,",
 				"          title,",
 				"          genres,",
@@ -42,8 +53,36 @@
 				"          Rating",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 aggregate() ~> aggregate1"
+				"     skipDuplicateMapOutputs: true) ~> SelectColumns",
+				"SelectColumns aggregate(groupBy(year),",
+				"     AvgRatingPerYear = avg(Rating)) ~> AvgRatingPerYear",
+				"AvgRatingPerYear derive(AvgRatingPerYear = round(AvgRatingPerYear,2)) ~> FormatRating",
+				"FormatRating sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          identifier as string,",
+				"          createdOn as string,",
+				"          modifiedOn as string,",
+				"          originalTimeZoneUTCOffset as string,",
+				"          sourceAuthority as string,",
+				"          salutation as string,",
+				"          firstName as string,",
+				"          nickName as string,",
+				"          middleName as string,",
+				"          lastName as string,",
+				"          suffix as string,",
+				"          fullName as string,",
+				"          birthdayDay as string,",
+				"          birthdayMonth as string,",
+				"          birthdayYear as string,",
+				"          birthDate as string,",
+				"          genderCode as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> OutputToLake"
 			]
 		}
 	}
