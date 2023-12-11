@@ -1,5 +1,5 @@
 {
-	"name": "dataflow16",
+	"name": "Average Ratings",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
