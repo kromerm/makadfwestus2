@@ -27,14 +27,12 @@
 						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobStorageWriteSettings"
 						},
 						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"type": "JsonWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -47,7 +45,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "adlsgen2folder",
+						"referenceName": "dogjson",
 						"type": "DatasetReference"
 					}
 				]
