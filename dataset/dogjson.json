@@ -11,6 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Dog.json",
+				"folderPath": "abc",
 				"container": "mycontainer"
 			}
 		},
