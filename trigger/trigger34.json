@@ -1,0 +1,24 @@
+{
+	"name": "trigger34",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Address Quality Pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/myfiles/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/d3bb3b2e-9a7e-4194-9960-5171bd192117/resourceGroups/markuswest/providers/Microsoft.Storage/storageAccounts/markadls2",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
