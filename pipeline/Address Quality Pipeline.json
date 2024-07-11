@@ -27,8 +27,8 @@
 				}
 			},
 			{
-				"name": "Web1",
-				"type": "WebActivity",
+				"name": "Set variable1",
+				"type": "SetVariable",
 				"dependsOn": [
 					{
 						"activity": "Address Quality",
@@ -38,17 +38,22 @@
 					}
 				],
 				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"authentication": {
-						"type": "ClientCertificate"
-					}
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "result",
+							"value": {
+								"type": "Int",
+								"content": 2
+							}
+						}
+					],
+					"setSystemVariable": true
 				}
 			}
 		],
