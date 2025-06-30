@@ -12,19 +12,7 @@
 					"name": "Address1"
 				}
 			],
-			"sinks": [
-				{
-					"dataset": {
-						"referenceName": "folderout",
-						"type": "DatasetReference"
-					},
-					"name": "OutputToADLS",
-					"rejectedDataLinkedService": {
-						"referenceName": "AzureBlobStorage1",
-						"type": "LinkedServiceReference"
-					}
-				}
-			],
+			"sinks": [],
 			"transformations": [
 				{
 					"name": "DataQualityRules"
@@ -67,15 +55,9 @@
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
 				"     abort: true) ~> FailedMetadata",
 				"Address1 cast(output(",
-				"          AddressID as ()",
+				"          AddressID as ({} as string)",
 				"     ),",
-				"     errors: true) ~> cast1",
-				"DataQualityRules sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     preCommands: [],",
-				"     postCommands: []) ~> OutputToADLS"
+				"     errors: true) ~> cast1"
 			]
 		}
 	}
