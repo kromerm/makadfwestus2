@@ -34,6 +34,9 @@
 				},
 				{
 					"name": "FailedMetadata"
+				},
+				{
+					"name": "cast1"
 				}
 			],
 			"scriptLines": [
@@ -54,7 +57,7 @@
 				"     format: 'table') ~> Address1",
 				"MetadataChecker@Pass assert(expectTrue(CountryRegion == 'United States', false, 'assertUsOnly', null, CountryRegion + ' is not valid'),",
 				"     expectUnique(AddressID, false, 'addressIdUnique', null, \"ID of {AddressID} is not unique\")) ~> DataQualityRules",
-				"Address1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
+				"cast1 split(iif(!in(columnNames(),'AddressID'),false(),\r",
 				"    iif(!in(columnNames(),'AddressLine1'),false(),\r",
 				"        iif(!in(columnNames(),'City'),false(),\r",
 				"            iif(!in(columnNames(),'StateProvince'),false(),\r",
@@ -63,6 +66,10 @@
 				"     disjoint: false) ~> MetadataChecker@(Pass, Fail)",
 				"MetadataChecker@Fail assert(expectTrue(false(), false, 'failedMetadata', null, 'Not all columns present'),",
 				"     abort: true) ~> FailedMetadata",
+				"Address1 cast(output(",
+				"          AddressID as ()",
+				"     ),",
+				"     errors: true) ~> cast1",
 				"DataQualityRules sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
