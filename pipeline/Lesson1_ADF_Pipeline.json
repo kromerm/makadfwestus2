@@ -1,0 +1,151 @@
+{
+  "name": "Lesson_1_ADF_Pipeline",
+  "properties": {
+    "description": "Converted from SSIS 'Lesson 1' (Flat File Source -> Lookups -> OLE DB Dest). ADF v2 equivalent.",
+    "parameters": {
+      "SourceFolderPath": {
+        "type": "String",
+        "defaultValue": "raw/ssis/lesson1"
+      },
+      "SourceFileName": {
+        "type": "String",
+        "defaultValue": "CurrencyRates.csv"
+      },
+      "StagingTable": {
+        "type": "String",
+        "defaultValue": "dbo.stg_CurrencyRates"
+      },
+      "DestinationTable": {
+        "type": "String",
+        "defaultValue": "dbo.FactCurrencyRate"
+      },
+      "TruncateStaging": {
+        "type": "Bool",
+        "defaultValue": true
+      }
+    },
+    "annotations": [
+      "Auto-generated conversion from DTSX to ADF v2 by ChatGPT"
+    ],
+    "activities": [
+      {
+        "name": "Copy_FlatFile_to_Staging",
+        "type": "Copy",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 3,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "DelimitedTextSource",
+            "skipLineCount": 0,
+            "treatEmptyAsNull": true
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBehavior": "insert",
+            "preCopyScript": "@{if(pipeline().parameters.TruncateStaging, concat('TRUNCATE TABLE ', pipeline().parameters.StagingTable), '')}"
+          },
+          "enableStaging": false
+        },
+        "inputs": [
+          {
+            "referenceName": "ds_DelimitedText_FlatFile",
+            "type": "DatasetReference",
+            "parameters": {
+              "folderPath": "@{pipeline().parameters.SourceFolderPath}",
+              "fileName": "@{pipeline().parameters.SourceFileName}"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "ds_AzureSql_Staging",
+            "type": "DatasetReference",
+            "parameters": {
+              "tableName": "@{pipeline().parameters.StagingTable}"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lookup_CurrencyKey",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Copy_FlatFile_to_Staging",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": "SELECT CurrencyKey, CurrencyAlternateKey FROM dbo.DimCurrency"
+          },
+          "dataset": {
+            "referenceName": "ds_AzureSql_DimCurrency",
+            "type": "DatasetReference"
+          },
+          "firstRowOnly": false
+        }
+      },
+      {
+        "name": "Lookup_DateKey",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_CurrencyKey",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": "SELECT TimeKey, FullDateAlternateKey FROM dbo.DimTime"
+          },
+          "dataset": {
+            "referenceName": "ds_AzureSql_DimTime",
+            "type": "DatasetReference"
+          },
+          "firstRowOnly": false
+        }
+      },
+      {
+        "name": "Upsert_FactCurrencyRate",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Lookup_DateKey",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "storedProcedureName": "sp_Upsert_FactCurrencyRate",
+          "storedProcedureParameters": {
+            "StagingTable": {
+              "value": "@{pipeline().parameters.StagingTable}",
+              "type": "String"
+            },
+            "DestinationTable": {
+              "value": "@{pipeline().parameters.DestinationTable}",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "ls_AzureSql",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ]
+  },
+  "type": "Microsoft.DataFactory/factories/pipelines"
+}
